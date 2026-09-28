@@ -1,0 +1,8 @@
+.DS_Store
+# local working notes
+task_plan.md
+findings.md
+progress.md
+# demo server droppings
+docs/.studio-ok
+docs/.server.log

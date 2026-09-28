@@ -1,0 +1,16 @@
+{
+  "name": "tenfold",
+  "description": "Tenfold: ten real, on-brand variations of any app screen as phone mockups on localhost, then iterate on the one you pick.",
+  "owner": {
+    "name": "Adrian Partain",
+    "url": "https://github.com/adrianpartain59"
+  },
+  "plugins": [
+    {
+      "name": "tenfold",
+      "source": "./",
+      "description": "Mobile UI design rounds for Claude Code: sweeps your app for context, renders 10 distinct variations as phone mockups on localhost, predicts your pick, and iterates on it until you say build.",
+      "version": "1.0.0"
+    }
+  ]
+}

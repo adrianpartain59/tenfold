@@ -1,0 +1,70 @@
+/* Tempo (a fictional running app for the design-studio demo). Hand-written from
+   the app's theme, the way a project with no token export would do it. */
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
+
+  --space-xs: 4px; --space-sm: 8px; --space-md: 12px; --space-lg: 16px;
+  --space-xl: 20px; --space-2xl: 24px; --space-3xl: 32px;
+  --space-button-height: 52px; --space-button-height-compact: 36px;
+  --radius-card: 14px; --radius-card-raised: 24px; --radius-sheet: 32px; --radius-pill: 999px;
+  --gap-screen-x: 16px; --gap-card-pad: 16px; --gap-row-gap: 12px;
+  --icon-sm: 16px; --icon-md: 18px; --icon-lg: 20px; --icon-xl: 24px;
+  --shadow-card: 0 1px 2px rgba(27, 26, 23, 0.04), 0 6px 18px rgba(27, 26, 23, 0.06);
+  --overlay-black-scrim: rgba(0, 0, 0, 0.45);
+
+  --c-background-root: #F4F2EE;
+  --c-surface: #FFFFFF;
+  --c-surface-sunken: #ECE9E3;
+  --c-border: #E6E2DA;
+  --c-text: #1B1A17;
+  --c-text-secondary: #6E6A62;
+  --c-text-tertiary: #A39E94;
+  --c-accent: #FF5A1F;          /* actions and the one primary element */
+  --c-accent-soft: #FFE6DB;
+  --c-primary: #1B1A17;
+  --c-button-text: #FFFFFF;
+  --c-tab-icon-default: #A39E94;
+  --c-tab-icon-selected: #1B1A17;
+
+  /* one fixed hue per metric, everywhere in the app */
+  --c-metric-distance: #2F6FEB;
+  --c-metric-pace: #0E9F6E;
+  --c-metric-heart: #E5484D;
+  --c-metric-elevation: #8E4EC6;
+  --c-metric-recovery: #D98E04;
+
+  --status-good: #0E9F6E; --status-warn: #D98E04; --status-bad: #E5484D;
+}
+
+[data-theme="dark"] {
+  --c-background-root: #0E0E0D;
+  --c-surface: #1A1A18;
+  --c-surface-sunken: #121211;
+  --c-border: #2A2926;
+  --c-text: #F2F0EC;
+  --c-text-secondary: #A8A399;
+  --c-text-tertiary: #6F6B63;
+  --c-accent: #FF6B33;
+  --c-accent-soft: #3A1E12;
+  --c-primary: #F2F0EC;
+  --c-button-text: #0E0E0D;
+  --c-tab-icon-default: #6F6B63;
+  --c-tab-icon-selected: #F2F0EC;
+  --c-metric-distance: #5B8EF5;
+  --c-metric-pace: #2DBE8C;
+  --c-metric-heart: #F06468;
+  --c-metric-elevation: #A876DB;
+  --c-metric-recovery: #EBA83A;
+  --shadow-card: none;
+}
+
+/* Type ramp */
+.t-display  { font-size: 40px; line-height: 44px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.t-hero     { font-size: 28px; line-height: 32px; font-weight: 800; letter-spacing: -0.5px; }
+.t-title    { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -0.2px; }
+.t-headline { font-size: 17px; line-height: 22px; font-weight: 600; }
+.t-body     { font-size: 16px; line-height: 22px; font-weight: 400; }
+.t-callout  { font-size: 15px; line-height: 20px; font-weight: 500; }
+.t-footnote { font-size: 13px; line-height: 18px; font-weight: 500; }
+.t-caption  { font-size: 12px; line-height: 16px; font-weight: 600; }
+.t-eyebrow  { font-size: 11px; line-height: 14px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; }

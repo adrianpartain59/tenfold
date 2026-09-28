@@ -1,0 +1,161 @@
+{
+  "project": "tempo",
+  "topic": "today",
+  "title": "Today screen",
+  "round": 1,
+  "mode": "mixed",
+  "brief": "What's my run today, and am I ready for it? Today is a wall of equal-weight cards; give it a clear hero and room to breathe, and show a few bolder directions too.",
+  "agentPick": "v01",
+  "predictedPick": "v08",
+  "current": {
+    "file": "current.html",
+    "label": "Today (current)",
+    "idea": "The screen as it ships now: eight equal cards, no hero."
+  },
+  "variations": [
+    {
+      "id": "v01",
+      "file": "v01.html",
+      "name": "Start Line",
+      "idea": "The workout is the hero card with a big Start; the week collapses to a dot strip and everything else is a one-line door.",
+      "tags": [
+        "congruent"
+      ],
+      "notes": {
+        "changes": "The workout becomes one hero card: name, three big stats, a to-scale strip of the session's shape, readiness, the coach line and a full-width Start run. The week collapses to seven day dots; weather, streak, last run and shoes become one-line doors.",
+        "keeps": "Large-title greeting, white r24 cards, accent only on Start run, fixed metric hues.",
+        "build": "Existing card, inset list and chip; a proportional flex strip for the session shape. No new components."
+      }
+    },
+    {
+      "id": "v02",
+      "file": "v02.html",
+      "name": "Week Ring",
+      "idea": "A large weekly-distance ring leads; today's run sits inside the week as the next step to close it.",
+      "tags": [
+        "congruent"
+      ],
+      "notes": {
+        "changes": "A 168pt weekly-distance ring leads, with today's 11.2 km as a paler arc that shows how the run closes the week. Day bars sit under it; today's run is the 'next step' section with Start run. The rest groups into 'Before you go' and 'Lately'.",
+        "keeps": "Large title, r24 cards, one accent, distance in blue; the day bars reuse Progress's bar language.",
+        "build": "SVG ring with a two-part arc (screen.css .ring can't do round caps). Brings rings into an app whose charts are bars, so it needs a ruling."
+      }
+    },
+    {
+      "id": "v03",
+      "file": "v03.html",
+      "name": "Checklist",
+      "idea": "The day as tasks (warm-up, reps, strides, stretch, log shoes) that tick off in place.",
+      "tags": [
+        "congruent"
+      ],
+      "notes": {
+        "changes": "The workout card becomes a tickable list of steps (readiness check-in, warm-up, reps with the coach note, finish, strides, cool-down) with Start run at its foot. An 'After your run' card holds stretch and shoes; the week is one card; weather, last run and race are chevron rows.",
+        "keeps": "White r24 cards, header, accent only on Start run, metric hues, tab bar.",
+        "build": "56pt whole-row tap targets; ticks in ink, not the accent; about 25 lines of JS."
+      }
+    },
+    {
+      "id": "v04",
+      "file": "v04.html",
+      "name": "Coach",
+      "idea": "One editorial sentence leads (\"Tempo day. You're 78% fresh, so hold 4:55.\"); numbers support it.",
+      "tags": [
+        "congruent"
+      ],
+      "notes": {
+        "changes": "A 40pt sentence is the hero, with '78% fresh' and '4:55' underlined in their metric hues. The coach line sits under it, then the workout card with Start run and a 'Why today looks like this' card of four supporting facts.",
+        "keeps": "Same cards, colour and tab rules as the neighbours; Start run is the only accent.",
+        "build": "No JS. The display type is heavier than the neighbours on purpose: it's an editorial lead."
+      }
+    },
+    {
+      "id": "v05",
+      "file": "v05.html",
+      "name": "Timeline",
+      "idea": "The morning as a time rail: the 7 to 9 am weather window with the run placed in it, rain marked at 11.",
+      "tags": [
+        "congruent"
+      ],
+      "notes": {
+        "changes": "The morning becomes a vertical time rail. The 7 to 9 am best-weather window is a solid band, 'Now' sits at 7:12 with readiness, the run card is placed 7:20 to 8:18 inside the window, and rain is dashed in at 11. Week and history move below the fold.",
+        "keeps": "White r24 cards, greeting header, metric hues, one accent.",
+        "build": "Three-column grid (time, node, body); the window band is the rail itself."
+      }
+    },
+    {
+      "id": "v06",
+      "file": "v06.html",
+      "name": "Bento",
+      "idea": "A bento grid: the workout as a dominant 2×2 tile, readiness, week, weather and shoes as small tiles.",
+      "tags": [
+        "congruent"
+      ],
+      "notes": {
+        "changes": "A bento grid: the workout is a dominant 2×2 tile with the session-shape strip, coach note and Start run; Ready, Weather, Week and Shoes are small tiles; last run is a full-width tile. The streak becomes a header pill.",
+        "keeps": "Same card surface, radius, header, metric hues, accent and tab bar.",
+        "build": "1fr 1fr 1.3fr columns; each tile is one tap target. Uses six ramp sizes, over the checklist's four."
+      }
+    },
+    {
+      "id": "v07",
+      "file": "v07.html",
+      "name": "Countdown",
+      "idea": "Race-led: a huge 63-days countdown and a 16-week plan track, with today as this week's step.",
+      "tags": [
+        "wildcard"
+      ],
+      "notes": {
+        "changes": "The race leads: a huge '63 days to Lakeshore Marathon', then a 16-week volume track (Base, Build, Peak, Taper) whose week 7 opens into this week's days. Today's run card holds the only Start; the rest becomes a 'Before you go' list.",
+        "keeps": "Warm ground, r24 cards, one accent, fixed metric hues.",
+        "build": "CSS grid plus one SVG wedge, no JS. The 104pt numeral is a proposed new 'poster' type size.",
+        "ripple": "Plan tab adopts the 16-week track as its header; Progress weekly bars share the style; a race-detail screen is needed because the countdown is tappable."
+      }
+    },
+    {
+      "id": "v08",
+      "file": "v08.html",
+      "name": "Workout Shape",
+      "idea": "A full-bleed dark card draws the session's shape as bars (warm-up, four reps, finish, cool-down) in big editorial type.",
+      "tags": [
+        "wildcard"
+      ],
+      "notes": {
+        "changes": "A full-bleed dark card draws today's session as bars (width is distance, height is effort) under the name set large, with stats, the coach line and Start run. Recovery and weather share a card below; the week is daily bars.",
+        "keeps": "Ground cards, tab bar, one accent, pace green for the reps, ramp sizes only.",
+        "build": "Inline SVG chart sized from the km; the dark surface is --c-primary; a 5-line script lightens the status bar over it.",
+        "ripple": "Workout detail and Plan rows adopt the shape strip; Record shows it with a live position marker; the dark hero becomes a surface shared with Record."
+      }
+    },
+    {
+      "id": "v09",
+      "file": "v09.html",
+      "name": "Deck",
+      "idea": "A horizontal pager of full-height cards: Today's run, Readiness, Your week. One idea per page.",
+      "tags": [
+        "wildcard"
+      ],
+      "notes": {
+        "changes": "Three full-height snap pages (Today's run, Readiness, Your week), each with one 40pt number and an exit at its foot. The next page peeks in; page dots are 44pt targets.",
+        "keeps": "White r24 cards, greeting header, one accent Start, metric hues, bars rather than rings.",
+        "build": "CSS scroll-snap pager and about 10 lines of JS for the dots. Readiness is one swipe away, which is the trade this idea makes.",
+        "ripple": "Progress adopts the pager for its metric pages; page dots become a shared pattern; the reminder notification can deep-link to a page."
+      }
+    },
+    {
+      "id": "v10",
+      "file": "v10.html",
+      "name": "Route Poster",
+      "idea": "A poster of the suggested route as line art with distance and elevation, Start pinned to the thumb zone.",
+      "tags": [
+        "wildcard"
+      ],
+      "notes": {
+        "changes": "The suggested route is drawn as poster line art on the ground, with the reps painted pace-green along it, an elevation strip below, the long name as the headline, and Start run docked in the thumb zone beside 'Another route'. Everything else is a grouped list below the fold.",
+        "keeps": "Tokens, one accent (the route isn't orange), fixed metric hues, iOS grouped rows.",
+        "build": "SVG pathLength and dash arrays paint the session onto the route, no JS. Needs route data (name, climb) the fixture doesn't have yet.",
+        "ripple": "Workout detail and Plan rows get route thumbnails; Record's live map uses the same line language; Club run cards get the line art."
+      }
+    }
+  ]
+}

@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>03 · Checklist</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="screen.css">
+<script>
+  document.documentElement.dataset.theme = new URLSearchParams(location.search).get("theme") || "light";
+  if (window.top === window && matchMedia("(pointer: coarse)").matches) document.documentElement.classList.add("on-device");
+</script>
+<style>
+  /* v03 Checklist. Type: title 22 / headline 17 / footnote 13 / eyebrow 11. */
+  .hdr { padding: var(--space-sm) 0 var(--space-xl); }
+  .hdr .between { align-items: flex-end; }
+  .count { color: var(--text2); white-space: nowrap; }
+  .count b { color: var(--text); font-weight: 700; }
+  .segs { display: grid; grid-template-columns: repeat(8, 1fr); gap: var(--space-xs); margin-top: var(--space-md); }
+  .segs i { height: 4px; border-radius: var(--radius-pill); background: var(--track); transition: background-color 240ms ease-out; }
+  .segs i.on { background: var(--c-primary); }
+
+  .sec { margin-top: var(--space-2xl); }
+  .sec-label { margin: 0 0 var(--space-sm) var(--space-xs); color: var(--text2); }
+
+  /* hero card: the run */
+  .run { padding: var(--space-lg) var(--space-lg) var(--space-lg); }
+  .run .eyebrow { color: var(--text2); }
+  .run h1 { margin: var(--space-xs) 0 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .meta { margin-top: var(--space-xs); color: var(--text2); }
+  .meta b { color: var(--text); font-weight: 600; }
+  .list { margin: var(--space-md) 0 0; padding: 0; list-style: none; }
+
+  /* a task row: whole row is the tap target */
+  .task {
+    position: relative; display: flex; align-items: center; gap: var(--space-md);
+    min-height: 56px; padding: var(--space-sm) 0; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+  }
+  .task + .task::before { content: ""; position: absolute; top: 0; left: 40px; right: 0; height: 1px; background: var(--line); }
+  .task:active { opacity: 0.6; }
+  .chk {
+    width: 28px; height: 28px; flex: none; border-radius: 50%; display: grid; place-items: center;
+    box-shadow: inset 0 0 0 2px var(--text3); color: transparent;
+    transition: background-color 200ms ease-out, box-shadow 200ms ease-out, transform 200ms ease-out;
+  }
+  .chk .ic { width: 16px; height: 16px; stroke-width: 3; }
+  .task .name { color: var(--text); transition: color 200ms ease-out; }
+  .task .det { color: var(--text2); }
+  .task .val { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .task .val small { font-size: 13px; font-weight: 500; color: var(--text2); margin-left: 2px; }
+  .task.done .chk { background: var(--c-primary); box-shadow: none; color: var(--c-button-text); transform: scale(1); }
+  .task.done .name, .task.done .val { color: var(--text3); }
+  .task.done .val small { color: var(--text3); }
+  .task.pop .chk { transform: scale(1.12); }
+  .auto { color: var(--c-metric-recovery); }
+  .task.done .auto { color: var(--c-metric-recovery); }
+  .note { display: flex; gap: var(--space-sm); margin-top: var(--space-sm); color: var(--text2); }
+  .task.has-note { align-items: flex-start; padding-top: var(--space-md); padding-bottom: var(--space-md); }
+  .task.has-note .val { padding-top: 0; }
+  .note .ic { margin-top: 1px; color: var(--text3); }
+  .warn { color: var(--status-warn); display: inline-flex; align-items: center; gap: var(--space-xs); }
+  .warn .ic { width: 13px; height: 13px; }
+  .run .btn { width: 100%; }
+  .run .btn .ic { width: 20px; height: 20px; fill: currentColor; stroke: none; }
+
+  /* week */
+  .week .num { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -0.2px; font-variant-numeric: tabular-nums; }
+  .week .num small { font-size: 13px; font-weight: 500; color: var(--text2); letter-spacing: 0; margin-left: 2px; }
+  .week .bar { margin-top: var(--space-md); }
+  .week .bar > i { background: var(--c-metric-distance); }
+  .days { display: grid; grid-template-columns: repeat(7, 1fr); margin-top: var(--space-lg); text-align: center; }
+  .days span { display: grid; justify-items: center; gap: var(--space-xs); color: var(--text2); }
+  .days em { width: 10px; height: 10px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--text3); }
+  .days .ran em { background: var(--c-metric-distance); box-shadow: none; }
+  .days .rest em { width: 10px; height: 2px; border-radius: 2px; margin: 4px 0; background: var(--text3); box-shadow: none; }
+  .days .today { color: var(--text); font-weight: 700; }
+  .days .today em { box-shadow: inset 0 0 0 2.5px var(--c-primary); }
+  .streak { margin-top: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--line); color: var(--text2); }
+  .streak b { color: var(--text); font-weight: 600; }
+
+  /* doors */
+  .doors { padding: 0 var(--space-lg); }
+  .door { position: relative; display: flex; align-items: center; gap: var(--space-md); min-height: 56px; padding: var(--space-sm) 0; }
+  .door + .door::before { content: ""; position: absolute; top: 0; left: 36px; right: 0; height: 1px; background: var(--line); }
+  .door .lead { width: 24px; display: grid; place-items: center; color: var(--text2); }
+  .door .chev { color: var(--text3); }
+</style>
+</head>
+<body>
+  <div class="status-bar"><b>7:12</b><i></i></div>
+  <main class="scroll">
+    <header class="hdr">
+      <div class="between">
+        <div>
+          <div class="t-footnote muted">Saturday, Oct 4</div>
+          <div class="t-title">Good morning, Maya</div>
+        </div>
+        <div class="t-footnote count"><b id="done">1</b> of 8 done</div>
+      </div>
+      <div class="segs" id="segs" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </header>
+
+    <!-- hero: today's run as a checklist -->
+    <section class="card run">
+      <div class="t-eyebrow eyebrow">Week 7 of 16 · Tempo</div>
+      <h1 class="t-title">Progressive tempo with marathon-pace finish and strides</h1>
+      <div class="t-footnote meta tnum"><b>11.2</b> km · ~<b>58</b> min · <b>4:55</b>/km</div>
+
+      <ul class="list">
+        <li class="task done" role="checkbox" aria-checked="true" tabindex="0">
+          <span class="chk"><svg class="ic feather"><use href="../icons.svg#check"/></svg></span>
+          <span class="grow">
+            <div class="t-headline name">Readiness check-in</div>
+            <div class="t-footnote det ellipsis">Slept 7 h 40 m · resting HR 52</div>
+          </span>
+          <span class="t-headline val auto">78<small class="auto">%</small></span>
+        </li>
+        <li class="task" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="chk"><svg class="ic feather"><use href="../icons.svg#check"/></svg></span>
+          <span class="grow">
+            <div class="t-headline name">Warm-up</div>
+            <div class="t-footnote det">Easy, conversational</div>
+          </span>
+          <span class="t-headline val">2.0<small>km</small></span>
+        </li>
+        <li class="task has-note" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="chk"><svg class="ic feather"><use href="../icons.svg#check"/></svg></span>
+          <span class="grow">
+            <div class="t-headline name">4 × 1.6 km reps</div>
+            <div class="t-footnote det">At 4:55/km · 90 s jog between</div>
+            <div class="t-footnote note"><svg class="ic feather sm"><use href="../icons.svg#message-circle"/></svg><span>Hold the reps honest; the last one should feel like 8/10.</span></div>
+          </span>
+          <span class="t-headline val">6.4<small>km</small></span>
+        </li>
+        <li class="task" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="chk"><svg class="ic feather"><use href="../icons.svg#check"/></svg></span>
+          <span class="grow">
+            <div class="t-headline name">Marathon-pace finish</div>
+            <div class="t-footnote det">At 5:10/km</div>
+          </span>
+          <span class="t-headline val">1.6<small>km</small></span>
+        </li>
+        <li class="task" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="chk"><svg class="ic feather"><use href="../icons.svg#check"/></svg></span>
+          <span class="grow">
+            <div class="t-headline name">Strides</div>
+            <div class="t-footnote det">Relaxed and quick, walk back</div>
+          </span>
+          <span class="t-headline val">4<small>× 20 s</small></span>
+        </li>
+        <li class="task" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="chk"><svg class="ic feather"><use href="../icons.svg#check"/></svg></span>
+          <span class="grow">
+            <div class="t-headline name">Cool-down</div>
+            <div class="t-footnote det">Easy jog home</div>
+          </span>
+          <span class="t-headline val">1.2<small>km</small></span>
+        </li>
+      </ul>
+      <button class="btn accent" style="margin-top:var(--space-md)"><svg class="ic feather"><use href="../icons.svg#play"/></svg>Start run</button>
+    </section>
+
+    <section class="sec">
+      <div class="t-footnote sec-label">After your run</div>
+      <div class="card doors" style="padding-top:0;padding-bottom:0">
+        <ul class="list" style="margin:0">
+          <li class="task" role="checkbox" aria-checked="false" tabindex="0">
+            <span class="chk"><svg class="ic feather"><use href="../icons.svg#check"/></svg></span>
+            <span class="grow">
+              <div class="t-headline name">Stretch</div>
+              <div class="t-footnote det">Calves, hips, hamstrings</div>
+            </span>
+            <span class="t-headline val">10<small>min</small></span>
+          </li>
+          <li class="task" role="checkbox" aria-checked="false" tabindex="0">
+            <span class="chk"><svg class="ic feather"><use href="../icons.svg#check"/></svg></span>
+            <span class="grow">
+              <div class="t-headline name">Log daily trainers</div>
+              <div class="t-footnote det"><span class="warn"><svg class="ic feather"><use href="../icons.svg#alert-triangle"/></svg>Replace soon</span></div>
+            </span>
+            <span class="t-headline val">612<small>/ 700 km</small></span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="t-footnote sec-label">This week</div>
+      <div class="card week">
+        <div class="between">
+          <div class="num">32.4<small>of 48 km</small></div>
+          <div class="t-footnote muted tnum">4 of 5 runs</div>
+        </div>
+        <div class="bar"><i style="width:67.5%"></i></div>
+        <div class="days t-eyebrow" aria-label="Mon rest, Tue ran, Wed ran, Thu ran, Fri rest, Sat today, Sun long run">
+          <span class="rest"><em></em>M</span>
+          <span class="ran"><em></em>T</span>
+          <span class="ran"><em></em>W</span>
+          <span class="ran"><em></em>T</span>
+          <span class="rest"><em></em>F</span>
+          <span class="today"><em></em>S</span>
+          <span><em></em>S</span>
+        </div>
+        <div class="row t-footnote streak"><svg class="ic feather sm"><use href="../icons.svg#zap"/></svg><span><b>11 days</b> active · Sunday is the 22 km long run</span></div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="card doors">
+        <div class="door">
+          <span class="lead"><svg class="ic feather"><use href="../icons.svg#cloud"/></svg></span>
+          <span class="grow"><div class="t-headline">Go before 9 am</div><div class="t-footnote muted ellipsis">14° cloudy now · rain after 11</div></span>
+          <svg class="ic feather chev"><use href="../icons.svg#chevron-right"/></svg>
+        </div>
+        <div class="door">
+          <span class="lead"><svg class="ic feather"><use href="../icons.svg#activity"/></svg></span>
+          <span class="grow"><div class="t-headline">Last run, Thursday</div><div class="t-footnote muted ellipsis tnum">Easy 10.2 km · 5:42/km · avg HR 148</div></span>
+          <svg class="ic feather chev"><use href="../icons.svg#chevron-right"/></svg>
+        </div>
+        <div class="door">
+          <span class="lead"><svg class="ic feather"><use href="../icons.svg#flag"/></svg></span>
+          <span class="grow"><div class="t-headline">Lakeshore Marathon</div><div class="t-footnote muted">In 63 days · week 7 of 16</div></span>
+          <svg class="ic feather chev"><use href="../icons.svg#chevron-right"/></svg>
+        </div>
+      </div>
+    </section>
+  </main>
+  <nav class="tabbar">
+    <a class="on"><svg class="ic feather"><use href="../icons.svg#sun"/></svg><span>Today</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#calendar"/></svg><span>Plan</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#play-circle"/></svg><span>Record</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#bar-chart-2"/></svg><span>Progress</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#users"/></svg><span>Club</span></a>
+  </nav>
+  <div class="home-indicator"></div>
+<script>
+  (function () {
+    var tasks = Array.prototype.slice.call(document.querySelectorAll(".task"));
+    var segs = document.querySelectorAll("#segs i");
+    var out = document.getElementById("done");
+    function sync() {
+      var n = tasks.filter(function (t) { return t.classList.contains("done"); }).length;
+      out.textContent = n;
+      for (var i = 0; i < segs.length; i++) segs[i].classList.toggle("on", i < n);
+    }
+    tasks.forEach(function (t) {
+      function flip() {
+        var on = t.classList.toggle("done");
+        t.setAttribute("aria-checked", on ? "true" : "false");
+        if (on) { t.classList.add("pop"); setTimeout(function () { t.classList.remove("pop"); }, 200); }
+        sync();
+      }
+      t.addEventListener("click", flip);
+      t.addEventListener("keydown", function (e) { if (e.key === " " || e.key === "Enter") { e.preventDefault(); flip(); } });
+    });
+    sync();
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>10 · Route Poster</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="screen.css">
+<script>
+  document.documentElement.dataset.theme = new URLSearchParams(location.search).get("theme") || "light";
+  if (window.top === window && matchMedia("(pointer: coarse)").matches) document.documentElement.classList.add("on-device");
+</script>
+<style>
+  /* v10 Route Poster: the suggested route as line art is the hero, drawn straight on
+     the ground (no card). The session is painted onto the route: reps in pace green,
+     the marathon-pace finish in ink. Start is docked in the thumb zone. */
+  .scroll { padding-bottom: calc(var(--safe-bottom) + var(--tabbar-h) + var(--space-2xl) + 52px + var(--space-lg)); }
+
+  .hdr { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-md); }
+  .hdr .pill { margin-top: 2px; white-space: nowrap; flex: none; }
+  /* scroll-edge fade under the status bar once the poster scrolls away */
+  body::before { content: ""; position: absolute; z-index: 25; top: 0; left: 0; right: 0; height: calc(var(--safe-top) + var(--space-sm)); pointer-events: none;
+    background: linear-gradient(to bottom, var(--bg) 70%, color-mix(in srgb, var(--bg) 0%, transparent)); }
+
+  .art { display: block; width: calc(100% + 2 * var(--pad)); margin: var(--space-xs) calc(-1 * var(--pad)) 0; height: auto; }
+  .lake { fill: var(--c-surface-sunken); }
+  .topo { fill: none; stroke: var(--line); stroke-width: 1.25; }
+  .shore { fill: none; stroke: var(--line); stroke-width: 1.5; }
+  .route { fill: none; stroke-linejoin: round; }
+  .route.base { stroke: var(--text3); stroke-width: 3.5; stroke-linecap: round; }
+  .route.halo { stroke: var(--bg); stroke-width: 11; stroke-linecap: round; }
+  .route.reps { stroke: var(--c-metric-pace); stroke-width: 6.5; stroke-linecap: butt; stroke-dasharray: 0 20 15.4 0.8 15.4 0.8 15.4 0.8 15.4 60; }
+  .route.fin  { stroke: var(--text); stroke-width: 6.5; stroke-linecap: butt; stroke-dasharray: 0 84 16 40; }
+  .pin-o { fill: var(--bg); stroke: var(--text); stroke-width: 3; }
+  .pin-i { fill: var(--text); }
+  .dir { fill: var(--text2); }
+  .lbl { fill: var(--text); font: 600 13px/1 var(--font-sans); }
+  .lbl.m { fill: var(--text2); font-weight: 500; }
+
+  .elev { display: grid; grid-template-columns: auto 1fr; align-items: end; gap: var(--space-md); margin-top: var(--space-xs); }
+  .elev svg { display: block; width: 100%; height: 32px; }
+  .elev .area { fill: color-mix(in srgb, var(--c-metric-elevation) 18%, transparent); stroke: var(--c-metric-elevation); stroke-width: 1.5; }
+
+  .title { margin-top: var(--space-xl); }
+  .eyebrow { color: var(--text2); font-weight: 600; margin-bottom: var(--space-xs); }
+  .name { margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, auto); justify-content: space-between; margin-top: var(--space-lg); }
+  .stat { display: grid; gap: 2px; }
+  .stat .n { display: flex; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums; }
+  .stat .n small { font-size: 13px; font-weight: 600; color: var(--text2); }
+  .stat .k { display: inline-flex; align-items: center; gap: 6px; color: var(--text2); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--col); flex: none; }
+
+  .ready { margin-top: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--line); color: var(--text2); }
+  .ready b { color: var(--text); font-weight: 600; }
+  .ready .ic { color: var(--c-metric-recovery); }
+
+  .section { margin-top: var(--space-3xl); }
+  .section-h { color: var(--text2); font-weight: 600; margin-bottom: var(--space-sm); }
+  .key { display: grid; }
+  .key .row { min-height: 32px; gap: var(--space-md); }
+  .sw { width: 28px; height: 6px; border-radius: 1px; flex: none; }
+  .sw.easy { height: 3.5px; border-radius: 999px; background: var(--text3); }
+  .sw.rep  { background: var(--c-metric-pace); }
+  .sw.fin  { background: var(--text); }
+  .key .k { width: 76px; color: var(--text2); }
+  .key .v { font-weight: 600; }
+
+  .coach { margin-top: var(--space-xl); display: flex; gap: var(--space-md); align-items: flex-start; }
+  .coach .ic { color: var(--text2); margin-top: 2px; }
+
+  .list { padding: 0 var(--space-lg); margin-top: var(--space-2xl); }
+  .li { display: flex; align-items: center; gap: var(--space-md); min-height: 56px; border-top: 1px solid var(--line); }
+  .li:first-child { border-top: 0; }
+  .li > .ic:first-child { color: var(--text2); }
+  .li .chev { color: var(--text3); }
+  .li .two { display: grid; padding: var(--space-sm) 0; }
+  .li .two .t-footnote { color: var(--text2); }
+  .li .warn .ic { color: var(--status-warn); }
+
+  /* Start, docked in the thumb zone above the tab bar */
+  .dock {
+    position: absolute; z-index: 15; left: var(--pad); right: var(--pad);
+    bottom: calc(var(--safe-bottom) - 8px + var(--tabbar-h) + var(--space-md));
+    display: flex; gap: var(--space-md);
+  }
+  .dock::before {  /* scroll-edge fade so text never collides with the button */
+    content: ""; position: absolute; z-index: -1; left: calc(-1 * var(--pad)); right: calc(-1 * var(--pad));
+    top: calc(-1 * var(--space-2xl)); bottom: calc(-1 * (var(--tabbar-h) + var(--space-2xl)));
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 0%, transparent), var(--bg) var(--space-2xl));
+    pointer-events: none;
+  }
+  .dock .btn.accent { flex: 1; }
+  .btn.round { width: 52px; padding: 0; flex: none; background: var(--surface); color: var(--text); box-shadow: var(--card-shadow), inset 0 0 0 1px var(--line); }
+</style>
+</head>
+<body>
+  <div class="status-bar"><b>7:12</b><i></i></div>
+  <main class="scroll">
+    <header class="hdr">
+      <div>
+        <div class="t-footnote muted">Saturday, Oct 4</div>
+        <div class="t-headline">Good morning, Maya</div>
+      </div>
+      <span class="pill tnum"><svg class="ic sm feather"><use href="../icons.svg#cloud"/></svg>14° · best 7–9 am</span>
+    </header>
+
+    <!-- The poster: stylised route line art, not a map -->
+    <svg class="art" viewBox="0 0 393 272" role="img" aria-label="Suggested route: Lakeshore loop, 11.2 km. Reps run along the shore.">
+      <path class="lake" d="M252 0 C 232 40 262 78 244 118 C 226 158 250 200 298 226 C 330 244 362 256 393 262 L 393 0 Z"/>
+      <path class="shore" d="M252 0 C 232 40 262 78 244 118 C 226 158 250 200 298 226 C 330 244 362 256 393 262"/>
+      <path class="shore" opacity=".6" d="M272 0 C 254 42 282 80 264 118 C 248 154 270 192 312 214 C 342 230 368 240 393 244"/>
+      <path class="topo" d="M0 30 C 40 18 80 44 124 30 S 190 8 214 0"/>
+      <path class="topo" d="M0 74 C 30 62 60 90 96 74 S 150 40 176 56 S 196 96 188 128"/>
+      <path class="topo" d="M24 120 C 44 100 70 114 80 132 S 70 172 42 176 S 8 150 24 120 Z"/>
+      <path class="topo" d="M40 128 C 52 118 64 126 66 136 S 58 158 44 158 S 30 138 40 128 Z"/>
+      <path class="topo" d="M0 214 C 30 200 50 208 60 222 M 150 268 C 170 250 200 240 230 244 S 280 262 300 272"/>
+      <path class="topo" d="M142 150 C 156 136 176 142 178 160 S 160 188 146 180 S 132 162 142 150 Z"/>
+
+      <path id="rt" class="route halo" d="M70 236 C 110 236 150 222 190 206 C 222 192 214 160 210 132 C 206 104 222 76 214 48 C 208 30 186 26 168 36 C 140 52 124 80 118 112 C 112 146 92 170 76 196 C 68 210 64 226 70 236 Z"/>
+      <path class="route base" pathLength="112" d="M70 236 C 110 236 150 222 190 206 C 222 192 214 160 210 132 C 206 104 222 76 214 48 C 208 30 186 26 168 36 C 140 52 124 80 118 112 C 112 146 92 170 76 196 C 68 210 64 226 70 236 Z"/>
+      <path class="route reps" pathLength="112" d="M70 236 C 110 236 150 222 190 206 C 222 192 214 160 210 132 C 206 104 222 76 214 48 C 208 30 186 26 168 36 C 140 52 124 80 118 112 C 112 146 92 170 76 196 C 68 210 64 226 70 236 Z"/>
+      <path class="route fin" pathLength="112" d="M70 236 C 110 236 150 222 190 206 C 222 192 214 160 210 132 C 206 104 222 76 214 48 C 208 30 186 26 168 36 C 140 52 124 80 118 112 C 112 146 92 170 76 196 C 68 210 64 226 70 236 Z"/>
+
+      <path class="dir" transform="translate(128 227.5) rotate(-15)" d="M-5 -5 L 4 0 L -5 5 Z"/>
+      <circle class="pin-o" cx="70" cy="236" r="9"/>
+      <circle class="pin-i" cx="70" cy="236" r="3.5"/>
+      <text class="lbl" x="86" y="256">Start · finish</text>
+      <text class="lbl m" x="262" y="150">Reps along</text>
+      <text class="lbl m" x="262" y="168">the shore</text>
+    </svg>
+
+    <div class="elev">
+      <span class="t-footnote muted">Elevation</span>
+      <svg viewBox="0 0 280 32" preserveAspectRatio="none" aria-hidden="true">
+        <path class="area" d="M0 26 C 30 25 52 18 82 19 S 130 28 160 22 S 212 6 238 10 S 268 22 280 25 L 280 32 L 0 32 Z"/>
+      </svg>
+    </div>
+
+    <div class="title">
+      <div class="t-footnote eyebrow">Week 7 of 16 · Tempo · Lakeshore loop</div>
+      <h1 class="t-hero name">Progressive tempo with marathon-pace finish and strides</h1>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span class="n t-title">11.2<small>km</small></span><span class="k t-footnote"><i class="dot" style="--col: var(--c-metric-distance)"></i>Distance</span></div>
+      <div class="stat"><span class="n t-title">4:55<small>/km</small></span><span class="k t-footnote"><i class="dot" style="--col: var(--c-metric-pace)"></i>Reps</span></div>
+      <div class="stat"><span class="n t-title">+46<small>m</small></span><span class="k t-footnote"><i class="dot" style="--col: var(--c-metric-elevation)"></i>Climb</span></div>
+      <div class="stat"><span class="n t-title">~58<small>min</small></span><span class="k t-footnote">Time</span></div>
+    </div>
+
+    <div class="ready row t-footnote tnum">
+      <svg class="ic sm feather"><use href="../icons.svg#battery-charging"/></svg>
+      <span><b>78% recovered</b> · slept 7 h 40 m · resting HR 52</span>
+    </div>
+
+    <section class="section">
+      <div class="t-footnote section-h">On the route</div>
+      <div class="key t-footnote tnum">
+        <div class="row"><i class="sw easy"></i><span class="k">Warm-up</span><span class="v">2 km easy</span></div>
+        <div class="row"><i class="sw rep"></i><span class="k">Reps</span><span class="v">4 × 1.6 km @ 4:55/km · 90 s jog</span></div>
+        <div class="row"><i class="sw fin"></i><span class="k">Finish</span><span class="v">1.6 km @ 5:10/km</span></div>
+        <div class="row"><i class="sw easy"></i><span class="k">Cool-down</span><span class="v">1.2 km</span></div>
+      </div>
+      <div class="coach t-footnote">
+        <svg class="ic sm feather"><use href="../icons.svg#message-circle"/></svg>
+        <span>Hold the reps honest; the last one should feel like 8/10.</span>
+      </div>
+    </section>
+
+    <div class="card list">
+      <a class="li"><svg class="ic feather"><use href="../icons.svg#bar-chart-2"/></svg>
+        <span class="grow two"><span class="t-headline tnum">32.4 of 48 km</span><span class="t-footnote tnum">This week · 4 of 5 runs · 11 days active</span></span>
+        <svg class="ic sm feather chev"><use href="../icons.svg#chevron-right"/></svg></a>
+      <a class="li"><svg class="ic feather"><use href="../icons.svg#cloud-rain"/></svg>
+        <span class="grow two"><span class="t-headline tnum">Rain after 11</span><span class="t-footnote tnum">14° and cloudy now · best window 7–9 am</span></span>
+        <svg class="ic sm feather chev"><use href="../icons.svg#chevron-right"/></svg></a>
+      <a class="li"><svg class="ic feather"><use href="../icons.svg#activity"/></svg>
+        <span class="grow two"><span class="t-headline tnum">Easy 10.2 km</span><span class="t-footnote tnum">Last run · Thu · 5:42/km · avg HR 148</span></span>
+        <svg class="ic sm feather chev"><use href="../icons.svg#chevron-right"/></svg></a>
+      <a class="li"><svg class="ic feather"><use href="../icons.svg#tag"/></svg>
+        <span class="grow two"><span class="t-headline tnum">Daily trainers · 612 / 700 km</span><span class="t-footnote row warn"><svg class="ic sm feather"><use href="../icons.svg#alert-triangle"/></svg>Replace soon</span></span>
+        <svg class="ic sm feather chev"><use href="../icons.svg#chevron-right"/></svg></a>
+      <a class="li"><svg class="ic feather"><use href="../icons.svg#flag"/></svg>
+        <span class="grow two"><span class="t-headline tnum">Lakeshore Marathon</span><span class="t-footnote tnum">In 63 days · Sunday long run 22 km</span></span>
+        <svg class="ic sm feather chev"><use href="../icons.svg#chevron-right"/></svg></a>
+    </div>
+  </main>
+
+  <div class="dock">
+    <button class="btn round" aria-label="Another route"><svg class="ic lg feather"><use href="../icons.svg#shuffle"/></svg></button>
+    <button class="btn accent"><svg class="ic lg feather"><use href="../icons.svg#play"/></svg>Start run</button>
+  </div>
+
+  <nav class="tabbar">
+    <a class="on"><svg class="ic feather"><use href="../icons.svg#sun"/></svg><span>Today</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#calendar"/></svg><span>Plan</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#play-circle"/></svg><span>Record</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#bar-chart-2"/></svg><span>Progress</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#users"/></svg><span>Club</span></a>
+  </nav>
+  <div class="home-indicator"></div>
+</body>
+</html>

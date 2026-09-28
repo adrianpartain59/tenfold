@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>06 · Bento</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="screen.css">
+<script>
+  document.documentElement.dataset.theme = new URLSearchParams(location.search).get("theme") || "light";
+  if (window.top === window && matchMedia("(pointer: coarse)").matches) document.documentElement.classList.add("on-device");
+</script>
+<style>
+  /* v06 Bento: one dominant 2x2 workout tile, everything else as small tiles. */
+  .hdr { padding: var(--space-sm) 0 var(--space-xl); }
+  .hdr h1 { margin: 2px 0 var(--space-xs); }
+
+  .bento { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.3fr); gap: var(--space-md); }
+  .tile { display: flex; flex-direction: column; min-width: 0; min-height: 148px; }
+  .tile.hero { grid-column: span 2; grid-row: span 2; }
+  .tile.wide { grid-column: span 2; }
+  .tile.full { grid-column: 1 / -1; min-height: 0; }
+  .streak { display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 10px; border-radius: 999px; background: var(--surface); box-shadow: var(--card-shadow); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; position: relative; }
+  .streak::after { content: ""; position: absolute; inset: -8px -4px; } /* 44pt hit area */
+  .hdr .top { display: flex; align-items: center; justify-content: space-between; }
+  .tile .fill { flex: 1; }
+  .eb { color: var(--text2); display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); }
+
+  .big { font-size: 28px; line-height: 32px; font-weight: 800; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+  .mid { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -0.2px; font-variant-numeric: tabular-nums; }
+  .big small, .mid small { font-size: 13px; font-weight: 600; letter-spacing: 0; color: var(--text2); margin-left: 3px; }
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--k); flex: none; }
+
+  /* Hero */
+  .hero { padding: var(--space-lg); }
+  .hero .name {
+    margin: 6px 0 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .hero .nums { display: flex; align-items: baseline; justify-content: space-between; margin-top: var(--space-md); }
+  .hero .set { display: flex; align-items: center; gap: 6px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  /* session shape: 2 km wu · 4 reps with jogs · 1.6 km MP · 1.2 km cd */
+  .shape { display: flex; gap: 2px; height: 6px; margin-top: var(--space-sm); }
+  .shape i { flex: var(--w); border-radius: 999px; background: var(--track); }
+  .shape i.r { background: var(--c-metric-pace); }
+  .shape i.mp { background: color-mix(in srgb, var(--c-metric-pace) 50%, var(--track)); }
+  .shape-lbl { display: flex; justify-content: space-between; margin-top: 4px; color: var(--text2); }
+  .coach { margin: var(--space-md) 0; color: var(--text2); padding-left: var(--space-sm); border-left: 2px solid var(--line); }
+
+  /* Readiness */
+  .rd { --size: 64px; --stroke: 6px; --col: var(--c-metric-recovery); margin-top: var(--space-sm); }
+  .rd b { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* Weather */
+  .wx { display: flex; align-items: center; gap: 6px; margin-top: var(--space-sm); }
+  .rain { display: flex; align-items: center; gap: 4px; color: var(--text2); margin-top: 2px; }
+
+  /* Week */
+  .bar.dist { margin-top: var(--space-sm); }
+  .bar.dist > i { background: var(--c-metric-distance); }
+  .days { display: grid; grid-template-columns: repeat(7, 1fr); margin-top: var(--space-md); }
+  .days div { display: grid; justify-items: center; gap: 4px; }
+  .d { width: 16px; height: 16px; border-radius: 50%; }
+  .d.done { background: var(--c-metric-distance); }
+  .d.rest { box-shadow: inset 0 0 0 1.5px var(--text3); }
+  .d.today { box-shadow: inset 0 0 0 2px var(--text); }
+  .d.plan { background: var(--track); }
+  .days span { color: var(--text2); font-size: 11px; font-weight: 700; }
+  .days .on span { color: var(--text); }
+
+  /* Shoes */
+  .bar.shoe { margin-top: var(--space-sm); }
+  .bar.shoe > i { background: var(--status-warn); }
+  .warn { color: var(--status-warn); display: flex; align-items: center; gap: 4px; margin-top: 6px; }
+
+  /* Last run */
+  .metrics { display: grid; grid-template-columns: repeat(3, auto); justify-content: space-between; margin-top: var(--space-sm); }
+  .metrics b { display: block; font-size: 17px; line-height: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .metrics b small { font-size: 12px; font-weight: 600; color: var(--text2); margin-left: 2px; }
+  .metrics span { display: flex; align-items: center; gap: 5px; color: var(--text2); }
+</style>
+</head>
+<body>
+  <div class="status-bar"><b>7:12</b><i></i></div>
+  <main class="scroll">
+    <header class="hdr">
+      <div class="top">
+        <span class="t-footnote muted">Saturday, Oct 4</span>
+        <span class="streak" aria-label="11-day streak"><svg class="ic sm feather"><use href="../icons.svg#zap"/></svg>11 days</span>
+      </div>
+      <h1 class="t-hero">Good morning, Maya</h1>
+      <div class="t-footnote muted">Week 7 of 16 · Lakeshore Marathon in 63 days</div>
+    </header>
+
+    <div class="bento">
+      <!-- Hero: today's run (2x2) -->
+      <article class="card tile hero">
+        <div class="t-eyebrow eb"><span>Today's run · Tempo</span></div>
+        <h2 class="t-headline name">Progressive tempo with marathon-pace finish and strides</h2>
+        <div class="nums">
+          <span class="big">11.2<small>km</small></span>
+          <span class="t-headline tnum">~58<small class="t-caption muted"> min</small></span>
+        </div>
+        <div class="set t-footnote"><span class="dot" style="--k:var(--c-metric-pace)"></span>4 × 1.6&nbsp;km at 4:55/km</div>
+        <div class="shape" aria-label="Session shape">
+          <i style="--w:2"></i><i class="r" style="--w:1.6"></i><i class="r" style="--w:1.6"></i><i class="r" style="--w:1.6"></i><i class="r" style="--w:1.6"></i><i class="mp" style="--w:1.6"></i><i style="--w:1.2"></i>
+        </div>
+        <div class="shape-lbl t-caption"><span>Warm-up</span><span>Cool-down</span></div>
+        <div class="coach t-footnote fill">Hold the reps honest; the last one should feel like 8/10.</div>
+        <button class="btn accent block"><svg class="ic feather"><use href="../icons.svg#play"/></svg>Start run</button>
+      </article>
+
+      <!-- Readiness -->
+      <div class="card tile">
+        <div class="t-eyebrow eb">Ready</div>
+        <div class="ring rd" style="--p:.78"><b>78%</b></div>
+        <div class="fill"></div>
+        <div class="t-caption muted tnum">Slept 7 h 40 m</div>
+        <div class="t-caption muted tnum">Resting HR 52</div>
+      </div>
+
+      <!-- Weather -->
+      <div class="card tile">
+        <div class="t-eyebrow eb">Weather</div>
+        <div class="wx"><svg class="ic lg feather"><use href="../icons.svg#cloud"/></svg><span class="mid">14°</span></div>
+        <div class="t-caption muted">Cloudy</div>
+        <div class="fill"></div>
+        <div class="t-caption tnum">Best 7–9 am</div>
+        <div class="rain t-caption tnum"><svg class="ic sm feather"><use href="../icons.svg#umbrella"/></svg>Rain after 11</div>
+      </div>
+
+      <!-- This week -->
+      <div class="card tile wide">
+        <div class="t-eyebrow eb"><span>This week</span><span class="t-caption muted" style="text-transform:none;letter-spacing:0">4 of 5 runs</span></div>
+        <div class="mid" style="margin-top:6px">32.4<small>of 48 km</small></div>
+        <div class="bar dist"><i style="width:67.5%"></i></div>
+        <div class="fill"></div>
+        <div class="days">
+          <div><i class="d done"></i><span>M</span></div>
+          <div><i class="d done"></i><span>T</span></div>
+          <div><i class="d done"></i><span>W</span></div>
+          <div><i class="d done"></i><span>T</span></div>
+          <div><i class="d rest"></i><span>F</span></div>
+          <div class="on"><i class="d today"></i><span>S</span></div>
+          <div><i class="d plan"></i><span>S</span></div>
+        </div>
+      </div>
+
+      <!-- Shoes -->
+      <div class="card tile">
+        <div class="t-eyebrow eb">Shoes</div>
+        <div class="mid" style="margin-top:6px">612<small>/700 km</small></div>
+        <div class="t-caption muted">Daily trainers</div>
+        <div class="fill"></div>
+        <div class="bar shoe"><i style="width:87.4%"></i></div>
+        <div class="warn t-caption"><svg class="ic sm feather"><use href="../icons.svg#alert-triangle"/></svg>Replace soon</div>
+      </div>
+
+      <!-- Last run -->
+      <div class="card tile full">
+        <div class="t-eyebrow eb"><span>Last run</span><svg class="ic sm feather" style="color:var(--text3)"><use href="../icons.svg#chevron-right"/></svg></div>
+        <div class="t-headline" style="margin-top:6px">Thursday · easy</div>
+        <div class="metrics">
+          <div><b>10.2<small>km</small></b><span class="t-caption"><i class="dot" style="--k:var(--c-metric-distance)"></i>Distance</span></div>
+          <div><b>5:42<small>/km</small></b><span class="t-caption"><i class="dot" style="--k:var(--c-metric-pace)"></i>Pace</span></div>
+          <div><b>148<small>bpm</small></b><span class="t-caption"><i class="dot" style="--k:var(--c-metric-heart)"></i>Avg HR</span></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+  <nav class="tabbar">
+    <a class="on"><svg class="ic feather"><use href="../icons.svg#sun"/></svg><span>Today</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#calendar"/></svg><span>Plan</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#play-circle"/></svg><span>Record</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#bar-chart-2"/></svg><span>Progress</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#users"/></svg><span>Club</span></a>
+  </nav>
+  <div class="home-indicator"></div>
+</body>
+</html>

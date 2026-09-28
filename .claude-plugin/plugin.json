@@ -1,0 +1,12 @@
+{
+  "name": "tenfold",
+  "version": "1.0.0",
+  "description": "Mobile UI design rounds for Claude Code: sweeps your app for context, renders 10 distinct variations as phone mockups on localhost, predicts your pick, and iterates on it until you say build.",
+  "author": {
+    "name": "Adrian Partain",
+    "url": "https://github.com/adrianpartain59"
+  },
+  "repository": "https://github.com/adrianpartain59/tenfold",
+  "license": "MIT",
+  "keywords": ["design", "ui", "mobile", "ios", "react-native", "mockups", "variations", "claude-code", "skill"]
+}

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>05 · Timeline</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="screen.css">
+<script>
+  document.documentElement.dataset.theme = new URLSearchParams(location.search).get("theme") || "light";
+  if (window.top === window && matchMedia("(pointer: coarse)").matches) document.documentElement.classList.add("on-device");
+</script>
+<style>
+  /* v05 Timeline: the morning as a time rail. */
+  .hdr { padding: var(--space-sm) 0 var(--space-xl); }
+  .hdr h1 { margin: 2px 0 var(--space-xs); }
+
+  /* Rail: time | node | body. Rows butt together so the line is continuous. */
+  .tl { margin: 0 0 var(--space-3xl); }
+  .ev { display: grid; grid-template-columns: 40px 16px 1fr; column-gap: var(--space-md); }
+  .ev .t {
+    text-align: right; padding-top: 2px; color: var(--text2);
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .ev .t span:last-child:not(:first-child) { padding-bottom: 2px; }
+  .ev .body { padding-bottom: var(--space-xl); min-width: 0; }
+  .ev.win-start .body { padding-bottom: var(--space-lg); }
+  .node { position: relative; }
+  .node::before {           /* the rail */
+    content: ""; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px;
+    border-radius: 999px; background: var(--line);
+  }
+  .node .dot {
+    position: absolute; left: 1px; top: 3px; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--bg); box-shadow: inset 0 0 0 2px var(--text3);
+  }
+  /* Inside the 7-9 am window the rail thickens into a solid band. */
+  .ev.win .node::before { left: 4px; width: 8px; background: var(--text); border-radius: 0; }
+  .ev.win-start .node::before { top: 3px; border-radius: 999px 999px 0 0; }
+  .ev.win-end .node::before { bottom: auto; height: 17px; border-radius: 0 0 999px 999px; }
+  .ev.win .dot { box-shadow: inset 0 0 0 2px var(--text), 0 0 0 0 transparent; background: var(--bg); }
+  .ev.now .dot { background: var(--text); box-shadow: 0 0 0 3px var(--bg); }
+  .ev.win-end .node::after { content: ""; position: absolute; left: 7px; width: 2px; top: 17px; bottom: 0; background: var(--line); }
+  /* After 11 the rail breaks into rain dashes and fades out. */
+  .ev.rain .node::before {
+    background: repeating-linear-gradient(to bottom, var(--text3) 0 3px, transparent 3px 7px);
+    -webkit-mask: linear-gradient(to bottom, #000 40%, transparent);
+            mask: linear-gradient(to bottom, #000 40%, transparent);
+  }
+  .ev.rain .dot { display: grid; place-items: center; width: 22px; height: 22px; left: -3px; top: -1px; color: var(--text2); box-shadow: none; }
+  .ev.run .dot { top: 20px; }
+  .ev.run .t { padding-top: 21px; padding-bottom: calc(var(--space-xl) + 4px); }
+
+  .lbl { display: flex; align-items: center; gap: 6px; }
+  .winchip {
+    display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 999px;
+    background: var(--text); color: var(--bg); font-size: 12px; font-weight: 700;
+  }
+  .rec { --size: 22px; --stroke: 3px; --col: var(--c-metric-recovery); --ring-bg: var(--bg); flex: none; }
+
+  /* The run: the hero card, sitting inside the window. */
+  .run-card { padding: var(--space-lg); display: grid; gap: var(--space-md); }
+  .run-name {
+    margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .stats > div { padding: 0 var(--space-md); border-left: 1px solid var(--line); }
+  .stats > div:first-child { padding-left: 0; border-left: 0; }
+  .stats b { display: block; font-size: 17px; line-height: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stats b small { font-size: 12px; font-weight: 600; color: var(--text2); margin-left: 2px; }
+  .stats span { display: flex; align-items: center; gap: 5px; color: var(--text2); }
+  .stats i { width: 6px; height: 6px; border-radius: 50%; background: var(--k); }
+  .shape { padding: var(--space-md) 0 0; border-top: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+  .shape .muted { margin-top: 2px; }
+  .coach { display: flex; gap: var(--space-sm); color: var(--text2); }
+  .coach .ic { margin-top: 1px; }
+
+  /* Below the fold: week + doors */
+  .section-title { margin-bottom: var(--space-md); }
+  .wk-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--space-md); }
+  .wk-top b { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .wk-top b small { font-size: 13px; font-weight: 600; color: var(--text2); margin-left: 2px; }
+  .bar.dist > i { background: var(--c-metric-distance); }
+  .days { display: grid; grid-template-columns: repeat(7, 1fr); margin-top: var(--space-lg); text-align: center; }
+  .days div { display: grid; justify-items: center; gap: 6px; }
+  .d { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; font-style: normal; letter-spacing: -0.2px; font-variant-numeric: tabular-nums; }
+  .d.done { background: var(--c-metric-distance); color: var(--surface); }
+  .d.rest { box-shadow: inset 0 0 0 1.5px var(--text3); color: var(--text3); }
+  .d.today { box-shadow: inset 0 0 0 2px var(--text); color: var(--text); }
+  .d.plan { background: var(--track); color: var(--text2); }
+  .days span { color: var(--text2); }
+  .days .on span { color: var(--text); }
+
+  .list { padding: 0; }
+  .li { display: flex; align-items: center; gap: var(--space-md); min-height: 60px; padding: var(--space-md) var(--space-lg); }
+  .li + .li { border-top: 1px solid var(--line); margin-left: 60px; padding-left: 0; }
+  .li + .li .ico { margin-left: -44px; }
+  .ico { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; background: var(--track); color: var(--text); flex: none; }
+  .li .chev { color: var(--text3); }
+  .warn { color: var(--status-warn); }
+  .gap { height: var(--space-2xl); }
+</style>
+</head>
+<body>
+  <div class="status-bar"><b>7:12</b><i></i></div>
+  <main class="scroll">
+    <header class="hdr">
+      <div class="t-footnote muted">Saturday, Oct 4</div>
+      <h1 class="t-hero">Good morning, Maya</h1>
+      <div class="t-footnote muted">Week 7 of 16 · Lakeshore Marathon in 63 days</div>
+    </header>
+
+    <section class="tl" aria-label="Your morning">
+      <div class="ev win win-start">
+        <div class="t t-caption tnum"><span>7 am</span></div>
+        <div class="node"><i class="dot"></i></div>
+        <div class="body">
+          <div class="lbl">
+            <span class="winchip"><svg class="ic sm feather"><use href="../icons.svg#cloud"/></svg>Best window · 7–9 am</span>
+            <span class="t-footnote muted tnum">14° · cloudy</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ev win now">
+        <div class="t t-caption tnum"><span>7:12</span></div>
+        <div class="node"><i class="dot"></i></div>
+        <div class="body">
+          <div class="lbl">
+            <span class="ring rec" style="--p:.78"></span>
+            <span class="t-headline">Now · 78% recovered</span>
+          </div>
+          <div class="t-footnote muted" style="margin-top:2px">Slept 7 h 40 m · resting HR 52</div>
+        </div>
+      </div>
+
+      <div class="ev win run">
+        <div class="t t-caption tnum"><span>7:20</span><span>8:18</span></div>
+        <div class="node"><i class="dot"></i></div>
+        <div class="body">
+          <article class="card run-card">
+            <div>
+              <div class="t-eyebrow muted" style="margin-bottom:6px">Today's run · Tempo</div>
+              <h2 class="t-title run-name">Progressive tempo with marathon-pace finish and strides</h2>
+            </div>
+            <div class="stats">
+              <div><b>11.2<small>km</small></b><span class="t-caption"><i style="--k:var(--c-metric-distance)"></i>Distance</span></div>
+              <div><b>~58<small>min</small></b><span class="t-caption">Time</span></div>
+              <div><b>4:55<small>/km</small></b><span class="t-caption"><i style="--k:var(--c-metric-pace)"></i>Target</span></div>
+            </div>
+            <div class="shape">
+              <div class="t-footnote" style="font-weight:600">4 × 1.6&nbsp;km at 4:55/km, 90&nbsp;s jog</div>
+              <div class="t-footnote muted">Plus 2&nbsp;km warm-up, 1.6&nbsp;km at 5:10/km, 1.2&nbsp;km cool&#8209;down</div>
+            </div>
+            <div class="coach t-footnote">
+              <svg class="ic sm feather"><use href="../icons.svg#message-circle"/></svg>
+              <span>Hold the reps honest; the last one should feel like 8/10.</span>
+            </div>
+            <button class="btn accent block">
+              <svg class="ic feather"><use href="../icons.svg#play"/></svg>Start run
+            </button>
+          </article>
+        </div>
+      </div>
+
+      <div class="ev win win-end">
+        <div class="t t-caption tnum"><span>9 am</span></div>
+        <div class="node"><i class="dot"></i></div>
+        <div class="body"><div class="t-footnote muted" style="padding-top:1px">Window closes</div></div>
+      </div>
+
+      <div class="ev rain">
+        <div class="t t-caption tnum"><span>11 am</span></div>
+        <div class="node"><i class="dot"><svg class="ic sm feather"><use href="../icons.svg#cloud-rain"/></svg></i></div>
+        <div class="body" style="padding-bottom:var(--space-2xl)">
+          <div class="t-headline">Rain moves in</div>
+          <div class="t-footnote muted">Run before then to stay dry</div>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="section-title">This week</h2>
+    <div class="card">
+      <div class="wk-top">
+        <b>32.4<small>of 48 km</small></b>
+        <span class="t-footnote muted">4 of 5 runs</span>
+      </div>
+      <div class="bar dist"><i style="width:67.5%"></i></div>
+      <div class="days t-caption">
+        <div><i class="d done">7.8</i><span>M</span></div>
+        <div><i class="d done">8.0</i><span>T</span></div>
+        <div><i class="d done">6.4</i><span>W</span></div>
+        <div><i class="d done">10.2</i><span>T</span></div>
+        <div><i class="d rest"></i><span>F</span></div>
+        <div class="on"><i class="d today">11.2</i><span>S</span></div>
+        <div><i class="d plan">22</i><span>S</span></div>
+      </div>
+    </div>
+
+    <div class="gap"></div>
+    <div class="card list">
+      <div class="li">
+        <span class="ico"><svg class="ic sm feather"><use href="../icons.svg#activity"/></svg></span>
+        <div class="grow">
+          <div class="t-headline">Last run · Thursday</div>
+          <div class="t-footnote muted tnum">Easy 10.2 km · 5:42/km · HR 148</div>
+        </div>
+        <svg class="ic sm feather chev"><use href="../icons.svg#chevron-right"/></svg>
+      </div>
+      <div class="li">
+        <span class="ico"><svg class="ic sm feather"><use href="../icons.svg#box"/></svg></span>
+        <div class="grow">
+          <div class="t-headline">Daily trainers</div>
+          <div class="t-footnote tnum"><span class="muted">612 of 700 km · </span><span class="warn">Replace soon</span></div>
+        </div>
+        <svg class="ic sm feather chev"><use href="../icons.svg#chevron-right"/></svg>
+      </div>
+      <div class="li">
+        <span class="ico"><svg class="ic sm feather"><use href="../icons.svg#zap"/></svg></span>
+        <div class="grow">
+          <div class="t-headline">11 days active</div>
+          <div class="t-footnote muted">Run today to make it 12</div>
+        </div>
+        <svg class="ic sm feather chev"><use href="../icons.svg#chevron-right"/></svg>
+      </div>
+    </div>
+  </main>
+  <nav class="tabbar">
+    <a class="on"><svg class="ic feather"><use href="../icons.svg#sun"/></svg><span>Today</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#calendar"/></svg><span>Plan</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#play-circle"/></svg><span>Record</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#bar-chart-2"/></svg><span>Progress</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#users"/></svg><span>Club</span></a>
+  </nav>
+  <div class="home-indicator"></div>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>04 · Coach</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="screen.css">
+<script>
+  document.documentElement.dataset.theme = new URLSearchParams(location.search).get("theme") || "light";
+  if (window.top === window && matchMedia("(pointer: coarse)").matches) document.documentElement.classList.add("on-device");
+</script>
+<style>
+  /* v04 Coach. Type: display 40 / title 22 / headline 17 / footnote 13. */
+  .hdr { padding: var(--space-sm) 0 0; }
+  .hdr .pill { color: var(--text); font-variant-numeric: tabular-nums; }
+  .hdr .pill .ic { color: var(--c-metric-recovery); }
+
+  /* the lede */
+  .lede { margin: var(--space-2xl) 0 0; }
+  .lede .t-display { font-variant-numeric: tabular-nums; text-wrap: balance; }
+  .mark {
+    text-decoration: underline; text-decoration-thickness: 4px; text-underline-offset: 7px;
+    text-decoration-skip-ink: none;
+  }
+  .mark.rec { text-decoration-color: var(--c-metric-recovery); }
+  .mark.pace { text-decoration-color: var(--c-metric-pace); }
+  .standfirst { margin-top: var(--space-lg); color: var(--text2); font-weight: 400; max-width: 32ch; }
+  .byline { margin-top: var(--space-sm); color: var(--text2); }
+
+  /* the workout */
+  .wk { margin-top: var(--space-2xl); }
+  .wk .label { color: var(--text2); }
+  .wk .name { margin-top: var(--space-xs); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .wk .plan { margin-top: var(--space-xs); color: var(--text2); }
+  .nw { white-space: nowrap; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); margin: var(--space-lg) 0; }
+  .stats > div + div { border-left: 1px solid var(--line); padding-left: var(--space-lg); }
+  .n { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -0.2px; font-variant-numeric: tabular-nums; }
+  .n small { font-size: 13px; font-weight: 500; color: var(--text2); letter-spacing: 0; margin-left: 2px; }
+  .stats .k { color: var(--text2); display: flex; align-items: center; gap: 6px; }
+  .key { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .btn .ic { width: 20px; height: 20px; fill: currentColor; stroke: none; }
+
+  /* the evidence */
+  .sec-label { margin: var(--space-2xl) 0 var(--space-sm) var(--space-xs); color: var(--text2); }
+  .ev { padding: 0 var(--space-lg); }
+  .fact { position: relative; display: grid; grid-template-columns: 96px 1fr; gap: var(--space-md); padding: var(--space-lg) 0; }
+  .fact + .fact::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--line); }
+  .fact .n { padding-top: 2px; }
+  .fact .rule { display: block; width: 24px; height: 4px; border-radius: 2px; margin-top: var(--space-sm); }
+  .fact .say { color: var(--text); }
+  .fact .why { color: var(--text2); margin-top: 2px; }
+  .warn { color: var(--status-warn); display: inline-flex; align-items: center; gap: var(--space-xs); font-weight: 600; }
+  .warn .ic { width: 13px; height: 13px; }
+
+  .foot { display: flex; align-items: center; gap: var(--space-md); min-height: 56px; }
+  .foot .lead { width: 24px; display: grid; place-items: center; color: var(--text2); }
+  .foot .chev { color: var(--text3); }
+</style>
+</head>
+<body>
+  <div class="status-bar"><b>7:12</b><i></i></div>
+  <main class="scroll">
+    <header class="hdr between">
+      <div>
+        <div class="t-footnote muted">Saturday, Oct 4 · week 7 of 16</div>
+        <div class="t-headline">Good morning, Maya</div>
+      </div>
+      <span class="pill"><svg class="ic feather sm"><use href="../icons.svg#zap"/></svg>11 days</span>
+    </header>
+
+    <!-- hero: one editorial sentence -->
+    <section class="lede">
+      <h1 class="t-display" style="margin:0">Tempo day. You’re <span class="mark rec">78% fresh</span>, so hold <span class="mark pace">4:55</span>.</h1>
+      <p class="t-headline standfirst" style="margin-bottom:0">Hold the reps honest; the last one should feel like 8/10.</p>
+      <div class="t-footnote byline">Coach · based on last night and this week</div>
+    </section>
+
+    <!-- the workout it refers to -->
+    <section class="card wk">
+      <div class="t-footnote label">Today’s workout</div>
+      <div class="t-headline name">Progressive tempo with marathon-pace finish and strides</div>
+      <div class="t-footnote plan tnum"><span class="nw">2 km warm-up</span> · <span class="nw">4 × 1.6 km at 4:55/km,</span> <span class="nw">90 s jog</span> · <span class="nw">1.6 km at 5:10/km</span> · <span class="nw">1.2 km cool-down</span></div>
+      <div class="stats">
+        <div><div class="n">11.2<small>km</small></div><div class="t-footnote k"><i class="key" style="background:var(--c-metric-distance)"></i>Distance</div></div>
+        <div><div class="n">~58<small>min</small></div><div class="t-footnote k">Time</div></div>
+        <div><div class="n">4:55<small>/km</small></div><div class="t-footnote k"><i class="key" style="background:var(--c-metric-pace)"></i>Reps</div></div>
+      </div>
+      <button class="btn accent block"><svg class="ic feather"><use href="../icons.svg#play"/></svg>Start run</button>
+    </section>
+
+    <!-- why the coach said it -->
+    <div class="t-footnote sec-label">Why today looks like this</div>
+    <section class="card ev">
+      <div class="fact">
+        <div><div class="n">78<small>%</small></div><i class="rule" style="background:var(--c-metric-recovery)"></i></div>
+        <div><div class="t-headline say">Fresh enough for tempo</div><div class="t-footnote why tnum">Slept 7 h 40 m, resting HR 52.</div></div>
+      </div>
+      <div class="fact">
+        <div><div class="n">7–9<small>am</small></div><i class="rule" style="background:var(--text3)"></i></div>
+        <div><div class="t-headline say">Your weather window</div><div class="t-footnote why tnum">14° and cloudy now. Rain after 11.</div></div>
+      </div>
+      <div class="fact">
+        <div><div class="n">32.4<small>km</small></div><i class="rule" style="background:var(--c-metric-distance)"></i></div>
+        <div><div class="t-headline say">Of 48 km this week</div><div class="t-footnote why tnum">4 of 5 runs done. Sunday is the 22 km long run.</div></div>
+      </div>
+      <div class="fact">
+        <div><div class="n">5:42<small>/km</small></div><i class="rule" style="background:var(--c-metric-pace)"></i></div>
+        <div><div class="t-headline say">Last run stayed easy</div><div class="t-footnote why tnum">Thursday, 10.2 km at avg HR 148.</div></div>
+      </div>
+    </section>
+
+    <section class="card ev" style="margin-top:var(--space-md)">
+      <div class="foot">
+        <span class="lead"><svg class="ic feather"><use href="../icons.svg#box"/></svg></span>
+        <span class="grow"><div class="t-headline">Daily trainers</div><div class="t-footnote muted tnum">612 of 700 km · <span class="warn"><svg class="ic feather"><use href="../icons.svg#alert-triangle"/></svg>Replace soon</span></div></span>
+        <svg class="ic feather chev"><use href="../icons.svg#chevron-right"/></svg>
+      </div>
+    </section>
+    <section class="card ev" style="margin-top:var(--space-md)">
+      <div class="foot">
+        <span class="lead"><svg class="ic feather"><use href="../icons.svg#flag"/></svg></span>
+        <span class="grow"><div class="t-headline">Lakeshore Marathon</div><div class="t-footnote muted">In 63 days</div></span>
+        <svg class="ic feather chev"><use href="../icons.svg#chevron-right"/></svg>
+      </div>
+    </section>
+  </main>
+  <nav class="tabbar">
+    <a class="on"><svg class="ic feather"><use href="../icons.svg#sun"/></svg><span>Today</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#calendar"/></svg><span>Plan</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#play-circle"/></svg><span>Record</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#bar-chart-2"/></svg><span>Progress</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#users"/></svg><span>Club</span></a>
+  </nav>
+  <div class="home-indicator"></div>
+</body>
+</html>

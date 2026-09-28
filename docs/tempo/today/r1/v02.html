@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>02 · Week Ring</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="screen.css">
+<script>
+  document.documentElement.dataset.theme = new URLSearchParams(location.search).get("theme") || "light";
+  if (window.top === window && matchMedia("(pointer: coarse)").matches) document.documentElement.classList.add("on-device");
+</script>
+<style>
+  /* v02 Week Ring — the week's distance leads; today's run is the next step inside it.
+     Type sizes on this screen: 40 (ring number) · 28 (large title) · 17 (headline, rows, button) · 13 (meta). */
+  a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+  a:active, button:active { opacity: 0.6; }
+  button { cursor: pointer; }
+
+  html { --planned: color-mix(in srgb, var(--c-metric-distance) 32%, var(--c-surface)); }
+
+  .hdr { padding: var(--space-sm) 0 var(--space-xl); }
+  .hdr .date { font-weight: 600; }
+  .hdr h1 { margin: var(--space-xs) 0 var(--space-sm); }
+  .hdr .plan { display: flex; align-items: center; gap: var(--space-sm); font-weight: 600; }
+  .hdr .plan .ic { color: var(--text3); }
+
+  .screen { display: grid; gap: var(--space-2xl); }
+
+  /* The week card */
+  .wk { padding: var(--space-xl); display: grid; gap: var(--space-xl); }
+  .wk-head { display: flex; align-items: center; gap: var(--space-sm); }
+  .wk-head .ic { color: var(--text3); }
+
+  .ring-row { display: flex; align-items: center; gap: var(--space-xl); }
+  .wring { position: relative; width: 168px; height: 168px; flex: none; }
+  .wring svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
+  .wring circle { fill: none; stroke-width: 16; stroke-linecap: round; }
+  .wring .trk { stroke: var(--track); }
+  .wring .done { stroke: var(--c-metric-distance); }
+  .wring .today { stroke: var(--planned); }
+  .wring .mid { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+  .wring .mid .t-footnote { font-weight: 600; }
+
+  .legend { display: grid; gap: var(--space-lg); min-width: 0; }
+  .lg-k { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+  .lg-k i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  .sw-today { background: var(--planned); box-shadow: inset 0 0 0 1.5px var(--c-metric-distance); }
+  .lg-v { font-size: 17px; line-height: 22px; font-weight: 700; }
+  .lg-v small { font-size: 13px; font-weight: 600; color: var(--text2); margin-left: 2px; }
+
+  /* Day bars (Progress uses bars, so the days are bars too) */
+  .days { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: var(--space-sm); text-align: center; }
+  .bar-col { height: 44px; display: flex; align-items: flex-end; justify-content: center; }
+  .bar-col i { width: 20px; border-radius: 4px; background: var(--track); }
+  .bar-col.rest i { height: 4px; border-radius: 2px; }
+  .bar-col.done i { background: var(--c-metric-distance); }
+  .bar-col.today i { background: var(--planned); box-shadow: inset 0 0 0 1.5px var(--c-metric-distance); }
+  .dl { display: grid; justify-items: center; gap: 2px; }
+  .dl b { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: var(--text2); }
+  .dl.today b { background: var(--text); color: var(--c-surface); }
+  .dl span { color: var(--text2); }
+  .dl.rest span, .dl.plan span { color: var(--text3); }
+  .dl.today span { color: var(--text); font-weight: 700; }
+
+  /* Today, as the next step */
+  .next { display: grid; gap: var(--space-md); padding-top: var(--space-xl); border-top: 1px solid var(--line); }
+  .next-k { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); }
+  .eyebrow { font-weight: 700; color: var(--text2); }
+  .rdy { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: color-mix(in srgb, var(--c-metric-recovery) 62%, var(--c-text)); }
+  .rdy .ic { color: var(--c-metric-recovery); }
+  .wo { display: flex; align-items: flex-start; gap: var(--space-md); }
+  .wo .name { margin: 0; flex: 1; min-width: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .wo .ic { color: var(--text3); margin-top: 2px; }
+  .meta { display: flex; align-items: center; gap: var(--space-sm); }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 var(--space-sm);
+    border-radius: var(--radius-pill); font-size: 13px; line-height: 18px; font-weight: 700; flex: none;
+    background: color-mix(in srgb, var(--c-metric-pace) 14%, transparent);
+    color: color-mix(in srgb, var(--c-metric-pace) 72%, var(--c-text));
+  }
+  .start { margin-top: var(--space-xs); gap: var(--space-sm); }
+  .start .ic { fill: currentColor; stroke: none; width: 16px; height: 16px; }
+
+  /* Grouped rows below */
+  .group { display: grid; gap: var(--space-sm); }
+  .group h3 { margin: 0; padding: 0 var(--space-lg); font-weight: 600; }
+  .list { padding: 0; overflow: hidden; }
+  .row2 { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md) var(--space-lg); min-height: 56px; position: relative; }
+  .row2 + .row2::before { content: ""; position: absolute; top: 0; right: 0; left: 48px; height: 1px; background: var(--line); }
+  .row2 > .ic:first-child { width: 20px; height: 20px; color: var(--text2); align-self: center; }
+  .row2 .txt { flex: 1; min-width: 0; display: grid; gap: 2px; }
+  .row2 .tt { font-size: 17px; line-height: 22px; }
+  .row2 .chev { width: 14px; height: 14px; color: var(--text3); }
+  .warn-ic { color: var(--status-warn) !important; }
+  .warn { color: color-mix(in srgb, var(--status-warn) 72%, var(--c-text)); font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="status-bar"><b>7:12</b><i></i></div>
+  <main class="scroll">
+    <header class="hdr">
+      <div class="t-footnote muted date">Saturday, Oct 4</div>
+      <h1 class="t-hero">Good morning, Maya</h1>
+      <div class="t-footnote muted plan"><svg class="ic feather sm"><use href="../icons.svg#flag"/></svg><span class="ellipsis">Lakeshore Marathon in 63 days</span></div>
+    </header>
+
+    <div class="screen">
+      <!-- Hero: the week, with today as its next step -->
+      <article class="card wk" aria-label="This week">
+        <a class="wk-head" aria-label="Open Plan">
+          <span class="t-headline grow">This week</span>
+          <span class="t-footnote muted">Week 7 of 16</span>
+          <svg class="ic feather sm"><use href="../icons.svg#chevron-right"/></svg>
+        </a>
+
+        <div class="ring-row">
+          <!-- r = 78, C = 490.09. Done 32.4/48 = 330.8; today 11.2/48 = 114.4 (4 gap). Caps are 8 each side, so dashes are trimmed by 16. -->
+          <div class="wring" role="img" aria-label="32.4 of 48 kilometres done; today's run brings it to 43.6">
+            <svg viewBox="0 0 176 176">
+              <circle class="trk" cx="88" cy="88" r="78"/>
+              <circle class="today" cx="88" cy="88" r="78" stroke-dasharray="94.4 490.09" stroke-dashoffset="-342.8"/>
+              <circle class="done" cx="88" cy="88" r="78" stroke-dasharray="314.8 490.09" stroke-dashoffset="-8"/>
+            </svg>
+            <div class="mid">
+              <div class="t-display tnum">32.4</div>
+              <div class="t-footnote muted tnum">of 48 km</div>
+            </div>
+          </div>
+          <div class="legend">
+            <div>
+              <div class="t-footnote muted lg-k"><i class="sw-today"></i>Today</div>
+              <div class="lg-v tnum">+11.2<small>km</small></div>
+            </div>
+            <div>
+              <div class="t-footnote muted lg-k">After today</div>
+              <div class="lg-v tnum">43.6<small>km</small></div>
+            </div>
+            <div>
+              <div class="t-footnote muted lg-k">Runs done</div>
+              <div class="lg-v tnum">4<small>of 5</small></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="days t-footnote tnum" aria-label="Distance by day">
+          <div class="bar-col done"><i style="height:15px"></i></div>
+          <div class="bar-col done"><i style="height:16px"></i></div>
+          <div class="bar-col done"><i style="height:12px"></i></div>
+          <div class="bar-col done"><i style="height:20px"></i></div>
+          <div class="bar-col rest"><i></i></div>
+          <div class="bar-col today"><i style="height:24px"></i></div>
+          <div class="bar-col plan"><i style="height:44px"></i></div>
+
+          <div class="dl"><b>M</b><span>7.8</span></div>
+          <div class="dl"><b>T</b><span>8.0</span></div>
+          <div class="dl"><b>W</b><span>6.4</span></div>
+          <div class="dl"><b>T</b><span>10.2</span></div>
+          <div class="dl rest"><b>F</b><span>–</span></div>
+          <div class="dl today"><b>S</b><span>11.2</span></div>
+          <div class="dl plan"><b>S</b><span>22</span></div>
+        </div>
+
+        <div class="next">
+          <div class="next-k">
+            <span class="t-footnote eyebrow">Next step · today</span>
+            <span class="t-footnote rdy tnum"><svg class="ic feather sm"><use href="../icons.svg#battery-charging"/></svg>78% recovered</span>
+          </div>
+          <a class="wo" aria-label="Open workout details">
+            <h2 class="t-headline name">Progressive tempo with marathon&#8209;pace finish and strides</h2>
+            <svg class="ic feather sm"><use href="../icons.svg#chevron-right"/></svg>
+          </a>
+          <div class="meta">
+            <span class="chip">Tempo</span>
+            <span class="t-footnote muted tnum ellipsis">11.2 km · ~58 min · 4:55/km</span>
+          </div>
+          <button class="btn accent block start"><svg class="ic"><use href="../icons.svg#play"/></svg>Start run</button>
+        </div>
+      </article>
+
+      <section class="group">
+        <h3 class="t-footnote muted">Before you go</h3>
+        <div class="card list">
+          <a class="row2">
+            <svg class="ic feather"><use href="../icons.svg#cloud"/></svg>
+            <span class="txt"><span class="tt">14°, cloudy · best 7–9 am</span><span class="t-footnote muted">Rain after 11</span></span>
+            <svg class="ic feather chev"><use href="../icons.svg#chevron-right"/></svg>
+          </a>
+          <a class="row2">
+            <svg class="ic feather"><use href="../icons.svg#message-circle"/></svg>
+            <span class="txt"><span class="tt">Coach</span><span class="t-footnote muted">Hold the reps honest; the last one should feel like 8/10.</span></span>
+            <svg class="ic feather chev"><use href="../icons.svg#chevron-right"/></svg>
+          </a>
+          <a class="row2">
+            <svg class="ic feather"><use href="../icons.svg#moon"/></svg>
+            <span class="txt"><span class="tt tnum">Slept 7 h 40 m</span><span class="t-footnote muted tnum">Resting HR 52</span></span>
+            <svg class="ic feather chev"><use href="../icons.svg#chevron-right"/></svg>
+          </a>
+        </div>
+      </section>
+
+      <section class="group">
+        <h3 class="t-footnote muted">Lately</h3>
+        <div class="card list">
+          <a class="row2">
+            <svg class="ic feather"><use href="../icons.svg#activity"/></svg>
+            <span class="txt"><span class="tt">Last run · Thursday</span><span class="t-footnote muted tnum">Easy 10.2 km · 5:42/km · HR 148</span></span>
+            <svg class="ic feather chev"><use href="../icons.svg#chevron-right"/></svg>
+          </a>
+          <a class="row2">
+            <svg class="ic feather"><use href="../icons.svg#zap"/></svg>
+            <span class="txt"><span class="tt tnum">11-day streak</span></span>
+            <svg class="ic feather chev"><use href="../icons.svg#chevron-right"/></svg>
+          </a>
+          <a class="row2">
+            <svg class="ic feather warn-ic"><use href="../icons.svg#alert-triangle"/></svg>
+            <span class="txt"><span class="tt">Daily trainers</span><span class="t-footnote muted tnum">612 of 700 km · <span class="warn">replace soon</span></span></span>
+            <svg class="ic feather chev"><use href="../icons.svg#chevron-right"/></svg>
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+  <nav class="tabbar">
+    <a class="on"><svg class="ic feather"><use href="../icons.svg#sun"/></svg><span>Today</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#calendar"/></svg><span>Plan</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#play-circle"/></svg><span>Record</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#bar-chart-2"/></svg><span>Progress</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#users"/></svg><span>Club</span></a>
+  </nav>
+  <div class="home-indicator"></div>
+</body>
+</html>

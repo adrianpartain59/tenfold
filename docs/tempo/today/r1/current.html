@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Current · Today</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="screen.css">
+<script>
+  document.documentElement.dataset.theme = new URLSearchParams(location.search).get("theme") || "light";
+  if (window.top === window && matchMedia("(pointer: coarse)").matches) document.documentElement.classList.add("on-device");
+</script>
+<style>
+  .hdr { padding: 8px 0 16px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid .card { padding: 14px; }
+  .k { color: var(--text2); }
+  .v { font-size: 20px; font-weight: 700; margin-top: 4px; }
+  .wk { font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="status-bar"><b>7:12</b><i></i></div>
+  <main class="scroll">
+    <div class="hdr">
+      <div class="t-footnote muted">Saturday, Oct 4</div>
+      <div class="t-title">Good morning, Maya</div>
+    </div>
+    <div class="stack">
+      <div class="card stack">
+        <div class="between"><span class="t-headline">Today's workout</span><span class="t-caption muted">Week 7 of 16</span></div>
+        <div class="t-callout ellipsis">Progressive tempo with marathon-pace finish and strides</div>
+        <div class="t-footnote muted">11.2 km · ~58 min · 4:55/km</div>
+        <button class="btn accent sm">Start run</button>
+      </div>
+      <div class="grid">
+        <div class="card"><div class="t-caption k">Readiness</div><div class="v tnum">78%</div></div>
+        <div class="card"><div class="t-caption k">This week</div><div class="v tnum">32.4 km</div></div>
+        <div class="card"><div class="t-caption k">Streak</div><div class="v tnum">11 days</div></div>
+        <div class="card"><div class="t-caption k">Weather</div><div class="v tnum">14°</div></div>
+      </div>
+      <div class="card stack">
+        <div class="t-headline">Last run</div>
+        <div class="t-footnote muted">Thu · Easy · 10.2 km · 5:42/km · HR 148</div>
+      </div>
+      <div class="card stack">
+        <div class="t-headline">Race</div>
+        <div class="t-footnote muted">Lakeshore Marathon in 63 days</div>
+      </div>
+      <div class="card stack">
+        <div class="t-headline">Shoes</div>
+        <div class="t-footnote muted">Daily trainers · 612 / 700 km</div>
+      </div>
+      <div class="card stack">
+        <div class="t-headline">Coach note</div>
+        <div class="t-footnote muted">Hold the reps honest; the last one should feel like 8/10.</div>
+      </div>
+    </div>
+  </main>
+  <nav class="tabbar">
+    <a class="on"><svg class="ic feather"><use href="../icons.svg#sun"/></svg><span>Today</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#calendar"/></svg><span>Plan</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#play-circle"/></svg><span>Record</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#bar-chart-2"/></svg><span>Progress</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#users"/></svg><span>Club</span></a>
+  </nav>
+  <div class="home-indicator"></div>
+</body>
+</html>

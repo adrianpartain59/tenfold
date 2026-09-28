@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>09 · Deck</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="screen.css">
+<script>
+  document.documentElement.dataset.theme = new URLSearchParams(location.search).get("theme") || "light";
+  if (window.top === window && matchMedia("(pointer: coarse)").matches) document.documentElement.classList.add("on-device");
+</script>
+<style>
+  /* v09 Deck: a horizontal pager of full-height cards, one idea per page.
+     Every page has the same skeleton: label → title → one display number → detail → door. */
+  .scroll { overflow: hidden; }
+  .hdr { display: grid; gap: 0; margin-bottom: var(--space-md); }
+
+  .pager {
+    display: flex; gap: var(--space-md);
+    margin: 0 calc(-1 * var(--pad));
+    padding: var(--space-xs) var(--pad) var(--space-md);
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; scroll-padding: 0 var(--pad);
+    scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+  }
+  .pager::-webkit-scrollbar { display: none; }
+  .page {
+    flex: 0 0 calc(100% - var(--space-lg));   /* next page peeks in by ~20pt */
+    height: 552px; scroll-snap-align: start; scroll-snap-stop: always;
+    display: flex; flex-direction: column;
+    padding: var(--space-xl);
+  }
+  .page .push { flex: 1; }
+
+  .label { display: flex; align-items: center; justify-content: space-between; min-height: 24px; margin-bottom: var(--space-sm); }
+  .label .t-footnote { font-weight: 600; color: var(--text2); }
+  .type { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--col, var(--text2)); flex: none; }
+
+  .name { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin: 0; }
+  .big { margin-top: var(--space-lg); display: flex; align-items: baseline; gap: var(--space-xs); }
+  .big .u { color: var(--text2); }
+  .sub { color: var(--text2); margin-top: var(--space-xs); }
+  .sub b { color: var(--text); font-weight: 600; }
+
+  /* page 1 — session structure as a rail */
+  .rail { margin-top: var(--space-xl); display: grid; position: relative; }
+  .rail::before { content: ""; position: absolute; left: 4px; top: 12px; bottom: 12px; width: 2px; border-radius: 2px; background: var(--line); }
+  .step { display: grid; grid-template-columns: 10px 76px 1fr auto; column-gap: var(--space-md); align-items: center; min-height: 28px; }
+  .node { width: 10px; height: 10px; border-radius: 50%; position: relative; background: var(--surface); box-shadow: inset 0 0 0 2px var(--text3); }
+  .node.rep { background: var(--c-metric-pace); box-shadow: none; }
+  .node.fin { box-shadow: inset 0 0 0 2.5px var(--c-metric-pace); }
+  .step .k { color: var(--text2); }
+  .step .v { color: var(--text); font-weight: 600; }
+  .step .p { color: var(--text); font-weight: 600; }
+  .aside { margin-top: var(--space-lg); display: grid; gap: var(--space-sm); }
+  .aside .row { align-items: flex-start; color: var(--text2); }
+  .aside .row .ic { margin-top: 1px; color: var(--text2); }
+  .quote { color: var(--text); }
+
+  /* page 2 — readiness */
+  .segs { display: grid; grid-template-columns: repeat(20, 1fr); gap: 3px; margin-top: var(--space-md); }
+  .segs i { height: 8px; border-radius: 2px; background: var(--track); }
+  .segs i.f { background: var(--c-metric-recovery); }
+  .rows { margin-top: var(--space-lg); display: grid; }
+  .r { display: flex; align-items: center; gap: var(--space-md); min-height: 48px; border-top: 1px solid var(--line); }
+  .r:first-child { border-top: 0; }
+  .r .ic { color: var(--text2); }
+  .r .val { font-variant-numeric: tabular-nums; }
+  .r .val small { font-size: 13px; font-weight: 500; color: var(--text2); }
+  .r .two { display: grid; padding: var(--space-sm) 0; }
+  .shoe { display: grid; gap: var(--space-sm); padding: var(--space-md) 0 var(--space-xs); border-top: 1px solid var(--line); }
+  .shoe .bar > i { width: 87.4%; background: var(--text); }
+  .warn { display: inline-flex; align-items: center; gap: var(--space-xs); color: var(--text); font-weight: 600; }
+  .warn .ic { color: var(--status-warn); }
+
+  /* page 3 — week */
+  .wbar { margin-top: var(--space-md); height: 8px; }
+  .wbar > i { width: 67.5%; background: var(--c-metric-distance); }
+  .days { margin-top: var(--space-xl); display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--space-sm); align-items: end; }
+  .day { display: grid; justify-items: center; gap: var(--space-sm); }
+  .col { width: 100%; height: 96px; display: flex; align-items: flex-end; }
+  .col i { display: block; width: 100%; border-radius: 6px; background: var(--c-metric-distance); }
+  .col i.plan { background: color-mix(in srgb, var(--c-metric-distance) 22%, transparent); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--c-metric-distance) 60%, transparent); }
+  .col i.rest { height: 4px; background: var(--track); }
+  .day .t-footnote { color: var(--text2); }
+  .day.today .t-footnote { color: var(--text); font-weight: 700; }
+  .day.today .col { position: relative; }
+  .tag { position: absolute; left: 50%; bottom: 57px; transform: translateX(-50%); color: var(--text); font-weight: 600; white-space: nowrap; }
+  .legend { display: flex; gap: var(--space-lg); margin-top: var(--space-md); color: var(--text2); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 10px; height: 10px; border-radius: 3px; background: var(--c-metric-distance); }
+  .sw.plan { background: color-mix(in srgb, var(--c-metric-distance) 22%, transparent); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--c-metric-distance) 60%, transparent); }
+
+  /* doors at the foot of pages 2 and 3: quiet, not buttons */
+  .door { display: flex; align-items: center; justify-content: space-between; min-height: 44px; border-top: 1px solid var(--line); padding-top: var(--space-xs); color: var(--text); }
+  .door .ic { color: var(--text2); }
+
+  /* page dots — each dot is a 44pt target */
+  .dots { display: flex; justify-content: center; height: 44px; }
+  .dots button { width: 44px; height: 44px; border: 0; padding: 0; background: none; display: grid; place-items: center; }
+  .dots button i { display: block; width: 8px; height: 8px; border-radius: 999px; background: var(--text3); transition: width 250ms ease-out, background 250ms ease-out; }
+  .dots button.on i { width: 22px; background: var(--text); }
+  @media (prefers-reduced-motion: reduce) { .dots button i { transition: none; } }
+</style>
+</head>
+<body>
+  <div class="status-bar"><b>7:12</b><i></i></div>
+  <main class="scroll">
+    <header class="hdr">
+      <div class="t-footnote muted">Saturday, Oct 4</div>
+      <div class="t-title">Good morning, Maya</div>
+    </header>
+
+    <div class="pager" id="pager" aria-roledescription="carousel">
+      <!-- 1 · Today's run -->
+      <section class="card page" aria-label="Today's run, 1 of 3">
+        <div class="label">
+          <span class="type"><span class="t-footnote">Today's run</span></span>
+          <span class="pill"><span class="dot" style="--col: var(--c-metric-pace)"></span>Tempo</span>
+        </div>
+        <h2 class="t-title name">Progressive tempo with marathon-pace finish and strides</h2>
+        <div class="big"><span class="t-display">11.2</span><span class="t-title u">km</span></div>
+        <div class="t-footnote sub tnum"><b>~58 min</b> · target <b>4:55/km</b></div>
+
+        <div class="rail t-footnote tnum">
+          <div class="step"><i class="node"></i><span class="k">Warm-up</span><span class="v">2 km easy</span><span></span></div>
+          <div class="step"><i class="node rep"></i><span class="k">Reps</span><span class="v">4 × 1.6 km · 90 s jog</span><span class="p">4:55/km</span></div>
+          <div class="step"><i class="node fin"></i><span class="k">Finish</span><span class="v">1.6 km</span><span class="p">5:10/km</span></div>
+          <div class="step"><i class="node"></i><span class="k">Cool-down</span><span class="v">1.2 km</span><span></span></div>
+        </div>
+
+        <div class="aside t-footnote">
+          <div class="row"><svg class="ic sm feather"><use href="../icons.svg#cloud"/></svg><span class="tnum">14° cloudy · best 7–9 am · rain after 11</span></div>
+          <div class="row"><svg class="ic sm feather"><use href="../icons.svg#message-circle"/></svg><span class="quote">Hold the reps honest; the last one should feel like 8/10.</span></div>
+        </div>
+
+        <div class="push"></div>
+        <button class="btn accent block"><svg class="ic lg feather"><use href="../icons.svg#play"/></svg>Start run</button>
+      </section>
+
+      <!-- 2 · Readiness -->
+      <section class="card page" aria-label="Readiness, 2 of 3">
+        <div class="label"><span class="t-footnote">Readiness</span></div>
+        <h2 class="t-title name">Fresh enough for quality</h2>
+        <div class="big"><span class="t-display">78</span><span class="t-title u">%&nbsp;&nbsp;recovered</span></div>
+        <div class="segs" aria-hidden="true">
+          <i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i>
+        </div>
+
+        <div class="rows">
+          <div class="r"><svg class="ic feather"><use href="../icons.svg#moon"/></svg><span class="grow t-footnote muted">Sleep</span><span class="val t-headline">7 h 40 <small>m</small></span></div>
+          <div class="r"><svg class="ic feather" style="color: var(--c-metric-heart)"><use href="../icons.svg#heart"/></svg><span class="grow t-footnote muted">Resting heart rate</span><span class="val t-headline">52 <small>bpm</small></span></div>
+          <div class="r"><svg class="ic feather"><use href="../icons.svg#activity"/></svg>
+            <span class="grow two"><span class="t-footnote muted">Last run · Thursday</span><span class="t-footnote tnum">Easy 10.2 km · 5:42/km · avg HR 148</span></span>
+          </div>
+        </div>
+        <div class="shoe">
+          <div class="between"><span class="t-footnote muted">Daily trainers</span><span class="t-footnote tnum"><b>612</b> <span class="muted">of 700 km</span></span></div>
+          <div class="bar"><i></i></div>
+          <span class="t-footnote warn"><svg class="ic sm feather"><use href="../icons.svg#alert-triangle"/></svg>Replace soon</span>
+        </div>
+
+        <div class="push"></div>
+        <a class="door t-footnote"><span>Recovery trends in Progress</span><svg class="ic sm feather"><use href="../icons.svg#chevron-right"/></svg></a>
+      </section>
+
+      <!-- 3 · Your week -->
+      <section class="card page" aria-label="Your week, 3 of 3">
+        <div class="label">
+          <span class="t-footnote">Your week</span>
+          <span class="pill tnum"><svg class="ic sm feather"><use href="../icons.svg#zap"/></svg>11 days active</span>
+        </div>
+        <h2 class="t-title name">Week 7 of 16</h2>
+        <div class="big tnum"><span class="t-display">32.4</span><span class="t-title u">of 48 km</span></div>
+        <div class="t-footnote sub tnum"><b>4 of 5</b> runs done · long run Sunday</div>
+        <div class="bar wbar"><i></i></div>
+
+        <div class="days" aria-label="Mon 7.8 km, Tue 8.0 km, Wed 6.4 km, Thu 10.2 km, Fri rest, Sat today 11.2 km planned, Sun long run 22 km planned">
+          <div class="day"><div class="col"><i style="height: 34px"></i></div><span class="t-footnote">M</span></div>
+          <div class="day"><div class="col"><i style="height: 35px"></i></div><span class="t-footnote">T</span></div>
+          <div class="day"><div class="col"><i style="height: 28px"></i></div><span class="t-footnote">W</span></div>
+          <div class="day"><div class="col"><i style="height: 44px"></i></div><span class="t-footnote">T</span></div>
+          <div class="day"><div class="col"><i class="rest"></i></div><span class="t-footnote">F</span></div>
+          <div class="day today"><div class="col"><span class="tag t-footnote">Today</span><i class="plan" style="height: 49px"></i></div><span class="t-footnote">S</span></div>
+          <div class="day"><div class="col"><i class="plan" style="height: 96px"></i></div><span class="t-footnote">S</span></div>
+        </div>
+        <div class="legend t-footnote"><span><i class="sw"></i>Done</span><span><i class="sw plan"></i>Planned</span></div>
+
+        <div class="rows">
+          <div class="r"><svg class="ic feather"><use href="../icons.svg#flag"/></svg><span class="grow t-footnote muted">Lakeshore Marathon</span><span class="val t-headline">63 <small>days</small></span></div>
+        </div>
+
+        <div class="push"></div>
+        <a class="door t-footnote"><span>Open the plan</span><svg class="ic sm feather"><use href="../icons.svg#chevron-right"/></svg></a>
+      </section>
+    </div>
+
+    <nav class="dots" aria-label="Pages">
+      <button class="on" aria-label="Today's run"><i></i></button>
+      <button aria-label="Readiness"><i></i></button>
+      <button aria-label="Your week"><i></i></button>
+    </nav>
+  </main>
+  <nav class="tabbar">
+    <a class="on"><svg class="ic feather"><use href="../icons.svg#sun"/></svg><span>Today</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#calendar"/></svg><span>Plan</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#play-circle"/></svg><span>Record</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#bar-chart-2"/></svg><span>Progress</span></a>
+    <a><svg class="ic feather"><use href="../icons.svg#users"/></svg><span>Club</span></a>
+  </nav>
+  <div class="home-indicator"></div>
+<script>
+  (function () {
+    var pager = document.getElementById("pager");
+    var pages = pager.querySelectorAll(".page");
+    var dots = document.querySelectorAll(".dots button");
+    function step() { return pages[1].offsetLeft - pages[0].offsetLeft; }
+    function sync() {
+      var i = Math.min(pages.length - 1, Math.round(pager.scrollLeft / step()));
+      dots.forEach(function (d, j) { d.classList.toggle("on", j === i); });
+    }
+    pager.addEventListener("scroll", function () { requestAnimationFrame(sync); }, { passive: true });
+    dots.forEach(function (d, j) {
+      d.addEventListener("click", function () { pager.scrollTo({ left: j * step(), behavior: "smooth" }); });
+    });
+  })();
+</script>
+</body>
+</html>

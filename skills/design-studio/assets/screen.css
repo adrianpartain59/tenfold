@@ -1,0 +1,146 @@
+/* design-studio screen base — one variation = one 393×852 iPhone screen.
+   Load order in every variation: ../tokens.css (the app's real tokens), then this.
+   Every value falls back to a neutral iOS default when a token is missing, so
+   this also works for apps without an exported tokens.css. */
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html {
+  --bg: var(--c-background-root, #F2F2F7);
+  --surface: var(--c-surface, #FFFFFF);
+  --text: var(--c-text, #1C1C1E);
+  --text2: var(--c-text-secondary, #6B6B73);
+  --text3: var(--c-text-tertiary, #A1A1AA);
+  --line: var(--c-border, #E5E5EA);
+  --accent: var(--c-accent, #0A84FF);
+  --track: rgba(0, 0, 0, 0.07);
+  --safe-top: 54px;      /* status bar + Dynamic Island */
+  --safe-bottom: 34px;   /* home indicator */
+  --tabbar-h: 62px;
+  --pad: var(--gap-screen-x, 16px);
+  --card-radius: var(--radius-card-raised, 24px);
+  --card-shadow: var(--shadow-card, 0 2px 8px rgba(0, 0, 0, 0.06));
+}
+html[data-theme="dark"] { --track: rgba(255, 255, 255, 0.1); }
+
+body {
+  width: 393px;
+  height: 852px;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif);
+  font-size: 16px;
+  line-height: 1.35;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+/* Opened alone on a real phone (the template's script sets .on-device):
+   fill the device and let the real status bar show instead of the drawn one. */
+html.on-device body { width: 100vw; height: 100dvh; }
+html.on-device .status-bar { display: none; }
+
+/* Scrollable content area between the status bar and the tab bar. */
+.scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: calc(var(--safe-top) + 4px) var(--pad) calc(var(--safe-bottom) + var(--tabbar-h) + 24px);
+}
+.scroll::-webkit-scrollbar { display: none; }
+body.no-tabbar .scroll { padding-bottom: calc(var(--safe-bottom) + 24px); }
+
+/* iOS status bar: <div class="status-bar"><b>9:41</b><i></i></div> */
+.status-bar {
+  position: absolute; z-index: 30; top: 0; left: 0; right: 0; height: var(--safe-top);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 30px 0 44px; pointer-events: none;
+  font-size: 17px; font-weight: 600; letter-spacing: -0.2px; color: var(--text);
+}
+.status-bar i {
+  width: 78px; height: 13px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 78 13'%3E%3Crect x='0' y='8' width='3' height='5' rx='1'/%3E%3Crect x='5' y='5.5' width='3' height='7.5' rx='1'/%3E%3Crect x='10' y='3' width='3' height='10' rx='1'/%3E%3Crect x='15' y='0.5' width='3' height='12.5' rx='1'/%3E%3Cpath d='M31 3.2a9 9 0 0 1 12 0l-1.3 1.4a7 7 0 0 0-9.4 0zM33.4 5.8a5.4 5.4 0 0 1 7.2 0l-1.4 1.4a3.4 3.4 0 0 0-4.4 0zM37 8.2l1.8 1.9L37 12l-1.8-1.9z'/%3E%3Crect x='50.5' y='0.5' width='24' height='12' rx='3.8' fill='none' stroke='black' opacity='.4'/%3E%3Crect x='52.5' y='2.5' width='20' height='8' rx='2.2'/%3E%3Cpath d='M76 4.5v4a2 2 0 0 0 0-4z' opacity='.4'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 78 13'%3E%3Crect x='0' y='8' width='3' height='5' rx='1'/%3E%3Crect x='5' y='5.5' width='3' height='7.5' rx='1'/%3E%3Crect x='10' y='3' width='3' height='10' rx='1'/%3E%3Crect x='15' y='0.5' width='3' height='12.5' rx='1'/%3E%3Cpath d='M31 3.2a9 9 0 0 1 12 0l-1.3 1.4a7 7 0 0 0-9.4 0zM33.4 5.8a5.4 5.4 0 0 1 7.2 0l-1.4 1.4a3.4 3.4 0 0 0-4.4 0zM37 8.2l1.8 1.9L37 12l-1.8-1.9z'/%3E%3Crect x='50.5' y='0.5' width='24' height='12' rx='3.8' fill='none' stroke='black' opacity='.4'/%3E%3Crect x='52.5' y='2.5' width='20' height='8' rx='2.2'/%3E%3Cpath d='M76 4.5v4a2 2 0 0 0 0-4z' opacity='.4'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.home-indicator {
+  position: absolute; z-index: 40; bottom: 8px; left: 50%; transform: translateX(-50%);
+  width: 134px; height: 5px; border-radius: 999px; background: var(--text); opacity: 0.9; pointer-events: none;
+}
+
+/* iOS 26-style floating glass tab bar.
+   <nav class="tabbar"><a class="on"><svg class="ic"><use href="../icons.svg#home"/></svg><span>Home</span></a>…</nav>
+   Copy the app's real tab set, order and labels from the context sweep. */
+.tabbar {
+  position: absolute; z-index: 20; left: 16px; right: 16px; bottom: calc(var(--safe-bottom) - 8px);
+  height: var(--tabbar-h); border-radius: 999px; display: flex; align-items: stretch; padding: 4px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), inset 0 0 0 0.5px rgba(255, 255, 255, 0.5);
+}
+.tabbar a {
+  flex: 1; display: grid; place-items: center; align-content: center; gap: 2px; border-radius: 999px;
+  color: var(--c-tab-icon-default, #8E8E93); text-decoration: none; font-size: 10px; font-weight: 600;
+}
+.tabbar a.on { color: var(--c-tab-icon-selected, var(--text)); background: var(--track); }
+.tabbar .ic { width: 22px; height: 22px; }
+
+/* Surfaces */
+.card { background: var(--surface); border-radius: var(--card-radius); box-shadow: var(--card-shadow); padding: var(--gap-card-pad, 16px); }
+.card.flat { box-shadow: none; }
+.stack { display: grid; gap: var(--gap-row-gap, 12px); }
+.stack-lg { display: grid; gap: var(--space-xl, 20px); }
+.row { display: flex; align-items: center; gap: var(--space-sm, 8px); }
+.between { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm, 8px); }
+.grow { flex: 1; min-width: 0; }
+.hairline { height: 1px; background: var(--line); margin: 0; border: 0; }
+
+/* Text helpers (type ramp classes .t-display … .t-caption come from tokens.css) */
+.muted { color: var(--text2); }
+.faint { color: var(--text3); }
+.tnum { font-variant-numeric: tabular-nums; }
+.ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.section-title { font-size: 20px; font-weight: 700; letter-spacing: 0.1px; margin: 0 0 var(--space-md, 12px); }
+
+/* Icons: <svg class="ic"><use href="../icons.svg#name"/></svg> — sized by class, coloured by `color`. */
+.ic { width: var(--icon-md, 18px); height: var(--icon-md, 18px); flex: none; display: inline-block; vertical-align: middle; }
+.ic.sm { width: var(--icon-sm, 16px); height: var(--icon-sm, 16px); }
+.ic.lg { width: var(--icon-lg, 20px); height: var(--icon-lg, 20px); }
+.ic.xl { width: var(--icon-xl, 24px); height: var(--icon-xl, 24px); }
+/* Stroke icon sets (the Feather sprite from `studio.sh icons`): <svg class="ic feather">…</svg> */
+.ic.feather { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Controls */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: var(--space-button-height, 52px); padding: 0 20px; border-radius: 999px; border: 0;
+  font: inherit; font-size: 17px; font-weight: 600; background: var(--c-primary, var(--text)); color: var(--c-button-text, #fff);
+}
+.btn.accent { background: var(--accent); color: #fff; }
+.btn.secondary { background: var(--track); color: var(--text); }
+.btn.sm { height: var(--space-button-height-compact, 36px); font-size: 15px; padding: 0 14px; }
+.btn.block { width: 100%; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--track); font-size: 13px; font-weight: 600; }
+.bar { height: 6px; border-radius: 999px; background: var(--track); overflow: hidden; }
+.bar > i { display: block; height: 100%; border-radius: inherit; background: var(--accent); }
+.tap { min-width: 44px; min-height: 44px; } /* reminder: every tap target is ≥ 44pt */
+
+/* Progress ring: <div class="ring" style="--p:.62;--size:56px;--stroke:6px;--col:var(--c-metric-protein)"><span>62%</span></div> */
+.ring {
+  --size: 56px; --stroke: 6px; --p: 0.5; --col: var(--accent);
+  width: var(--size); height: var(--size); border-radius: 50%; display: grid; place-items: center; position: relative;
+  background: conic-gradient(var(--col) calc(var(--p) * 360deg), var(--track) 0);
+}
+.ring::before { content: ""; position: absolute; inset: var(--stroke); border-radius: 50%; background: var(--ring-bg, var(--surface)); }
+.ring > * { position: relative; }
+
+/* Sheet mock: <div class="scrim"></div><div class="sheet">…</div> */
+.scrim { position: absolute; inset: 0; z-index: 50; background: var(--overlay-black-scrim, rgba(0, 0, 0, 0.45)); }
+.sheet {
+  position: absolute; z-index: 51; left: 0; right: 0; bottom: 0; max-height: 88%; overflow: auto;
+  background: var(--surface); border-radius: var(--radius-sheet, 32px) var(--radius-sheet, 32px) 0 0;
+  padding: 10px var(--pad) calc(var(--safe-bottom) + 16px);
+}
+.sheet::before { content: ""; display: block; width: 36px; height: 5px; border-radius: 999px; background: var(--text3); opacity: 0.5; margin: 0 auto 14px; }
