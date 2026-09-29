@@ -58,7 +58,7 @@ def main(d):
     vs = m.get("variations", [])
     if not vs:
         errs.append("no variations")
-    elif stage != "system" and len(vs) < 2:
+    elif stage == "directions" and len(vs) < 2:
         errs.append(f"only {len(vs)} variations")
     templates = [t.get("id") for t in m.get("templates", [])]
     if stage == "system" and not templates:

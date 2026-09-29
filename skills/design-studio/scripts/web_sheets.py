@@ -17,11 +17,20 @@ STYLE = ("body{margin:0;padding:%dpx;background:#ECECEF;display:flex;gap:%dpx;al
          "font:600 22px -apple-system,system-ui,sans-serif;color:#1C1C1E}"
          "figure{margin:0}figcaption{height:%dpx;white-space:nowrap}figcaption b{font-weight:800;margin-right:6px}"
          "iframe{border:0;display:block;background:#fff}.slice{overflow:hidden;background:#fff}") % (PAD, PAD, CAP)
-# Each phone slice scrolls its own copy of the page to its offset. The last one
-# can't scroll past the end, so it is pulled up by however far it fell short.
-SLICES = ("<script>addEventListener('load',()=>document.querySelectorAll('iframe[data-y]').forEach(f=>{"
-          "try{const w=f.contentWindow,y=+f.dataset.y;w.document.documentElement.style.scrollBehavior='auto';"
-          "w.scrollTo(0,y);f.style.marginTop=(-(y-w.scrollY))+'px'}catch(e){}}))</script>")
+# Every frame in a sheet shows each page at rest: animations and transitions
+# are switched off (scroll-driven ones never play in a headless capture and
+# would leave content at its hidden start state), sticky elements sit in flow,
+# and fixed ones (a floating nav) appear only in a page's first slice. Each phone
+# slice then scrolls its own copy of the page to its offset; the last one can't
+# scroll past the end, so it is pulled up by however far it fell short.
+SLICES = ("<script>addEventListener('load',()=>document.querySelectorAll('iframe').forEach(f=>{try{"
+          "const w=f.contentWindow,d=w.document,y=+(f.dataset.y||0);"
+          "const st=d.createElement('style');st.textContent='*,*::before,*::after{animation:none!important;"
+          "transition:none!important;scroll-behavior:auto!important}';d.head.appendChild(st);"
+          "d.querySelectorAll('*').forEach(e=>{const p=w.getComputedStyle(e).position;"
+          "if(p==='sticky')e.style.position='relative';else if(p==='fixed'&&y>0)e.style.visibility='hidden'});"
+          "if(f.dataset.y!==undefined){w.scrollTo(0,y);f.style.marginTop=(-(y-w.scrollY))+'px'}"
+          "}catch(e){}}))</script>")
 
 
 def load(d):
