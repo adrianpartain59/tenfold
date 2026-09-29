@@ -90,6 +90,20 @@ else
   echo "  skip sheets (no Chrome/Chromium)"
 fi
 
+echo "paywall references lint"
+LINT="$REPO/tests/refs_lint.py"
+out="$(python3 "$LINT" "$HERE/fixtures/refs-good" 2>&1)"; st=$?
+[ $st -eq 0 ] && [ "$out" = "OK refs (1 sources, 14 archetypes)" ] && ok "lint passes good refs" || bad "lint passes good refs" "$out"
+out="$(python3 "$LINT" "$HERE/fixtures/refs-bad" 2>&1)"; st=$?
+[ $st -ne 0 ] && ok "lint fails bad refs" || bad "lint fails bad refs" "$out"
+grep -q "FAIL playbook:4: a result number with no \[S#\]" <<<"$out" && ok "lint flags an uncited number" || bad "lint flags an uncited number" "$out"
+grep -q "FAIL playbook:5: \[S7\] is not in the Sources table" <<<"$out" && ok "lint flags an undefined source" || bad "lint flags an undefined source" "$out"
+grep -q "FAIL playbook:10: S1 has no URL" <<<"$out" && ok "lint flags a source with no URL" || bad "lint flags a source with no URL" "$out"
+grep -q "FAIL playbook:10: S1 date 'March 2025' is not YYYY-MM\[-DD\]" <<<"$out" && ok "lint flags a bad date" || bad "lint flags a bad date" "$out"
+grep -q "FAIL playbook:10: S1 strength 'vibes'" <<<"$out" && ok "lint flags a bad strength" || bad "lint flags a bad strength" "$out"
+grep -q "FAIL archetypes: Trial timeline is missing Wins when, Loses when, Axes, Hazards, Seen in" <<<"$out" && ok "lint flags missing archetype fields" || bad "lint flags missing archetype fields" "$out"
+grep -q "FAIL archetypes: 1 entries, need at least 14" <<<"$out" && ok "lint wants 14 archetypes" || bad "lint wants 14 archetypes" "$out"
+
 # --- new tests above this line ---
 echo
 echo "$pass passed, $fail failed"
