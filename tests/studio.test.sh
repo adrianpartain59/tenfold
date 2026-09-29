@@ -104,6 +104,62 @@ grep -q "FAIL playbook:10: S1 strength 'vibes'" <<<"$out" && ok "lint flags a ba
 grep -q "FAIL archetypes: Trial timeline is missing Wins when, Loses when, Axes, Hazards, Seen in" <<<"$out" && ok "lint flags missing archetype fields" || bad "lint flags missing archetype fields" "$out"
 grep -q "FAIL archetypes: 1 entries, need at least 14" <<<"$out" && ok "lint wants 14 archetypes" || bad "lint wants 14 archetypes" "$out"
 
+echo "paywall mode: new --paywall"
+out="$(bash "$STUDIO" new demo pay --paywall 2>&1)"
+rd="$DESIGN_STUDIO_ROOT/demo/pay/r1"
+cmp -s "$rd/paywall.css" "$ASSETS/paywall.css" && ok "new --paywall copies paywall.css" || bad "new --paywall copies paywall.css" "$out"
+cmp -s "$rd/screen.css" "$ASSETS/screen.css" && ok "new --paywall copies screen.css" || bad "new --paywall copies screen.css"
+grep -qx "SURFACE paywall" <<<"$out" && ok "new --paywall prints SURFACE paywall" || bad "new --paywall prints SURFACE paywall" "$out"
+[ ! -e "$rd/web.css" ] && ok "paywall round has no web.css" || bad "paywall round has no web.css"
+
+echo "paywall mode: check"
+pfresh() { stage paywall-smoke demo "p$RANDOM$RANDOM"; }
+t="$(pfresh)"
+out="$(bash "$STUDIO" check "$t/r1" 2>&1)"; st=$?
+[ $st -eq 0 ] && [ "$out" = "OK 2 paywall variations (concept, 3 states)" ] && ok "check passes a concept round" || bad "check passes a concept round" "$out"
+out="$(bash "$STUDIO" check "$t/r2" 2>&1)"; st=$?
+[ $st -eq 0 ] && [ "$out" = "OK 2 paywall variations (ab, 1 state)" ] && ok "check passes an ab round" || bad "check passes an ab round" "$out"
+
+t="$(pfresh)"; rm "$t/r1/v02/exit.html"
+out="$(bash "$STUDIO" check "$t/r1" 2>&1)"; st=$?
+[ $st -ne 0 ] && grep -q "FAIL v02: missing state exit (v02/exit.html)" <<<"$out" && ok "check fails a missing state" || bad "check fails a missing state" "$out"
+
+t="$(pfresh)"; perl -ni -e 'print unless /data-pw="renewal"/' "$t/r1/v01/alt-plan.html"
+out="$(bash "$STUDIO" check "$t/r1" 2>&1)"
+grep -q "FAIL v01/alt-plan: missing data-pw renewal" <<<"$out" && ok "check fails a missing marker" || bad "check fails a missing marker" "$out"
+
+t="$(pfresh)"; perl -pi -e 's|(<button class="pw-cta")|<button data-pw="cta">Also buy</button>$1|' "$t/r1/v01/main.html"
+out="$(bash "$STUDIO" check "$t/r1" 2>&1)"
+grep -q "FAIL v01/main: 2 data-pw cta (need exactly 1)" <<<"$out" && ok "check fails two CTAs" || bad "check fails two CTAs" "$out"
+
+t="$(pfresh)"; perl -ni -e 'print unless /data-pw="trial-terms"/' "$t/r1/v02/main.html"
+out="$(bash "$STUDIO" check "$t/r1" 2>&1)"
+grep -q "FAIL v02/main: missing data-pw trial-terms" <<<"$out" && ok "check wants trial terms when trial is on" || bad "check wants trial terms when trial is on" "$out"
+
+t="$(pfresh)"; perl -pi -e 's/Down 18 lb/Down 40 lb/' "$t/r1/v01/main.html"
+out="$(bash "$STUDIO" check "$t/r1" 2>&1)"
+grep -q "FAIL v01/main: proof P1 text not in context.md" <<<"$out" && ok "check fails invented proof" || bad "check fails invented proof" "$out"
+
+t="$(pfresh)"; perl -pi -e 's/data-src="P2"/data-src="P9"/' "$t/r1/v02/main.html"
+out="$(bash "$STUDIO" check "$t/r1" 2>&1)"
+grep -q "FAIL v02/main: proof P9 not in context.md" <<<"$out" && ok "check fails an unknown proof id" || bad "check fails an unknown proof id" "$out"
+
+t="$(pfresh)"
+python3 - "$t/r2/manifest.json" <<'PY'
+import json, sys
+p = sys.argv[1]; m = json.load(open(p)); del m["variations"][1]["variable"]; json.dump(m, open(p, "w"))
+PY
+out="$(bash "$STUDIO" check "$t/r2" 2>&1)"
+grep -q "FAIL v02: ab variant has no variable" <<<"$out" && ok "check wants a variable per ab variant" || bad "check wants a variable per ab variant" "$out"
+
+t="$(pfresh)"
+python3 - "$t/r2/manifest.json" <<'PY'
+import json, sys
+p = sys.argv[1]; m = json.load(open(p)); del m["variations"][0]["control"]; json.dump(m, open(p, "w"))
+PY
+out="$(bash "$STUDIO" check "$t/r2" 2>&1)"
+grep -q "FAIL ab round needs exactly one control, has 0" <<<"$out" && ok "check wants one control" || bad "check wants one control" "$out"
+
 # --- new tests above this line ---
 echo
 echo "$pass passed, $fail failed"
