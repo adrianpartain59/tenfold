@@ -84,7 +84,7 @@ Note on dates marked "(accessed)": these sources gave either no publication date
 - Offering more pricing options increases conversion with diminishing returns: 2 products beat 1 by 61%, and 3 products beat 2 by 44%, across 32M+ paywall interactions. [S14]
 - Among paywall A/B test categories, changing the number of plans shown is the single highest-win-rate lever for lifetime value (57.1% win rate). [S7]
 - One documented high-converting price-anchoring setup pairs a monthly plan with a cheap weekly plan as the anchor (monthly $18.99 anchored against weekly $5.99). [S7]
-- Price-anchoring practice: price the monthly plan deliberately high — not to sell it, but to make the annual plan look cheap by comparison. [S12]
+- Price-anchoring practice: price the monthly plan deliberately high, not to sell it, but to make the annual plan look cheap by comparison. [S12]
 - Cheap annual plans retain subscribers far better than expensive monthly plans over a year (36.0% vs 6.7% one-year retention). [S3]
 - Preselecting the default plan is one of the strongest levers on which plan people buy, but the cheapest-looking default can win conversion while reducing total revenue. [S36]
 - Price A/B tests rarely move conversion; most price tests fail to win (28.3% win rate). [S7]
@@ -101,7 +101,7 @@ Note on dates marked "(accessed)": these sources gave either no publication date
 
 ### Risk reversal & CTA copy
 
-- "No commitment, cancel anytime" style risk-reversal copy is treated as a low-cost, broadly-applied addition to paywalls — described as "nearly effortless" and consistently used. [S16]
+- "No commitment, cancel anytime" style risk-reversal copy is treated as a low-cost, broadly-applied addition to paywalls: described as "nearly effortless" and consistently used. [S16]
 - Superwall's own recommended CTA-copy test set for paywalls is "Start free trial" vs. "Continue" vs. "Try [product] free for 7 days" (a suggested test, not a reported result). [S12]
 - CTA copy and offer-framing tests produce smaller but compounding gains (successful lift 2–10%). [S32]
 
@@ -121,7 +121,7 @@ Note on dates marked "(accessed)": these sources gave either no publication date
 
 ### Paywall timing & placement
 
-- 82% of free-trial starts happen the same day a user first opens the app, so the paywall functions as part of onboarding. [S1][S3]
+- 82% of free-trial starts happen the same day a user first opens the app, so the paywall functions as part of onboarding. [S3]
 - 90% of free-trial starts and 44.5% of all purchases happen on the day of install (Day 0), reinforcing that the paywall is an onboarding-moment decision. [S7]
 - 80% of purchases happen the first time a user reaches the paywall after onboarding, arguing for showing the paywall early rather than deep in the app. [S10]
 - Practitioner guidance: show every user a paywall within the first 12–24 hours after install, since that window sees the strongest conversion intent. [S11]
@@ -133,7 +133,7 @@ Note on dates marked "(accessed)": these sources gave either no publication date
 ### Conversion benchmarks: hard paywalls vs. freemium
 
 - Hard paywalls convert far better than freemium at Day 35: 10.7% vs 2.1% median trial-to-paid conversion, per the State of Subscription Apps 2026 data. [S1][S4]
-- A different, 2025-edition benchmark of the same metric reported a different split — 12.11% (hard paywall) vs 2.18% (freemium) median Day-35 conversion — noted here as a conflicting figure because it is from a different annual report, not a correction of the 2026 figure above. [S3]
+- A different, 2025-edition benchmark of the same metric reported a different split: 12.11% (hard paywall) vs 2.18% (freemium) median Day-35 conversion (noted here as a conflicting figure because it is from a different annual report, not a correction of the 2026 figure above). [S3]
 - Hard paywalls generate far more revenue per install than freemium at Day 60 (8x: RPI $3.09 vs $0.38). [S1]
 - One-year subscriber retention is nearly identical for freemium and hard-paywall apps despite the conversion gap (28% freemium vs 27% hard paywall). [S1]
 - Only a small fraction of downloads convert to paying subscribers within the first month industry-wide (1.7% within 30 days). [S15]
@@ -204,39 +204,39 @@ Note on dates marked "(accessed)": these sources gave either no publication date
 
 - Default-plan pre-selection driving a specific shift in plan choice (e.g. "annual pre-selected → 35–45% choose it vs 15–20% when monthly is default"), attributed to "RevenueCat's 2025 data" on SEO/aggregator blogs but not found in RevenueCat's actual report or blog. Treated as unverifiable and dropped.
 - Displaying annual price as a weekly/monthly equivalent lifting trial-start rate by a specific percentage (e.g. "10–18% lift," "28–34% lift," "78% of top 100 apps do this"), attributed to "Adapty's benchmark data" on secondary blogs but not found on Adapty's own published report pages.
-- Paywall design-element prevalence for State of Subscription Apps 2026 (highlighted-pricing %, free-trial-messaging %, countdown-timer %, progress-bar %, scrollable-paywall %, text-density %) — a search-engine summary attributed specific figures to RevenueCat's report, but these could not be confirmed on the report or third-party analysis pages that were fetched directly.
-- A single "optimal" free-trial length across apps (e.g. 3-day vs 7-day vs 14-day as a universal best performer) — no source gives one definitive length applicable across categories.
-- Appcues-specific published research on paywall layout or plan-count effects on conversion — only general trial-conversion/onboarding guidance and Appcues' own SaaS pricing content was found.
-- A Phiture-published numeric benchmark for paywall content order or trial framing — Phiture's material is qualitative guidance, not original numbers.
-- A specific, isolated conversion-lift number for 3-tier "decoy" price anchoring (cheap/mid/best-value), isolated from other simultaneous paywall changes — the mechanism is described but no isolated, checkable percentage was published for it.
+- Paywall design-element prevalence for State of Subscription Apps 2026 (highlighted-pricing %, free-trial-messaging %, countdown-timer %, progress-bar %, scrollable-paywall %, text-density %): a search-engine summary attributed specific figures to RevenueCat's report, but these could not be confirmed on the report or third-party analysis pages that were fetched directly.
+- A single "optimal" free-trial length across apps (e.g. 3-day vs 7-day vs 14-day as a universal best performer): no source gives one definitive length applicable across categories.
+- Appcues-specific published research on paywall layout or plan-count effects on conversion. Only general trial-conversion/onboarding guidance and Appcues' own SaaS pricing content was found.
+- A Phiture-published numeric benchmark for paywall content order or trial framing. Phiture's material is qualitative guidance, not original numbers.
+- A specific, isolated conversion-lift number for 3-tier "decoy" price anchoring (cheap/mid/best-value), isolated from other simultaneous paywall changes. The mechanism is described but no isolated, checkable percentage was published for it.
 
 ### Proof, risk reversal, personalization, video, multi-page
 
-- A confirmed percentage lift from personalizing paywall copy (not just onboarding flow) directly from a user's quiz/onboarding answers (e.g., "referencing the user's stated goal in the paywall headline lifts conversion by X%") — surfaced only in unconfirmable aggregated search summaries.
-- A claim that adding a user's name to a paywall increases conversion by 17% — no locatable source page.
-- Blinkist's "Honest Paywall" pattern producing a specific "+23% conversion / -55% complaints" result from RevenueCat's own Blinkist-pattern article — that article contains only qualitative claims, not these percentages (the percentages are instead sourced to the original Growth.Design case study, used above as S5).
-- A claim that Noom converts "north of 10% of quiz completers to paying subscribers vs. a 2.7% median for subscription apps" — could not be traced to a specific, checkable page.
+- A confirmed percentage lift from personalizing paywall copy (not just onboarding flow) directly from a user's quiz/onboarding answers (e.g., "referencing the user's stated goal in the paywall headline lifts conversion by X%"). Surfaced only in unconfirmable aggregated search summaries.
+- A claim that adding a user's name to a paywall increases conversion by 17%: no locatable source page.
+- Blinkist's "Honest Paywall" pattern producing a specific "+23% conversion / -55% complaints" result from RevenueCat's own Blinkist-pattern article: that article contains only qualitative claims, not these percentages (the percentages are instead sourced to the original Growth.Design case study, used above as S5).
+- A claim that Noom converts "north of 10% of quiz completers to paying subscribers vs. a 2.7% median for subscription apps" could not be traced to a specific, checkable page.
 - Any Phiture-published number (rather than general practitioner guidance) on social proof, risk-reversal copy, or personalized paywalls.
 - Any Appcues case study specifically tying onboarding personalization to a paywall/subscription conversion lift with a checkable number.
-- A benchmark isolating "video hero" vs. "static image hero" conversion lift across many apps (as opposed to one app's before/after) — RevenueCat's rule-of-thumb ("8–15% conversion increases") could not be pinned to a specific dataset citation on the page.
-- A specific, sourced percentage for "carousel hero" paywalls outperforming static heroes, distinct from the general multi-page-paywall benchmark — only qualitative pattern descriptions were found.
-- Any RevenueCat/Adapty/Superwall number on testimonial placement (above vs. below the CTA) and its effect on conversion — found only as an untested recommendation, never a reported result.
+- A benchmark isolating "video hero" vs. "static image hero" conversion lift across many apps (as opposed to one app's before/after): RevenueCat's rule-of-thumb ("8–15% conversion increases") could not be pinned to a specific dataset citation on the page.
+- A specific, sourced percentage for "carousel hero" paywalls outperforming static heroes, distinct from the general multi-page-paywall benchmark. Only qualitative pattern descriptions were found.
+- Any RevenueCat/Adapty/Superwall number on testimonial placement (above vs. below the CTA) and its effect on conversion: found only as an untested recommendation, never a reported result.
 
 ### Rules
 
-- A specific, numbered Google Play Store policy page titled exactly "Paywall policy" separate from the general Subscriptions policy — Google folds these rules into the Subscriptions policy and the "Create and manage subscriptions" help page; no standalone "paywall" policy document was found.
-- Any language on the current FTC negative-option-rule landing page itself acknowledging the Eighth Circuit's vacatur in plain text — the page shows a 2026 ANPRM/Federal Register notice consistent with restarting rulemaking, but does not state the vacatur in so many words. (The vacatur itself is confirmed directly from the court opinion, S28.)
-- A primary-source Google Play or Apple rule specifically banning "delayed close buttons" (a disabled/hidden close control for N seconds) on a paywall screen by name — no Apple or Google policy page names this pattern explicitly; only FTC staff-report and case-based dark-pattern material addresses delayed/obscured exits, and it discusses cancellation flows and countdown timers rather than a disabled close (X) button specifically.
-- A published numeric California minimum required font size or exact required duration for "clear and conspicuous" proximity to the consent button under BPC §17602 — the statute uses only qualitative language, with no size/geometry threshold in the statutory text.
-- Confirmation of the FTC's negative-option rulemaking's current substantive content (the 2026 ANPRM's specific proposed requirements) — only its existence and date were confirmed; its proposed text was out of scope for this pass.
+- A specific, numbered Google Play Store policy page titled exactly "Paywall policy" separate from the general Subscriptions policy: Google folds these rules into the Subscriptions policy and the "Create and manage subscriptions" help page; no standalone "paywall" policy document was found.
+- Any language on the current FTC negative-option-rule landing page itself acknowledging the Eighth Circuit's vacatur in plain text: the page shows a 2026 ANPRM/Federal Register notice consistent with restarting rulemaking, but does not state the vacatur in so many words. (The vacatur itself is confirmed directly from the court opinion, S28.)
+- A primary-source Google Play or Apple rule specifically banning "delayed close buttons" (a disabled/hidden close control for N seconds) on a paywall screen by name. No Apple or Google policy page names this pattern explicitly; only FTC staff-report and case-based dark-pattern material addresses delayed/obscured exits, and it discusses cancellation flows and countdown timers rather than a disabled close (X) button specifically.
+- A published numeric California minimum required font size or exact required duration for "clear and conspicuous" proximity to the consent button under BPC §17602: the statute uses only qualitative language, with no size/geometry threshold in the statutory text.
+- Confirmation of the FTC's negative-option rulemaking's current substantive content (the 2026 ANPRM's specific proposed requirements): only its existence and date were confirmed; its proposed text was out of scope for this pass.
 
 ### Levers and archetypes
 
-- A clean, isolated A/B number for the free-trial-toggle-on-vs-off lever by itself — every published number bundles the toggle with a layout/proof change at the same time.
-- Any benchmark quantifying the effect of close-button delay in isolation — only qualitative practitioner guidance was found, no measured lift/conversion number.
-- A published single-vs-multi-page (long-form vs. short-form) aggregate benchmark with a percentage, beyond the confirmed onboarding-paywall figure (S13) — only conflicting practitioner anecdotes were found for the general case.
-- An aggregate lift percentage for the "rating hero" or "testimonial wall" archetypes as categories — only individual app examples were found, plus one unattributed line with no number on the page it appeared on.
-- A confirmed numeric case study for the "friend/referral gift" archetype's effect on conversion or revenue — the Headspace Guest Pass mechanic was found, but no reported lift number for it specifically.
-- Phiture-published numeric benchmarks specific to the free-trial-toggle lever — the article expected to carry this does not contain it; the confirmed 31%/64% figure instead traces to RevenueCat's case-study post (S6), not Phiture.
-- RevenueCat's exact percentage of 2026 paywalls with highlighted/recommended pricing and with free-trial messaging — those figures live inside the full report PDF, not on the web summary page that could be fetched and confirmed.
-- A vendor-published numeric result for "close delay" or "single vs multi-page" isolated from any other simultaneous change, from Mobbin or Phiture specifically — both returned only qualitative pattern catalogs.
+- A clean, isolated A/B number for the free-trial-toggle-on-vs-off lever by itself: every published number bundles the toggle with a layout/proof change at the same time.
+- Any benchmark quantifying the effect of close-button delay in isolation: only qualitative practitioner guidance was found, no measured lift/conversion number.
+- A published single-vs-multi-page (long-form vs. short-form) aggregate benchmark with a percentage, beyond the confirmed onboarding-paywall figure (S13): only conflicting practitioner anecdotes were found for the general case.
+- An aggregate lift percentage for the "rating hero" or "testimonial wall" archetypes as categories: only individual app examples were found, plus one unattributed line with no number on the page it appeared on.
+- A confirmed numeric case study for the "friend/referral gift" archetype's effect on conversion or revenue: the Headspace Guest Pass mechanic was found, but no reported lift number for it specifically.
+- Phiture-published numeric benchmarks specific to the free-trial-toggle lever: the article expected to carry this does not contain it; the confirmed 31%/64% figure instead traces to RevenueCat's case-study post (S6), not Phiture.
+- RevenueCat's exact percentage of 2026 paywalls with highlighted/recommended pricing and with free-trial messaging: those figures live inside the full report PDF, not on the web summary page that could be fetched and confirmed.
+- A vendor-published numeric result for "close delay" or "single vs multi-page" isolated from any other simultaneous change, from Mobbin or Phiture specifically: both returned only qualitative pattern catalogs.
