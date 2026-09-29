@@ -1,0 +1,11 @@
+{
+  "project": "demo", "topic": "paywall", "title": "Main paywall", "round": 2,
+  "surface": "paywall", "stage": "ab", "archetype": "testimonial-wall",
+  "states": ["main"], "trial": true,
+  "brief": "Start a trial on the yearly plan.",
+  "parent": { "round": 1, "id": "v01", "n": 1, "name": "Quote Stack" },
+  "variations": [
+    { "id": "v01", "dir": "v01", "name": "Control", "idea": "Round 1 #1 unchanged.", "control": true },
+    { "id": "v02", "dir": "v02", "name": "Trial CTA", "idea": "CTA names the trial length.", "variable": "CTA copy" }
+  ]
+}
