@@ -1,0 +1,17 @@
+{
+  "project": "demo",
+  "topic": "site",
+  "title": "Tempo site",
+  "round": 2,
+  "surface": "web",
+  "stage": "system",
+  "brief": "Smoke fixture: Track Hero across two templates.",
+  "parent": { "round": 1, "id": "v01", "n": 1, "name": "Track Hero" },
+  "templates": [ { "id": "home", "label": "Home" }, { "id": "features", "label": "Features" } ],
+  "variations": [
+    {
+      "id": "v01", "file": "v01/index.html", "name": "Track Hero", "idea": "The pick as a whole site.",
+      "pages": [ { "template": "home", "file": "v01/index.html" }, { "template": "features", "file": "v01/features.html" } ]
+    }
+  ]
+}

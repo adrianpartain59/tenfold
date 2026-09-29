@@ -139,3 +139,18 @@ break the app's *conventions* in explore mode; it may not break these.
    context.md. Wildcards: the ripple is written in the notes.
 10. Nothing from the failure list above.
 11. It is visibly different from every other variation in the round on ≥ 2 axes.
+
+## Web pre-send checklist (web mode)
+
+In web mode, sections 5 and 8 above (touch ergonomics and iOS platform fit)
+give way to `web-craft.md`. Run these in place of items 6 and 7 of the
+checklist above:
+
+1. The primary action is visible in the first viewport at 390 and at 1440.
+2. No horizontal scroll at 390; nothing clipped or overlapping at 834.
+3. Text over images passes contrast at every width.
+4. Every proof claim (rating, counts, quotes) comes from context.md's content fixture, with its source.
+5. Body text is 16 px or larger, with a 45 to 80 character line length on desktop.
+6. Every link and button has a hover and a visible focus state; targets are 44 px or larger on phones.
+7. The direction's `tokens.css` drives every page; no page redefines the type ramp in its own `<style>`.
+8. Nothing from the web failure list in `web-craft.md`.

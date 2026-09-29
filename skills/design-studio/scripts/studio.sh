@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # design-studio round manager + localhost server.
 #
-#   studio.sh new <project> <topic>   → create the next round dir, copy the gallery,
+#   studio.sh new <project> <topic> [--web] → next round dir + gallery (--web: web mode)
 #                                        print ROUND_DIR and the URL
 #   studio.sh serve                   → make sure the server is up (idempotent)
 #   studio.sh url <path-under-root>   → print localhost (+ LAN) URLs for a path
@@ -12,8 +12,8 @@
 #                                        automatic open after `check`.
 #   studio.sh icons <topic-dir>       → download the Feather icon sprite (MIT) into the topic
 #                                        as icons.svg + icons.txt, for apps with no icon export
-#   studio.sh sheets <round-dir>      → contact sheets: sheet-1.png / sheet-2.png, five
-#                                        variations side by side (needs Chrome or Chromium)
+#   studio.sh sheets <round-dir>      → contact sheets (needs Chrome): mobile sheet-N.png;
+#                                        web heroes.png + full-length sheet-N.png (+ pages-vNN.png)
 #
 # Everything lives under $DESIGN_STUDIO_ROOT (default ~/design-studio), served at
 # http://localhost:$DESIGN_STUDIO_PORT (default 4545). One server serves every
@@ -61,25 +61,45 @@ url() {
 }
 
 new_round() {
-  local project topic dir n
+  local project topic dir n web=""
   project="$(slug "$1")"; topic="$(slug "$2")"
+  [ "${3:-}" = "--web" ] && web=1
   dir="$ROOT/$project/$topic"
   mkdir -p "$dir"
   n=1; while [ -d "$dir/r$n" ]; do n=$((n+1)); done
   mkdir -p "$dir/r$n"
-  cp "$SKILL_DIR/assets/gallery.html" "$dir/r$n/index.html"
-  cp "$SKILL_DIR/assets/screen.css" "$dir/r$n/screen.css"
+  if [ -n "$web" ]; then
+    cp "$SKILL_DIR/assets/gallery-web.html" "$dir/r$n/index.html"
+    cp "$SKILL_DIR/assets/web.css" "$dir/r$n/web.css"
+  else
+    cp "$SKILL_DIR/assets/gallery.html" "$dir/r$n/index.html"
+    cp "$SKILL_DIR/assets/screen.css" "$dir/r$n/screen.css"
+  fi
   # Tokens live once per topic; rounds link ../tokens.css so every round matches.
   serve >/dev/null
   echo "ROUND r$n"
   echo "ROUND_DIR $dir/r$n"
   echo "TOPIC_DIR $dir"
   [ "$n" -gt 1 ] && echo "PREV_ROUND_DIR $dir/r$((n-1))"
+  [ -n "$web" ] && echo "SURFACE web"
   url "$project/$topic/r$n/"
+}
+
+# is_web <round-dir>: true when the round's manifest says "surface": "web"
+is_web() {
+  python3 - "$1" <<'PY' 2>/dev/null
+import json, os, sys
+try:
+    m = json.load(open(os.path.join(sys.argv[1], "manifest.json")))
+except Exception:
+    sys.exit(1)
+sys.exit(0 if m.get("surface") == "web" else 1)
+PY
 }
 
 check() {
   local d="${1%/}"
+  if is_web "$d"; then python3 "$SKILL_DIR/scripts/web_check.py" "$d"; return; fi
   python3 - "$d" <<'PY'
 import json, os, sys, re
 d = sys.argv[1]
@@ -147,11 +167,34 @@ chrome_bin() {
   return 1
 }
 
+# sheets_web <round-dir> <rel-path> <chrome>: heroes.png, full-length phone sheets,
+# and per-variation page strips in the system stage. Two headless passes: the
+# first measures every page's height, the second screenshots at that height.
+sheets_web() {
+  local d="$1" base="http://127.0.0.1:$PORT/$2" chrome="$3" f n w h
+  python3 "$SKILL_DIR/scripts/web_sheets.py" measure "$d"
+  "$chrome" --headless=new --disable-gpu --virtual-time-budget=10000 --window-size=1440,900 \
+    --dump-dom "$base/_measure.html" > "$d/_measure.out" 2>/dev/null || true
+  rm -f "$d/_measure.html"
+  python3 "$SKILL_DIR/scripts/web_sheets.py" layout "$d" > "$d/_layout.txt"
+  rm -f "$d/_measure.out"
+  while read -r f w h; do
+    n="${f#_}"; n="${n%.html}"
+    "$chrome" --headless=new --hide-scrollbars --disable-gpu --force-device-scale-factor=1 \
+      --window-size="$w,$h" --virtual-time-budget=10000 \
+      --screenshot="$d/$n.png" "$base/$f" >/dev/null 2>&1 || true
+    rm -f "$d/$f"
+    if [ -s "$d/$n.png" ]; then echo "SHEET $d/$n.png"; else echo "SHEET failed: $n" >&2; fi
+  done < "$d/_layout.txt"
+  rm -f "$d/_layout.txt"
+}
+
 sheets() {
   serve >/dev/null
   local d; d="$(cd "$1" && pwd)"
   local rel="${d#"$ROOT"/}"
   local chrome; chrome="$(chrome_bin)" || { echo "no Chrome/Chromium found (set CHROME=/path)" >&2; exit 6; }
+  if is_web "$d"; then sheets_web "$d" "$rel" "$chrome"; return; fi
   python3 - "$d" <<'PY'
 import json, os, sys, html
 d = sys.argv[1]
@@ -183,7 +226,7 @@ PY
 
 cmd="${1:-}"; shift || true
 case "$cmd" in
-  new)   [ $# -ge 2 ] || { echo "usage: studio.sh new <project> <topic>" >&2; exit 2; }; new_round "$1" "$2" ;;
+  new)   [ $# -ge 2 ] || { echo "usage: studio.sh new <project> <topic> [--web]" >&2; exit 2; }; new_round "$1" "$2" "${3:-}" ;;
   serve) serve; url "" ;;
   url)   url "${1:-}" ;;
   check) check "$1"; [ -n "${DESIGN_STUDIO_NO_OPEN:-}" ] || open_round "$1" ;;

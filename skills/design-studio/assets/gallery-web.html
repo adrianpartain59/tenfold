@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design Studio · Web</title>
+<style>
+  :root {
+    --page: #ECECEF; --panel: #FFFFFF; --ink: #1C1C1E; --ink2: #6B6B73; --ink3: #A1A1AA; --line: #DEDEE3;
+    --pick: #1F7AE0; --fav: #D6457A; --wild: #B7791F; --bezel: #0D0D0F; --chrome: #F4F4F6;
+    --shadow: 0 1px 2px rgba(0,0,0,.05), 0 14px 40px rgba(0,0,0,.12);
+  }
+  html[data-theme="dark"] {
+    --page: #0B0B0D; --panel: #17171A; --ink: #EDEDF0; --ink2: #9A9AA3; --ink3: #62626B; --line: #2A2A30;
+    --pick: #5AA2F0; --fav: #F06A9A; --wild: #E0A64A; --bezel: #2B2B30; --chrome: #202024;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 14px 40px rgba(0,0,0,.5);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--page); color: var(--ink); font: 14px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  header { max-width: 1920px; margin: 0 auto; padding: 28px 24px 8px; display: grid; gap: 10px; }
+  .crumbs { color: var(--ink2); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .crumbs a { text-decoration: none; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); }
+  .crumbs a.on { background: var(--ink); color: var(--page); border-color: var(--ink); }
+  h1 { margin: 0; font-size: 28px; letter-spacing: -.02em; line-height: 1.15; }
+  .brief { margin: 0; max-width: 900px; color: var(--ink2); font-size: 15px; }
+  .feedback { max-width: 900px; margin: 2px 0 0; padding: 10px 14px; border-left: 3px solid var(--pick); background: var(--panel); border-radius: 0 10px 10px 0; font-size: 14px; }
+  .feedback b { display: block; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink2); margin-bottom: 2px; }
+  .bar { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--page) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .bar > div { max-width: 1920px; margin: 0 auto; padding: 10px 24px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); }
+  .seg button { border: 0; background: none; color: var(--ink2); font: inherit; font-size: 12px; font-weight: 650; padding: 5px 12px; border-radius: 999px; cursor: pointer; }
+  .seg button.on { background: var(--ink); color: var(--page); }
+  .legend { margin-left: auto; display: flex; gap: 14px; color: var(--ink2); font-size: 12px; font-weight: 600; flex-wrap: wrap; }
+  .hint { color: var(--ink3); font-size: 12px; }
+
+  /* --dw = desktop thumbnail width in px (unitless); the phone is ~a quarter of it */
+  body { --dw: 440; }
+  body[data-size="s"] { --dw: 320; }
+  body[data-size="l"] { --dw: 640; }
+  body { --ds: calc(var(--dw) / 1440); --pw: calc(var(--dw) * .26); --ps: calc(var(--pw) / 390); }
+  @media (max-width: 700px) { body, body[data-size] { --dw: 300; } }
+  main { max-width: 1920px; margin: 0 auto; padding: 22px 24px 120px; display: grid; gap: 48px 32px; grid-template-columns: repeat(auto-fill, minmax(calc(var(--dw) * 1px + 28px), 1fr)); }
+  .card { display: grid; gap: 12px; align-content: start; cursor: zoom-in; }
+  .meta { width: calc(var(--dw) * 1px); display: grid; gap: 4px; }
+  .meta .top { display: flex; align-items: baseline; gap: 8px; }
+  .num { font-size: 26px; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .name { font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
+  .idea { margin: 0; color: var(--ink2); font-size: 13px; }
+  .pages { margin: 0; color: var(--ink3); font-size: 12px; }
+  .chips { display: flex; gap: 5px; flex-wrap: wrap; }
+  .chip { font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink2); }
+  .chip.wild { color: var(--wild); border-color: currentColor; }
+  .chip.pick { color: #fff; background: var(--pick); border-color: var(--pick); }
+  .chip.fav { color: #fff; background: var(--fav); border-color: var(--fav); }
+  .chip.cur { color: var(--page); background: var(--ink2); border-color: var(--ink2); }
+
+  .frames { position: relative; width: calc(var(--dw) * 1px + 28px); padding-bottom: 32px; }
+  .browser { width: calc(var(--dw) * 1px); border-radius: 10px; overflow: hidden; background: var(--panel); box-shadow: var(--shadow); border: 1px solid var(--line); transition: transform .15s ease; }
+  .card:hover .browser { transform: translateY(-3px); }
+  .bar-top { height: 24px; display: flex; align-items: center; gap: 6px; padding: 0 10px; background: var(--chrome); border-bottom: 1px solid var(--line); }
+  .bar-top i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); flex: none; }
+  .bar-top span { margin-left: 8px; font-size: 10.5px; color: var(--ink3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .vp { position: relative; overflow: hidden; background: #fff; }
+  .browser .vp { height: calc(var(--dw) * 900px / 1440); }
+  .vp iframe { border: 0; display: block; transform-origin: 0 0; pointer-events: none; background: #fff; }
+  .browser .vp iframe { width: 1440px; height: 900px; transform: scale(var(--ds)); }
+  .handset .vp iframe { width: 390px; height: 844px; transform: scale(var(--ps)); }
+  .vp img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+  .handset { position: absolute; right: 0; bottom: 0; width: calc(var(--pw) * 1px + 10px); border: 5px solid var(--bezel); border-radius: calc(var(--pw) * .12px + 5px); background: var(--bezel); box-shadow: var(--shadow); overflow: hidden; }
+  .handset .vp { height: calc(var(--pw) * 844px / 390); border-radius: calc(var(--pw) * .12px); }
+  .card.pick .browser { outline: 3px solid var(--pick); outline-offset: 4px; }
+  .card.fav .browser { outline: 3px solid var(--fav); outline-offset: 4px; }
+  .card.pick.fav .browser { outline-color: var(--pick); box-shadow: 0 0 0 10px var(--fav), var(--shadow); }
+
+  #focus { position: fixed; inset: 0; z-index: 20; background: color-mix(in srgb, var(--page) 94%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: none; flex-direction: column; }
+  #focus.open { display: flex; }
+  .ftop { display: flex; gap: 10px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .ftop .num { font-size: 20px; }
+  .ftop .name { font-size: 15px; }
+  .tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tabs button { border: 1px solid var(--line); background: var(--panel); color: var(--ink2); font: inherit; font-size: 12px; font-weight: 650; padding: 4px 10px; border-radius: 999px; cursor: pointer; }
+  .tabs button.on { background: var(--ink); color: var(--page); border-color: var(--ink); }
+  .spacer { flex: 1; }
+  .icon { border: 1px solid var(--line); background: var(--panel); color: var(--ink); width: 32px; height: 32px; border-radius: 999px; font-size: 15px; cursor: pointer; }
+  a.live { font-size: 12px; font-weight: 650; color: var(--ink2); text-decoration: none; }
+  .fbody { flex: 1; display: flex; min-height: 0; }
+  .stage { flex: 1; min-width: 0; display: flex; justify-content: center; align-items: flex-start; padding: 16px; }
+  .slot { position: relative; overflow: hidden; border-radius: 10px; box-shadow: var(--shadow); background: #fff; }
+  .slot.phone { border-radius: 40px; border: 8px solid var(--bezel); }
+  .slot iframe { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; background: #fff; }
+  .side { width: 300px; flex: none; padding: 16px; border-left: 1px solid var(--line); overflow: auto; display: grid; gap: 10px; align-content: start; }
+  .notes { display: grid; gap: 10px; font-size: 13px; color: var(--ink2); }
+  .notes b { display: block; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink3); }
+  @media (max-width: 1000px) { .side { display: none; } }
+  .err { padding: 40px 24px; color: var(--ink2); }
+</style>
+</head>
+<body>
+<header id="head"></header>
+<div class="bar"><div>
+  <div class="seg" id="theme"><button data-v="light">Light</button><button data-v="dark">Dark</button></div>
+  <div class="seg" id="size"><button data-v="s">S</button><button data-v="m" class="on">M</button><button data-v="l">L</button></div>
+  <span class="hint">Click a site to browse it · ← → sites · [ ] pages · Esc closes</span>
+  <div class="legend" id="legend"></div>
+</div></div>
+<main id="grid"></main>
+<div id="focus">
+  <div class="ftop">
+    <span class="num" id="fnum"></span><span class="name" id="fname"></span>
+    <div class="tabs" id="ftabs"></div>
+    <span class="spacer"></span>
+    <div class="seg" id="fwidth"><button data-w="1440" class="on">Desktop</button><button data-w="834">Tablet</button><button data-w="390">Phone</button></div>
+    <a class="live" id="flive" target="_blank" rel="noopener">Open live ↗</a>
+    <button class="icon" id="prev" aria-label="Previous site">←</button>
+    <button class="icon" id="next" aria-label="Next site">→</button>
+    <button class="icon" id="close" aria-label="Close">✕</button>
+  </div>
+  <div class="fbody">
+    <div class="stage" id="stage"><div class="slot" id="slot"><iframe id="fframe" title="Page"></iframe></div></div>
+    <aside class="side" id="fside"></aside>
+  </div>
+</div>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+let M = {}, items = [], cur = -1, page = 0, width = 1440;
+let theme = "light";
+try { theme = localStorage.getItem("ds-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch {}
+
+function applyTheme(t) {
+  theme = t;
+  document.documentElement.dataset.theme = t;
+  try { localStorage.setItem("ds-theme", t); } catch {}
+  document.querySelectorAll("#theme button").forEach((b) => b.classList.toggle("on", b.dataset.v === t));
+}
+function pagesOf(it) { return it.pages?.length ? it.pages : it.file ? [{ template: "home", file: it.file }] : []; }
+function tlabel(p) { const t = (M.templates ?? []).find((x) => x.id === p.template); return p.label ?? t?.label ?? p.template ?? "Page"; }
+function samePath(a, b) { const n = (p) => p.replace(/index\.html$/, ""); return n(a) === n(b); }
+function shot(it, kind) {
+  if (it.image) return `<img src="${esc(it.image)}" alt="">`;
+  if (!it.file) return "";
+  return `<iframe loading="lazy" tabindex="-1" src="${esc(it.file)}" title="${esc(it.name)} ${kind}"></iframe>`;
+}
+function frames(it) {
+  const path = (it.file ?? it.image ?? "").replace(/index\.html$/, "") || "/";
+  return `<div class="frames">
+    <div class="browser"><div class="bar-top"><i></i><i></i><i></i><span>${esc(path)}</span></div><div class="vp">${shot(it, "desktop")}</div></div>
+    ${it.image ? "" : `<div class="handset"><div class="vp">${shot(it, "phone")}</div></div>`}
+  </div>`;
+}
+function chips(it) {
+  const c = [];
+  if (it.isCurrent) c.push(`<span class="chip cur">Current</span>`);
+  if (it.id === M.agentPick) c.push(`<span class="chip pick">Claude's pick</span>`);
+  if (it.id === M.predictedPick) c.push(`<span class="chip fav">Your likely pick</span>`);
+  for (const t of it.tags ?? []) c.push(`<span class="chip ${t === "wildcard" ? "wild" : ""}">${esc(t)}</span>`);
+  return `<div class="chips">${c.join("")}</div>`;
+}
+function label(it, i) { return it.isCurrent ? "·" : String(it.n ?? i); }
+
+function render() {
+  const r = M.round ?? 1;
+  const rounds = Array.from({ length: r }, (_, k) => k + 1)
+    .map((k) => `<a href="../r${k}/" class="${k === r ? "on" : ""}">Round ${k}</a>`).join("");
+  const parent = M.parent ? ` · refining <a href="../r${M.parent.round}/#${esc(M.parent.id)}">R${M.parent.round} #${esc(M.parent.n ?? M.parent.id)} ${esc(M.parent.name ?? "")}</a>` : "";
+  const kind = { directions: "directions", converge: "refinements", system: "system proof" }[M.stage] ?? "directions";
+  const count = items.filter((x) => !x.isCurrent).length;
+  $("#head").innerHTML = `
+    <div class="crumbs"><span>${esc(M.project ?? "")}</span><span>/</span><span>${esc(M.topic ?? "")}</span>${rounds}</div>
+    <h1>${esc(M.title ?? "Web round")} <span style="color:var(--ink3);font-weight:600">· ${count} ${kind}${parent}</span></h1>
+    ${M.brief ? `<p class="brief">${esc(M.brief)}</p>` : ""}
+    ${M.feedback ? `<div class="feedback"><b>Your feedback this round answers</b>${esc(M.feedback)}</div>` : ""}`;
+  document.title = `${M.title ?? "Web"} · R${r}`;
+  $("#legend").innerHTML = `<span style="color:var(--pick)">■ Claude's pick</span><span style="color:var(--fav)">■ Your likely pick</span><span style="color:var(--wild)">■ Wildcard</span>`;
+  $("#grid").innerHTML = items.map((it, i) => {
+    const ps = pagesOf(it);
+    const cls = `card${it.id === M.agentPick ? " pick" : ""}${it.id === M.predictedPick ? " fav" : ""}`;
+    return `<section class="${cls}" id="${esc(it.id)}" data-i="${i}">
+      <div class="meta"><div class="top"><span class="num">${label(it, i)}</span><span class="name">${esc(it.name)}</span></div>
+      <p class="idea">${esc(it.idea ?? "")}</p>
+      ${ps.length > 1 ? `<p class="pages">${ps.length} pages: ${ps.map((p) => esc(tlabel(p))).join(" · ")}</p>` : ""}
+      ${chips(it)}</div>
+      ${frames(it)}
+    </section>`;
+  }).join("");
+  document.querySelectorAll(".card").forEach((c) => c.addEventListener("click", () => {
+    const it = items[+c.dataset.i];
+    // On a phone the focus overlay is cramped; browse the page itself instead.
+    if (matchMedia("(max-width: 700px)").matches && it.file) { location.href = it.file; return; }
+    open(+c.dataset.i);
+  }));
+}
+
+function fit() {
+  if (cur < 0) return;
+  const stage = $("#stage"), slot = $("#slot"), f = $("#fframe");
+  const phone = width <= 430, bw = phone ? 16 : 0;
+  const sw = stage.clientWidth - 32 - bw, sh = stage.clientHeight - 32 - bw;
+  const s = Math.min(1, sw / width);
+  slot.classList.toggle("phone", phone);
+  slot.style.width = `${Math.round(width * s) + bw}px`;
+  slot.style.height = `${sh + bw}px`;
+  f.style.width = `${width}px`;
+  f.style.height = `${Math.round(sh / s)}px`;
+  f.style.transform = `scale(${s})`;
+}
+function markTab() { $("#ftabs").querySelectorAll("button").forEach((b) => b.classList.toggle("on", +b.dataset.k === page)); }
+function go(k) {
+  const it = items[cur], ps = pagesOf(it), f = $("#fframe");
+  if (!ps.length) {
+    f.removeAttribute("src");
+    f.srcdoc = `<img src="${esc(new URL(it.image, location.href).href)}" style="width:100%;display:block">`;
+    $("#flive").href = it.image;
+  } else {
+    page = (k + ps.length) % ps.length;
+    f.removeAttribute("srcdoc");
+    f.src = ps[page].file;
+    $("#flive").href = ps[page].file;
+  }
+  markTab(); fit();
+  const tail = ps.length > 1 ? `/${ps[page].template ?? page}` : "";
+  history.replaceState(null, "", `#${it.id}${tail}`);
+}
+function open(i, pg = 0) {
+  cur = (i + items.length) % items.length;
+  const it = items[cur], ps = pagesOf(it);
+  page = Math.max(0, Math.min(pg, ps.length - 1));
+  $("#fnum").textContent = label(it, cur);
+  $("#fname").textContent = it.name ?? "";
+  $("#ftabs").innerHTML = ps.length > 1 ? ps.map((p, k) => `<button data-k="${k}">${esc(tlabel(p))}</button>`).join("") : "";
+  $("#ftabs").querySelectorAll("button").forEach((b) => (b.onclick = () => go(+b.dataset.k)));
+  const notes = Object.entries(it.notes ?? {}).map(([k, v]) => `<div><b>${esc(k)}</b>${esc(v)}</div>`).join("");
+  $("#fside").innerHTML = `<div class="name">${esc(it.name)}</div><p class="idea">${esc(it.idea ?? "")}</p>${chips(it)}<div class="notes">${notes}</div>`;
+  $("#focus").classList.add("open");
+  go(page);
+}
+function close() {
+  $("#focus").classList.remove("open"); cur = -1;
+  $("#fframe").removeAttribute("src"); $("#fframe").removeAttribute("srcdoc");
+  history.replaceState(null, "", location.pathname);
+}
+function onKey(e) {
+  if (e.key === "Escape") return close();
+  const digit = /^[0-9]$/.test(e.key) ? items.findIndex((x) => x.n === (e.key === "0" ? 10 : +e.key)) : -1;
+  if (digit >= 0) return open(digit);
+  if (cur < 0) return;
+  if (e.key === "ArrowRight") return open(cur + 1);
+  if (e.key === "ArrowLeft") return open(cur - 1);
+  if (e.key === "]") return go(page + 1);
+  if (e.key === "[") return go(page - 1);
+}
+
+$("#fframe").addEventListener("load", () => {
+  if (cur < 0) return;
+  const w = $("#fframe").contentWindow;
+  let path;
+  try { path = w.location.pathname; w.document.addEventListener("keydown", onKey); } catch { return; }
+  // A link clicked inside the page moves the tab highlight with it.
+  const ps = pagesOf(items[cur]);
+  const k = ps.findIndex((p) => samePath(new URL(p.file, location.href).pathname, path));
+  if (k >= 0 && k !== page) { page = k; markTab(); $("#flive").href = ps[k].file; }
+});
+document.addEventListener("keydown", onKey);
+addEventListener("resize", fit);
+$("#close").onclick = close;
+$("#prev").onclick = () => open(cur - 1);
+$("#next").onclick = () => open(cur + 1);
+document.querySelectorAll("#theme button").forEach((b) => (b.onclick = () => applyTheme(b.dataset.v)));
+document.querySelectorAll("#size button").forEach((b) => (b.onclick = () => {
+  document.body.dataset.size = b.dataset.v;
+  document.querySelectorAll("#size button").forEach((x) => x.classList.toggle("on", x === b));
+}));
+document.querySelectorAll("#fwidth button").forEach((b) => (b.onclick = () => {
+  width = +b.dataset.w;
+  document.querySelectorAll("#fwidth button").forEach((x) => x.classList.toggle("on", x === b));
+  fit();
+}));
+
+applyTheme(theme);
+fetch("manifest.json", { cache: "no-store" }).then((r) => r.json()).then((m) => {
+  M = m;
+  items = (m.variations ?? []).map((v, i) => ({ n: i + 1, ...v }));
+  if (m.current) items.unshift({ id: "current", name: m.current.label ?? "Today", idea: m.current.idea ?? "The site as it ships now.", isCurrent: true, ...m.current });
+  render();
+  const [h, t] = location.hash.slice(1).split("/");
+  const i = items.findIndex((x) => x.id === h);
+  if (i >= 0) open(i, Math.max(0, pagesOf(items[i]).findIndex((p) => p.template === t)));
+}).catch((e) => { $("#grid").outerHTML = `<div class="err">No readable <code>manifest.json</code> next to this page (${esc(e.message)}).</div>`; });
+</script>
+</body>
+</html>

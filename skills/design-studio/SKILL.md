@@ -1,7 +1,7 @@
 ---
 name: design-studio
-argument-hint: "[screen, card or flow to design]"
-description: Use when the user wants to design, redesign, rethink, restyle, or see options, variations, directions, or mockups for an app screen, card, widget, component, sheet, or flow (mobile/iOS/React Native app UI especially), including "render an HTML doc with designs", "give me variations", "show me options for X", or picking a variation from an earlier design round to iterate on.
+argument-hint: "[screen, card, flow or website to design]"
+description: Use when the user wants to design, redesign, rethink, restyle, or see options, variations, directions, or mockups for an app screen, card, widget, component, sheet, or flow (mobile/iOS/React Native app UI especially), or for a website, landing page or marketing site (web mode), including "render an HTML doc with designs", "give me variations", "show me options for X", or picking a variation from an earlier design round to iterate on.
 ---
 
 # Design Studio
@@ -105,6 +105,27 @@ of the chosen one with the user's feedback. Repeat until they say build.
    follow the adapter's build path, or build it in the project's existing
    components and tokens. Don't start code before this pick.
 
+## Web mode (websites, landing pages, marketing sites)
+
+On when the adapter says `surface: web` or the brief names a website, landing
+page, marketing site or web page. Read `references/web.md` and
+`references/web-craft.md` before step 1. They take the place of
+mockup-craft.md and the phone-only parts of principles.md. In short:
+
+- `studio.sh new <project> <topic> --web`: the round gets the web gallery
+  (desktop + phone frames, a Desktop/Tablet/Phone switch, page tabs, live
+  links) and `web.css`.
+- A variation is a folder `vNN/` with its own `tokens.css` and `site.css` on
+  top of the topic's brand `tokens.css`, and real pages that scroll and link.
+- Rounds are staged (`manifest.stage`): `directions` (10 full home pages),
+  `converge`, then `system` (the pick across every template, as a site). From
+  `converge` on, the pick question offers `System proof #N`. A bare pick in
+  `converge` means system proof; a bare pick in `system` means build.
+- `check` and `sheets` detect `"surface": "web"` and run the web checks and
+  the web contact sheets (`heroes.png`, full-length `sheet-N.png`,
+  `pages-vNN.png`).
+- TASTE.md is shared; log web rounds with `web` in the Project / topic column.
+
 ## Rules that hold every round
 
 - The link goes out as soon as the round renders, as a localhost URL the user
@@ -143,3 +164,6 @@ the same command with the sandbox disabled; it only serves mockups.
 | Mockups that look like a web page | Native patterns, real tokens, icons and images: mockup-craft.md |
 | Icons linked straight from a CDN | Browsers block cross-origin `<use href>`; use the topic's local `icons.svg` |
 | Endless self-QA | One check pass, one fix batch, send |
+| Judging a website on a static hero | Web mode renders full-length pages; the premium feel lives below the fold |
+| Ten web directions on one type system | Each direction owns its `vNN/tokens.css`; type + grid are axes, not skins |
+| System-stage pages drifting from the pick | Pages build on the direction's `tokens.css`/`site.css`/`chrome.js` and never edit them |

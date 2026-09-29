@@ -31,6 +31,22 @@ within a round.
 Order the set so the gallery reads well: congruent ones first, safest to
 boldest, wildcards last.
 
+### Web mode axes
+
+In web mode (`web.md`) each direction is a design system, so the axes are
+about the whole page. Every pair still differs on at least two, and
+type or colour alone doesn't count.
+
+| Axis | Positions (examples) |
+|---|---|
+| Hero concept | product screen hero · mascot/brand-art stage · big claim typography · live demo · proof-first (rating, results) · a transformation/before-after |
+| Narrative order | problem → answer → proof · feature tour · a day in the life · audience split (who is it for) · proof early vs late |
+| Grid and density | airy editorial · dense bento · alternating split rows · single centred column · full-bleed bands |
+| Type personality | geometric grotesk · humanist sans · serif display + sans body · condensed display · rounded friendly |
+| Art direction | device-framed screens · floating UI fragments · mascot scenes · illustration · photography (only if provided) |
+| Colour field | light ground · dark ground · brand-colour bands · the app's own sky/ground |
+| Motion concept | still · reveal on scroll · one hero animation · interactive demo |
+
 ## Round 2+: converge on the pick
 
 The user picked #N (possibly with feedback, possibly "N's top with M's bottom").

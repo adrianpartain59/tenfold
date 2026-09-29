@@ -62,6 +62,19 @@ Each round:
 
 Old rounds stay put, so every link keeps working.
 
+## Web mode
+
+Redesigning a website instead of a screen? Ask for it the same way ("redesign
+our marketing site", "10 directions for the landing page") or put
+`surface: web` in your adapter. Web rounds run in stages:
+
+1. **Directions:** ten full-length home pages, each with its own type, grid
+   and art direction, shown in a desktop frame with the phone version beside
+   it. Click one to scroll it, switch widths, or open it live.
+2. **Converge:** refinements of the one you pick.
+3. **System proof:** your pick applied to every page template, linked into a
+   site you can click through, before anything gets built.
+
 ## Teach it your app (optional)
 
 Add `.design-studio/adapter.md` at your project root. The skill reads it

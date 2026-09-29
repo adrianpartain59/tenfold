@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.0 · 2026-09-28
+
+Web mode, for redesigning websites, landing pages and marketing sites.
+
+- `studio.sh new <project> <topic> --web` starts a web round: a gallery with desktop and phone frames, a Desktop/Tablet/Phone switch, page tabs and live links.
+- Each web direction carries its own design system (`vNN/tokens.css`) on top of the brand base, and real pages that scroll.
+- Staged rounds: `directions` (full home pages), `converge`, then `system` (the pick across every template, linked as a site).
+- `check` validates web rounds (links, direction tokens, template coverage); `sheets` writes `heroes.png`, full-length phone sheets and per-variation page strips.
+- New references: `web.md`, `web-craft.md`. Mobile mode is unchanged.
+- `tests/studio.test.sh` covers both modes.
+
 ## 1.0.0 — 2026-09-28
 
 First public release as Tenfold (the skill inside is `design-studio`).
