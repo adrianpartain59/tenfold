@@ -176,6 +176,20 @@ chrome_bin() {
   return 1
 }
 
+# shoot <round-dir> <rel-path> <chrome>: screenshot every _sheet-*.html wrapper
+# in the round to sheet-*.png (same name minus the underscore), then delete it.
+shoot() {
+  local d="$1" rel="$2" chrome="$3" f n
+  for f in "$d"/_sheet-*.html; do
+    n="$(basename "$f" .html)"; n="${n#_}"
+    "$chrome" --headless=new --hide-scrollbars --disable-gpu --force-device-scale-factor=1 \
+      --window-size=2133,964 --virtual-time-budget=6000 \
+      --screenshot="$d/$n.png" "http://127.0.0.1:$PORT/$rel/$(basename "$f")" >/dev/null 2>&1 || true
+    rm -f "$f"
+    if [ -s "$d/$n.png" ]; then echo "SHEET $d/$n.png"; else echo "SHEET failed: $n" >&2; fi
+  done
+}
+
 # sheets_web <round-dir> <rel-path> <chrome>: heroes.png, full-length phone sheets,
 # and per-variation page strips in the system stage. Two headless passes: the
 # first measures every page's height, the second screenshots at that height.
@@ -205,6 +219,7 @@ sheets() {
   local chrome; chrome="$(chrome_bin)" || { echo "no Chrome/Chromium found (set CHROME=/path)" >&2; exit 6; }
   case "$(surface_of "$d")" in
     web) sheets_web "$d" "$rel" "$chrome"; return ;;
+    paywall) python3 "$SKILL_DIR/scripts/paywall_sheets.py" "$d" >/dev/null; shoot "$d" "$rel" "$chrome"; return ;;
   esac
   python3 - "$d" <<'PY'
 import json, os, sys, html
@@ -224,15 +239,7 @@ for k in range(0, len(vs), 5):
             'box-shadow:0 10px 30px rgba(0,0,0,.12);display:block}</style>' + cells)
     open(os.path.join(d, f"_sheet-{k//5+1}.html"), "w").write(page)
 PY
-  local f n
-  for f in "$d"/_sheet-*.html; do
-    n="$(basename "$f" .html)"; n="${n#_}"
-    "$chrome" --headless=new --hide-scrollbars --disable-gpu --force-device-scale-factor=1 \
-      --window-size=2133,964 --virtual-time-budget=6000 \
-      --screenshot="$d/$n.png" "http://127.0.0.1:$PORT/$rel/$(basename "$f")" >/dev/null 2>&1 || true
-    rm -f "$f"
-    if [ -s "$d/$n.png" ]; then echo "SHEET $d/$n.png"; else echo "SHEET failed: $n" >&2; fi
-  done
+  shoot "$d" "$rel" "$chrome"
 }
 
 cmd="${1:-}"; shift || true

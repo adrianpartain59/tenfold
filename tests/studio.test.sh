@@ -177,6 +177,22 @@ else
   echo "  skip gallery DOM tests (no Chrome/Chromium)"
 fi
 
+echo "paywall mode: sheets"
+if bash -c 'eval "$(sed -n "/^chrome_bin()/,/^}/p" "$0")"; chrome_bin' "$STUDIO" >/dev/null 2>&1; then
+  t="$(stage paywall-smoke demo psheets)"
+  cp "$ASSETS/screen.css" "$ASSETS/paywall.css" "$t/r1/"
+  out="$(bash "$STUDIO" sheets "$t/r1" 2>&1)"
+  for s in main alt-plan exit; do
+    [ -s "$t/r1/sheet-$s-1.png" ] && ok "sheets writes sheet-$s-1.png" || bad "sheets writes sheet-$s-1.png" "$out"
+  done
+  ls "$t/r1" | grep -q '^_' && bad "paywall sheets clean up wrappers" "$(ls "$t/r1")" || ok "paywall sheets clean up wrappers"
+  t="$(stage mobile-smoke demo msheets)"
+  out="$(bash "$STUDIO" sheets "$t/r1" 2>&1)"
+  [ -s "$t/r1/sheet-1.png" ] && ok "mobile sheets still write sheet-1.png" || bad "mobile sheets still write sheet-1.png" "$out"
+else
+  echo "  skip paywall sheets (no Chrome/Chromium)"
+fi
+
 # --- new tests above this line ---
 echo
 echo "$pass passed, $fail failed"
