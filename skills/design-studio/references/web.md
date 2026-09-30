@@ -119,5 +119,5 @@ Then follow the adapter's `build` path.
 ## Taste log
 
 Web rounds go in the same `~/design-studio/TASTE.md`, with `web` in the
-Project / topic column (`pepai / web home`), so marketing-surface patterns
+Project / topic column (`acme / web home`), so marketing-surface patterns
 from app rounds inform the prediction.

@@ -243,19 +243,19 @@ and for `ab` the experiment definition (control, variants, the one variable
 each changes, the success metric, the minimum sample). Then follow the
 adapter's `build` path.
 
-## PepAI adapter (pepai repo, not this repo)
+## Example adapter
 
 Listed so the public design stays honest about what a real adapter needs.
 
-- `paywall-data`: a script in `.design-studio/` that queries Superwall's
-  ClickHouse per paywall ID.
-- `proof`: App Store Connect ratings and reviews.
-- `offer`: the live paywall IDs, products, the friend/promo/exit states.
-- `buildable`: the Superwall editor's elements.
-- `build`: the superwall-editor skill, edited in browser tabs, and Adrian
-  publishes.
-- The rulings from the 2026-09-28 compliance check: billed price first,
-  auto-renewal text, web checkout US-only.
+- `paywall-data`: a script in `.design-studio/` that queries the paywall
+  platform's analytics per paywall ID.
+- `proof`: the app store's ratings and reviews.
+- `offer`: the live paywall IDs, products, and states.
+- `buildable`: the paywall editor's elements.
+- `build`: the paywall editor, edited in browser tabs, stopping before
+  publish; the owner publishes.
+- Standing rulings from a compliance check: billed price first, auto-renewal
+  text, external purchase links only where the storefront allows.
 
 ## Build order
 
@@ -268,7 +268,7 @@ Listed so the public design stays honest about what a real adapter needs.
    `paywall_sheets.py`), fixture and tests.
 5. SKILL.md: a "Paywall mode" section, description trigger words, common
    mistakes rows. `variations.md`: paywall axes. CHANGELOG, plugin.json 1.2.0.
-6. PepAI adapter: `paywall-data` script, proof, offer, buildable, build.
+6. An example project adapter: `paywall-data`, proof, offer, buildable, build.
 
 ## Out of scope
 
