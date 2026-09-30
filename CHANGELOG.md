@@ -9,8 +9,8 @@ Paywall mode, for paywalls, subscription screens and offer screens.
 - New references: `paywall.md`, `paywall-craft.md`, `paywall-playbook.md` (cited conversion levers, the rules, a scoring rubric), `paywall-archetypes.md` (14 archetypes).
 - `check` enforces billed price, renewal terms, restore/terms/privacy, one CTA, every state, and proof that matches your real proof list; `sheets` writes one set per state.
 - Adapters can add `paywall-data` so rounds read live paywall numbers.
-- Mobile and web modes are unchanged.
-- Web mode: converge rounds may hold one variation; contact sheets show pages at rest (animations off, sticky and fixed elements in flow).
+- Mobile and web modes are unchanged by paywall mode.
+- Fix: Web mode: converge rounds may hold one variation; contact sheets show pages at rest (animations off, sticky and fixed elements in flow).
 
 ## 1.1.0 · 2026-09-28
 
