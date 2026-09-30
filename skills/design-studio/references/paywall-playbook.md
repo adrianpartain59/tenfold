@@ -284,3 +284,9 @@ that decided it.
 | S34 | "10 types of mobile app paywalls and conversion hacks they use" (Adapty blog) | https://adapty.io/blog/the-10-types-of-mobile-app-paywalls/ | 2025-12-18 | benchmark |
 | S35 | "How to Successfully Optimize Paywall Conversion Rates with UX?" (Momentum blog) | https://www.themomentum.ai/blog/how-to-successfully-optimize-paywall-conversion-rates-with-ux | 2023-03-13 | practice |
 | S36 | "Paywall experiments playbook: What to test first, second, third" (Adapty blog) (accessed 2026-09) | https://adapty.io/blog/paywall-experiments-playbook/ | 2026-09 | practice |
+| S37 | Mobile app paywall design examples (Screens Design) (accessed 2026-09) | https://screensdesign.com/articles/mobile-app-paywall-design-examples-2026/ | 2026-09 | practice |
+| S38 | Effective paywall screen designs for mobile apps (FunnelFox blog) | https://blog.funnelfox.com/effective-paywall-screen-designs-mobile-apps/ | 2026-04-25 | practice |
+| S39 | Web-to-app onboarding funnel (RevenueCat blog) (accessed 2026-09) | https://www.revenuecat.com/blog/growth/web-to-app-onboarding-funnel | 2026-09 | case study |
+| S40 | Calorie tracker app design (Screens Design) | https://screensdesign.com/articles/calorie-tracker-app-design/ | 2026-08-10 | practice |
+| S41 | Duolingo — language lessons app teardown (Screens Design) (accessed 2026-09) | https://screensdesign.com/apps/duolingo-language-lessons/ | 2026-09 | practice |
+| S42 | Headspace — meditation & sleep app teardown (Screens Design) (accessed 2026-09) | https://screensdesign.com/showcase/headspace-meditation-sleep | 2026-09 | practice |

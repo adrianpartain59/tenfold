@@ -103,6 +103,8 @@ grep -q "FAIL playbook:10: S1 date 'March 2025' is not YYYY-MM\[-DD\]" <<<"$out"
 grep -q "FAIL playbook:10: S1 strength 'vibes'" <<<"$out" && ok "lint flags a bad strength" || bad "lint flags a bad strength" "$out"
 grep -q "FAIL archetypes: Trial timeline is missing Wins when, Loses when, Axes, Hazards, Seen in" <<<"$out" && ok "lint flags missing archetype fields" || bad "lint flags missing archetype fields" "$out"
 grep -q "FAIL archetypes: 1 entries, need at least 14" <<<"$out" && ok "lint wants 14 archetypes" || bad "lint wants 14 archetypes" "$out"
+out="$(python3 "$LINT" "$REPO/skills/design-studio/references" 2>&1)"; st=$?
+[ $st -eq 0 ] && ok "shipped paywall references pass the lint" || bad "shipped paywall references pass the lint" "$out"
 
 echo "paywall mode: new --paywall"
 out="$(bash "$STUDIO" new demo pay --paywall 2>&1)"
