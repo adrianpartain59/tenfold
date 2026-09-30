@@ -138,7 +138,7 @@ t="$(pfresh)"; perl -ni -e 'print unless /data-pw="trial-terms"/' "$t/r1/v02/mai
 out="$(bash "$STUDIO" check "$t/r1" 2>&1)"
 grep -q "FAIL v02/main: missing data-pw trial-terms" <<<"$out" && ok "check wants trial terms when trial is on" || bad "check wants trial terms when trial is on" "$out"
 
-t="$(pfresh)"; perl -pi -e 's/Down 18 lb/Down 40 lb/' "$t/r1/v01/main.html"
+t="$(pfresh)"; perl -pi -e 's/two months/two weeks/' "$t/r1/v01/main.html"
 out="$(bash "$STUDIO" check "$t/r1" 2>&1)"
 grep -q "FAIL v01/main: proof P1 text not in context.md" <<<"$out" && ok "check fails invented proof" || bad "check fails invented proof" "$out"
 

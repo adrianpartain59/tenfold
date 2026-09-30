@@ -6,6 +6,6 @@
   "agentPick": "v01", "predictedPick": "v02",
   "variations": [
     { "id": "v01", "dir": "v01", "name": "Quote Stack", "idea": "One long real review above the price.", "tags": ["congruent"] },
-    { "id": "v02", "dir": "v02", "name": "Rating Hero", "idea": "The store rating as the headline proof.", "tags": ["congruent"] }
+    { "id": "v02", "dir": "v02", "name": "Quote Carousel", "idea": "Three short real reviews above the price.", "tags": ["congruent"] }
   ]
 }
