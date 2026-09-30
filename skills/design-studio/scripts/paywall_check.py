@@ -36,6 +36,9 @@ class Frame(HTMLParser):
         toks = (a.get("data-pw") or "").split()
         self.pw += toks
         if tag in VOID:
+            if "proof" in toks:
+                text = a.get("alt") or a.get("aria-label") or ""
+                self.proofs.append([a.get("data-src") or "", text])
             return
         for o in self._open:
             o[0] += 1
@@ -139,7 +142,11 @@ def main(d):
                     break
                 if src not in proofs:
                     errs.append(f"{where}: proof {src or '(no data-src)'} not in context.md")
-                elif norm(text) not in norm(proofs[src]):
+                    continue
+                nt = norm(text)
+                if len(nt) < 4:
+                    errs.append(f"{where}: proof {src} has no checkable text (use alt or visible text)")
+                elif nt not in norm(proofs[src]):
                     errs.append(f"{where}: proof {src} text not in context.md")
         if not v.get("idea"):
             warns.append(f"{vid}: no one-line idea")

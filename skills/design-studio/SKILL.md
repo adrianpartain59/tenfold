@@ -190,5 +190,5 @@ the same command with the sandbox disabled; it only serves mockups.
 | System-stage pages drifting from the pick | Pages build on the direction's `tokens.css`/`site.css`/`chrome.js` and never edit them |
 | Ten paywalls that are one archetype re-skinned | A `concepts` round takes ten archetypes from the catalog |
 | An A/B variant that changes two things | One variable per variant, named in `variable`; everything else stays the control's |
-| Testimonials or ratings written for the mockup | Proof comes only from context.md's list; `check` fails anything else |
+| Testimonials or ratings written for the mockup | Proof comes only from context.md's list; `check` fails any marked proof not in it, so mark every rating, count and quote |
 | Judging a paywall with only the default plan selected | Every state in `manifest.states`; flip the gallery's state switch |

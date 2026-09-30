@@ -205,6 +205,22 @@ done
 grep -q '"version": "1.2.0"' "$REPO/.claude-plugin/plugin.json" && grep -q '"version": "1.2.0"' "$REPO/.claude-plugin/marketplace.json" && ok "version is 1.2.0" || bad "version is 1.2.0"
 grep -q "^## 1.2.0" "$REPO/CHANGELOG.md" && ok "CHANGELOG has 1.2.0" || bad "CHANGELOG has 1.2.0"
 
+echo "paywall mode: check (void-tag proof holes)"
+t="$(pfresh)"
+perl -pi -e 's|(<blockquote class="pw-quote" data-pw="proof" data-src="P1">.*</blockquote>)|$1\n  <img data-pw="proof" data-src="P9" alt="5 stars 99,000 ratings">|' "$t/r1/v01/main.html"
+out="$(bash "$STUDIO" check "$t/r1" 2>&1)"; st=$?
+[ $st -ne 0 ] && grep -q "FAIL v01/main: proof P9 not in context.md" <<<"$out" && ok "check fails an img proof with an unknown data-src" || bad "check fails an img proof with an unknown data-src" "$out"
+
+t="$(pfresh)"
+perl -pi -e 's|(<blockquote class="pw-quote" data-pw="proof" data-src="P1">.*</blockquote>)|$1\n  <img data-pw="proof" data-src="P2" alt="Never happier with an app">|' "$t/r1/v01/main.html"
+out="$(bash "$STUDIO" check "$t/r1" 2>&1)"; st=$?
+[ $st -ne 0 ] && grep -q "FAIL v01/main: proof P2 text not in context.md" <<<"$out" && ok "check fails an img proof with alt text not in context.md" || bad "check fails an img proof with alt text not in context.md" "$out"
+
+t="$(pfresh)"
+perl -pi -e 's|(<blockquote class="pw-quote" data-pw="proof" data-src="P1">.*</blockquote>)|$1\n  <img data-pw="proof" data-src="P2" alt="★★★★★">|' "$t/r1/v01/main.html"
+out="$(bash "$STUDIO" check "$t/r1" 2>&1)"; st=$?
+[ $st -ne 0 ] && grep -q "FAIL v01/main: proof P2 has no checkable text (use alt or visible text)" <<<"$out" && ok "check fails a stars-only proof with no checkable text" || bad "check fails a stars-only proof with no checkable text" "$out"
+
 # --- new tests above this line ---
 echo
 echo "$pass passed, $fail failed"
