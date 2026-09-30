@@ -73,7 +73,7 @@ new_round() {
     cp "$SKILL_DIR/assets/gallery-web.html" "$dir/r$n/index.html"
     cp "$SKILL_DIR/assets/web.css" "$dir/r$n/web.css"
   elif [ -n "$pw" ]; then
-    [ -f "$SKILL_DIR/assets/gallery-paywall.html" ] && cp "$SKILL_DIR/assets/gallery-paywall.html" "$dir/r$n/index.html"
+    cp "$SKILL_DIR/assets/gallery-paywall.html" "$dir/r$n/index.html"
     cp "$SKILL_DIR/assets/screen.css" "$dir/r$n/screen.css"
     cp "$SKILL_DIR/assets/paywall.css" "$dir/r$n/paywall.css"
   else

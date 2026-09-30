@@ -160,6 +160,23 @@ PY
 out="$(bash "$STUDIO" check "$t/r2" 2>&1)"
 grep -q "FAIL ab round needs exactly one control, has 0" <<<"$out" && ok "check wants one control" || bad "check wants one control" "$out"
 
+echo "paywall mode: gallery"
+out="$(bash "$STUDIO" new demo pay2 --paywall 2>&1)"
+cmp -s "$DESIGN_STUDIO_ROOT/demo/pay2/r1/index.html" "$ASSETS/gallery-paywall.html" && ok "new --paywall copies gallery-paywall.html" || bad "new --paywall copies gallery-paywall.html" "$out"
+if bash -c 'eval "$(sed -n "/^chrome_bin()/,/^}/p" "$0")"; chrome_bin' "$STUDIO" >/dev/null 2>&1; then
+  CHROME_BIN="$(bash -c 'eval "$(sed -n "/^chrome_bin()/,/^}/p" "$0")"; chrome_bin' "$STUDIO")"
+  t="$(stage paywall-smoke demo pgal)"
+  cp "$ASSETS/gallery-paywall.html" "$t/r1/index.html"; cp "$ASSETS/gallery-paywall.html" "$t/r2/index.html"
+  bash "$STUDIO" serve >/dev/null
+  dom="$("$CHROME_BIN" --headless=new --disable-gpu --virtual-time-budget=5000 --dump-dom "http://127.0.0.1:$DESIGN_STUDIO_PORT/demo/pgal/r1/index.html?state=exit" 2>/dev/null)"
+  grep -q 'src="v01/exit.html' <<<"$dom" && ok "gallery ?state=exit frames exit.html" || bad "gallery ?state=exit frames exit.html" "$(grep -o 'src="[^"]*"' <<<"$dom" | head -5)"
+  grep -q 'data-v="alt-plan"' <<<"$dom" && ok "gallery renders a state switch" || bad "gallery renders a state switch"
+  dom="$("$CHROME_BIN" --headless=new --disable-gpu --virtual-time-budget=5000 --dump-dom "http://127.0.0.1:$DESIGN_STUDIO_PORT/demo/pgal/r2/index.html" 2>/dev/null)"
+  grep -q 'class="chip ctl">Control<' <<<"$dom" && grep -q 'Tests: CTA copy' <<<"$dom" && ok "gallery labels control and variable" || bad "gallery labels control and variable"
+else
+  echo "  skip gallery DOM tests (no Chrome/Chromium)"
+fi
+
 # --- new tests above this line ---
 echo
 echo "$pass passed, $fail failed"

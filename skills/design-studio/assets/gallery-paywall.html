@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design Studio · Paywall</title>
+<style>
+  :root {
+    --page: #ECECEF; --panel: #FFFFFF; --ink: #1C1C1E; --ink2: #6B6B73; --ink3: #A1A1AA; --line: #DEDEE3;
+    --pick: #1F7AE0; --fav: #D6457A; --wild: #B7791F; --bezel: #0D0D0F;
+    --shadow: 0 1px 2px rgba(0,0,0,.05), 0 14px 40px rgba(0,0,0,.12);
+  }
+  html[data-theme="dark"] {
+    --page: #0B0B0D; --panel: #17171A; --ink: #EDEDF0; --ink2: #9A9AA3; --ink3: #62626B; --line: #2A2A30;
+    --pick: #5AA2F0; --fav: #F06A9A; --wild: #E0A64A; --bezel: #2B2B30;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 14px 40px rgba(0,0,0,.5);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--page); color: var(--ink); font: 14px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  header { max-width: 1680px; margin: 0 auto; padding: 28px 24px 8px; display: grid; gap: 10px; }
+  .crumbs { color: var(--ink2); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .crumbs a { text-decoration: none; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); }
+  .crumbs a.on { background: var(--ink); color: var(--page); border-color: var(--ink); }
+  h1 { margin: 0; font-size: 28px; letter-spacing: -.02em; line-height: 1.15; }
+  .brief { margin: 0; max-width: 900px; color: var(--ink2); font-size: 15px; }
+  .feedback { max-width: 900px; margin: 2px 0 0; padding: 10px 14px; border-left: 3px solid var(--pick); background: var(--panel); border-radius: 0 10px 10px 0; font-size: 14px; }
+  .feedback b { display: block; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink2); margin-bottom: 2px; }
+  .bar { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--page) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .bar > div { max-width: 1680px; margin: 0 auto; padding: 10px 24px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); }
+  .seg button { border: 0; background: none; color: var(--ink2); font: inherit; font-size: 12px; font-weight: 650; padding: 5px 12px; border-radius: 999px; cursor: pointer; }
+  .seg button.on { background: var(--ink); color: var(--page); }
+  .legend { margin-left: auto; display: flex; gap: 14px; color: var(--ink2); font-size: 12px; font-weight: 600; flex-wrap: wrap; }
+  .hint { color: var(--ink3); font-size: 12px; }
+  main { max-width: 1680px; margin: 0 auto; padding: 22px 24px 120px; display: grid; gap: 40px 22px; grid-template-columns: repeat(auto-fill, minmax(calc(var(--w) + 8px), 1fr)); }
+  /* --wn = unitless screen width in px; the phone adds an 8px bezel each side */
+  body { --wn: 284; }
+  body[data-size="s"] { --wn: 204; }
+  body[data-size="l"] { --wn: 393; }
+  body, .phone { --w: calc(var(--wn) * 1px + 16px); --s: calc(var(--wn) / 393); }
+  .card { display: grid; gap: 12px; align-content: start; justify-items: center; cursor: zoom-in; }
+  .meta { width: var(--w); display: grid; gap: 4px; }
+  .meta .top { display: flex; align-items: baseline; gap: 8px; }
+  .num { font-size: 26px; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .name { font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
+  .idea { margin: 0; color: var(--ink2); font-size: 13px; }
+  .chips { display: flex; gap: 5px; flex-wrap: wrap; }
+  .chip { font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink2); }
+  .chip.wild { color: var(--wild); border-color: currentColor; }
+  .chip.pick { color: #fff; background: var(--pick); border-color: var(--pick); }
+  .chip.fav { color: #fff; background: var(--fav); border-color: var(--fav); }
+  .chip.cur { color: var(--page); background: var(--ink2); border-color: var(--ink2); }
+  .chip.var { color: var(--pick); border-color: currentColor; }
+  .chip.ctl { color: var(--page); background: var(--ink); border-color: var(--ink); }
+  .phone { width: var(--w); height: calc(var(--wn) * 852px / 393 + 16px); border-radius: calc(55px * var(--s) + 8px); border: 8px solid var(--bezel); background: var(--bezel); box-shadow: var(--shadow); overflow: hidden; position: relative; transition: transform .15s ease; }
+  .card:hover .phone { transform: translateY(-3px); }
+  .phone.pick { outline: 3px solid var(--pick); outline-offset: 4px; }
+  .phone.fav { outline: 3px solid var(--fav); outline-offset: 4px; }
+  .phone.pick.fav { outline-color: var(--pick); box-shadow: 0 0 0 10px var(--fav), var(--shadow); }
+  .phone .viewport { position: absolute; left: 0; top: 0; width: 393px; height: 852px; transform: scale(var(--s)); transform-origin: 0 0; }
+  .phone iframe, .phone img { width: 393px; height: 852px; border: 0; display: block; background: #fff; pointer-events: none; }
+  .phone img { object-fit: cover; object-position: top; }
+  .island { position: absolute; top: calc(11px * var(--s)); left: 50%; width: calc(124px * var(--s)); height: calc(36px * var(--s)); transform: translateX(-50%); background: #000; border-radius: 999px; z-index: 2; pointer-events: none; }
+  /* focus */
+  .focus { position: fixed; inset: 0; z-index: 20; background: color-mix(in srgb, var(--page) 94%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: none; grid-template-columns: 1fr auto minmax(260px, 380px) 1fr; gap: 36px; align-items: center; padding: 24px; }
+  .focus.open { display: grid; }
+  .focus .phone { grid-column: 2; cursor: default; }
+  .focus .phone iframe { pointer-events: auto; }
+  .focus .side { grid-column: 3; display: grid; gap: 12px; align-content: center; }
+  .focus .side .num { font-size: 44px; }
+  .focus .side .name { font-size: 22px; }
+  .focus .side .idea { font-size: 15px; }
+  .notes { display: grid; gap: 10px; margin-top: 4px; }
+  .notes div { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 13px; }
+  .notes b { display: block; font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink2); margin-bottom: 2px; }
+  .nav { position: fixed; top: 50%; transform: translateY(-50%); border: 1px solid var(--line); background: var(--panel); color: var(--ink); width: 44px; height: 44px; border-radius: 999px; font-size: 20px; cursor: pointer; box-shadow: var(--shadow); }
+  .nav.prev { left: 20px; } .nav.next { right: 20px; }
+  .close { position: fixed; top: 18px; right: 20px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 6px 14px; font: inherit; font-weight: 650; cursor: pointer; }
+  .err { max-width: 900px; margin: 60px auto; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+  /* Touch / narrow: the focused frame must not swallow swipes, or the overlay
+     can't scroll and looks stuck on one variation (seen 2026-09-27). */
+  @media (pointer: coarse), (max-width: 820px) {
+    .focus .phone iframe { pointer-events: none; }
+    .nav { top: auto; bottom: 20px; transform: none; z-index: 30; }
+    .close { z-index: 30; }
+  }
+  @media (max-width: 820px) {
+    .focus { grid-template-columns: 1fr; overflow: auto; -webkit-overflow-scrolling: touch; align-content: start; padding-bottom: 90px; }
+    .focus .phone, .focus .side { grid-column: 1; justify-self: center; }
+    .legend { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<header id="head"></header>
+<div class="bar"><div>
+  <div class="seg" id="theme"><button data-v="light" class="on">Light</button><button data-v="dark">Dark</button></div>
+  <div class="seg" id="size"><button data-v="s">S</button><button data-v="m" class="on">M</button><button data-v="l">L · 1:1</button></div>
+  <div class="seg" id="state"></div>
+  <span class="hint">Click a phone to focus · ← → to step · 1–9, 0 = #10 · S = next state · Esc</span>
+  <div class="legend" id="legend"></div>
+</div></div>
+<main id="grid"></main>
+<div class="focus" id="focus">
+  <button class="close" id="close">Close · Esc</button>
+  <button class="nav prev" id="prev">‹</button>
+  <button class="nav next" id="next">›</button>
+</div>
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+let M, items = [], theme = "light", cur = -1, state = "main";
+try { theme = localStorage.getItem("ds-theme") || "light"; } catch {}
+
+function applyTheme(t) {
+  theme = t;
+  document.documentElement.dataset.theme = t;
+  try { localStorage.setItem("ds-theme", t); } catch {}
+  document.querySelectorAll("#theme button").forEach((b) => b.classList.toggle("on", b.dataset.v === t));
+  document.querySelectorAll("iframe").forEach(setFrameTheme);
+}
+function setFrameTheme(f) { try { f.contentDocument.documentElement.dataset.theme = theme; } catch {} }
+
+// What a card shows for the current state: a variation's vNN/<state>.html, or
+// the current design's per-state image/file (falling back to its main).
+function srcOf(item) {
+  const s = item.states?.[state] ?? item.states?.main;
+  if (s) return s.image ? { img: s.image } : { file: s.file };
+  if (item.dir) return { file: `${item.dir}/${state}.html` };
+  return item.image ? { img: item.image } : { file: item.file };
+}
+function renderStates() {
+  const ss = M.states ?? ["main"];
+  $("#state").style.display = ss.length > 1 ? "" : "none";
+  $("#state").innerHTML = ss.map((s) => `<button data-v="${esc(s)}" class="${s === state ? "on" : ""}">${esc(s)}</button>`).join("");
+  document.querySelectorAll("#state button").forEach((b) => (b.onclick = () => setState(b.dataset.v)));
+}
+function setState(s) {
+  state = s;
+  renderStates(); render();
+  if (cur >= 0) open(cur);
+  applyTheme(theme);
+}
+
+function phone(item, big) {
+  const cls = ["phone", item.id === M.agentPick && "pick", item.id === M.predictedPick && "fav"].filter(Boolean).join(" ");
+  const s = srcOf(item);
+  const src = s.img
+    ? `<img src="${esc(s.img)}" alt="">`
+    : `<iframe ${big ? "" : 'loading="lazy"'} src="${esc(s.file)}?theme=${theme}" title="${esc(item.name)} · ${esc(state)}" onload="setFrameTheme(this)"></iframe>`;
+  return `<div class="${cls}"><div class="island"></div><div class="viewport">${src}</div></div>`;
+}
+function chips(item) {
+  const c = [];
+  if (item.isCurrent) c.push(`<span class="chip cur">Current</span>`);
+  if (item.control) c.push(`<span class="chip ctl">Control</span>`);
+  if (item.variable) c.push(`<span class="chip var">Tests: ${esc(item.variable)}</span>`);
+  if (item.id === M.agentPick) c.push(`<span class="chip pick">Claude's pick</span>`);
+  if (item.id === M.predictedPick) c.push(`<span class="chip fav">Your likely pick</span>`);
+  for (const t of item.tags ?? []) c.push(`<span class="chip ${t === "wildcard" ? "wild" : ""}">${esc(t)}</span>`);
+  return `<div class="chips">${c.join("")}</div>`;
+}
+function label(item, i) { return item.isCurrent ? "—" : String(item.n ?? i); }
+
+function render() {
+  const r = M.round ?? 1;
+  const rounds = Array.from({ length: r }, (_, k) => k + 1)
+    .map((k) => `<a href="../r${k}/" class="${k === r ? "on" : ""}">Round ${k}</a>`).join("");
+  const parent = M.parent ? ` · refining <a href="../r${M.parent.round}/#${esc(M.parent.id)}">R${M.parent.round} #${esc(M.parent.n ?? M.parent.id)} ${esc(M.parent.name ?? "")}</a>` : "";
+  $("#head").innerHTML = `
+    <div class="crumbs"><span>${esc(M.project ?? "")}</span><span>/</span><span>${esc(M.topic ?? "")}</span>${rounds}</div>
+    <h1>${esc(M.title ?? "Design round")} <span style="color:var(--ink3);font-weight:600">— ${esc(M.stage ?? "")} · ${items.filter((x) => !x.isCurrent).length} variations · ${esc(state)}${parent}</span></h1>
+    ${M.brief ? `<p class="brief">${esc(M.brief)}</p>` : ""}
+    ${M.feedback ? `<div class="feedback"><b>Your feedback this round answers</b>${esc(M.feedback)}</div>` : ""}`;
+  document.title = `${M.title ?? "Design"} · R${r}`;
+  $("#legend").innerHTML = `<span style="color:var(--pick)">■ Claude's pick</span><span style="color:var(--fav)">■ Your likely pick</span><span style="color:var(--wild)">■ Wildcard</span>`;
+  $("#grid").innerHTML = items.map((it, i) => `
+    <section class="card" id="${esc(it.id)}" data-i="${i}">
+      <div class="meta"><div class="top"><span class="num">${label(it, i)}</span><span class="name">${esc(it.name)}</span></div>
+      <p class="idea">${esc(it.idea ?? "")}</p>${chips(it)}</div>
+      ${phone(it)}
+    </section>`).join("");
+  document.querySelectorAll(".card").forEach((c) => c.addEventListener("click", () => open(+c.dataset.i)));
+}
+
+function open(i) {
+  cur = (i + items.length) % items.length;
+  const it = items[cur], f = $("#focus");
+  f.querySelectorAll(".phone,.side").forEach((n) => n.remove());
+  const notes = Object.entries(it.notes ?? {}).map(([k, v]) => `<div><b>${esc(k)}</b>${esc(v)}</div>`).join("");
+  f.insertAdjacentHTML("beforeend", phone(it, true) + `<div class="side"><div class="top"><span class="num">${label(it, cur)}</span></div>
+    <div class="name">${esc(it.name)}</div><p class="idea">${esc(it.idea ?? "")}</p>${chips(it)}<div class="notes">${notes}</div>
+    ${srcOf(it).file ? `<a href="${esc(srcOf(it).file)}?theme=${theme}" target="_blank" style="font-size:12px;color:var(--ink2)">Open alone ↗</a>` : ""}</div>`);
+  f.querySelector(".phone").style.setProperty("--wn", String(Math.floor(Math.min(420, ((innerHeight - 64) * 393) / 852))));
+  f.classList.add("open");
+  history.replaceState(null, "", "#" + it.id);
+}
+function close() { $("#focus").classList.remove("open"); cur = -1; history.replaceState(null, "", location.pathname); }
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") return close();
+  if (e.key === "ArrowRight" && cur >= 0) return open(cur + 1);
+  if (e.key === "ArrowLeft" && cur >= 0) return open(cur - 1);
+  if (e.key === "s" || e.key === "S") { const ss = M.states ?? ["main"]; return setState(ss[(ss.indexOf(state) + 1) % ss.length]); }
+  if (/^[0-9]$/.test(e.key)) {
+    const n = e.key === "0" ? 10 : +e.key;
+    const i = items.findIndex((x) => x.n === n);
+    if (i >= 0) open(i);
+  }
+});
+$("#close").onclick = close; $("#prev").onclick = () => open(cur - 1); $("#next").onclick = () => open(cur + 1);
+$("#focus").addEventListener("click", (e) => { if (e.target.id === "focus") close(); });
+document.querySelectorAll("#theme button").forEach((b) => (b.onclick = () => applyTheme(b.dataset.v)));
+document.querySelectorAll("#size button").forEach((b) => (b.onclick = () => {
+  document.body.dataset.size = b.dataset.v;
+  document.querySelectorAll("#size button").forEach((x) => x.classList.toggle("on", x === b));
+}));
+
+fetch("manifest.json", { cache: "no-store" }).then((r) => r.json()).then((m) => {
+  M = m;
+  const ss = m.states ?? ["main"];
+  const q = new URLSearchParams(location.search).get("state");
+  state = ss.includes(q) ? q : ss[0];
+  items = (m.variations ?? []).map((v, i) => ({ n: i + 1, ...v }));
+  if (m.current) items.unshift({ id: "current", name: m.current.label ?? "Today", idea: m.current.idea ?? "The screen as it ships now.", isCurrent: true, ...m.current });
+  renderStates(); render(); applyTheme(theme);
+  const h = location.hash.slice(1); const i = items.findIndex((x) => x.id === h);
+  if (i >= 0) open(i);
+}).catch((e) => { $("#grid").outerHTML = `<div class="err">No readable <code>manifest.json</code> next to this page (${esc(e.message)}).</div>`; });
+</script>
+</body>
+</html>
