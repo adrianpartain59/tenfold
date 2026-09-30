@@ -106,6 +106,7 @@ team would need:
 - your icon set, if you have an exporter for it (otherwise it uses Feather)
 - standing rules ("one accent colour", "no em dashes in copy", "five tabs max")
 - how an approved design should be built (branch, components, checks)
+- for paywalls: `paywall-data`, `proof`, `offer`, `buildable` (see references/paywall.md)
 
 Without an adapter it works from your code and writes the tokens file by hand.
 

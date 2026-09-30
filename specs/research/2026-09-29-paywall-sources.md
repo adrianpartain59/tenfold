@@ -7,14 +7,14 @@ Merged from four research passes (layout/trial/plans, proof/risk/CTA/personaliza
 | id | Source | URL | Date | Strength |
 |---|---|---|---|---|
 | S1 | State of Subscription Apps 2026 — trends & benchmarks recap (RevenueCat blog) | https://www.revenuecat.com/blog/growth/subscription-app-trends-benchmarks-2026 | 2026-03-19 | benchmark |
-| S2 | State of Subscription Apps 2026 — Business report (RevenueCat) | https://www.revenuecat.com/state-of-subscription-apps-2026-business/ | 2026-09 (accessed) | benchmark |
+| S2 | State of Subscription Apps 2026: Business report (RevenueCat) | https://www.revenuecat.com/state-of-subscription-apps-2026-business/ | 2026-09 (accessed) | benchmark |
 | S3 | State of Subscription Apps 2025 (RevenueCat) | https://www.revenuecat.com/state-of-subscription-apps-2025 | 2025-03-14 | benchmark |
 | S4 | "2.1% vs 10.7%: the paywall data that changes the strategy" (Neoads, citing RevenueCat 2026 data) | https://neoads.substack.com/p/hard-paywalls-convert-less-but-earn | 2026-03-13 | benchmark |
 | S5 | "How Solving Our Biggest Customer Complaint at Blinkist Led to a 23% Increase in Conversion" (Growth.Design case study) | https://growth.design/case-studies/trial-paywall-challenge | 2021-01-19 | case study |
 | S6 | "How four paywall redesigns boosted conversions and revenue" (RevenueCat blog) | https://www.revenuecat.com/blog/growth/paywall-redesigns-case-studies | 2025-03-27 | case study |
 | S7 | "What does a high-performing paywall look like in 2026?" (Adapty, State of In-App Subscriptions 2026) | https://adapty.io/blog/high-performing-paywall-2026/ | 2026-03-13 | benchmark |
-| S8 | Superwall docs — "Free Trials" | https://superwall.com/docs/framework/trials | 2026-09 (accessed) | practice |
-| S9 | Superwall — "Free Trial Reminders" feature page | https://superwall.com/features/free-trial-reminders | 2026-09 (accessed) | practice |
+| S8 | Superwall docs: "Free Trials" | https://superwall.com/docs/framework/trials | 2026-09 (accessed) | practice |
+| S9 | Superwall: "Free Trial Reminders" feature page | https://superwall.com/features/free-trial-reminders | 2026-09 (accessed) | practice |
 | S10 | "How to Design a Perfect Paywall for a Mobile App" (Airbridge) | https://www.airbridge.io/blog/perfect-mobile-paywall | 2022-12-21 | practice |
 | S11 | "Subscription App Onboarding: Get 100% of Users to Your Paywall" (Airbridge) | https://www.airbridge.io/en/blog/subscription-app-onboarding | 2023-02-16 | practice |
 | S12 | "5 Paywall Patterns Used By Million-Dollar Apps" (Superwall blog) | https://superwall.com/blog/5-paywall-patterns-used-by-million-dollar-apps | 2025-08-15 | case study |
@@ -29,14 +29,14 @@ Merged from four research passes (layout/trial/plans, proof/risk/CTA/personaliza
 | S21 | "How to add trial notifications to your subscriptions" (RevenueCat blog) | https://www.revenuecat.com/blog/engineering/how-to-add-trial-notifications-to-your-subscriptions | 2026-09 (accessed) | practice |
 | S22 | "20 live iOS paywalls and what to learn from them" (Superwall blog) | https://superwall.com/blog/20-ios-paywalls-in-production | 2024-03-12 | practice |
 | S23 | App Review Guidelines (Apple) | https://developer.apple.com/app-store/review/guidelines/ | 2026-09 (accessed) | practice |
-| S24 | App Store Subscriptions — design guidance (Apple) | https://developer.apple.com/app-store/subscriptions/ | 2026-09 (accessed) | practice |
+| S24 | App Store Subscriptions: design guidance (Apple) | https://developer.apple.com/app-store/subscriptions/ | 2026-09 (accessed) | practice |
 | S25 | Subscriptions policy (Google Play Console Help) | https://support.google.com/googleplay/android-developer/answer/9900533 | 2025-10 | practice |
 | S26 | Create and manage subscriptions (Google Play Console Help) | https://support.google.com/googleplay/android-developer/answer/140504 | 2026-09 (accessed) | practice |
 | S27 | California Business and Professions Code § 17602 | https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=17602 | 2026-09 (accessed) | practice |
 | S28 | Custom Communications, Inc. v. FTC, No. 24-3137 (8th Cir.) | https://ecf.ca8.uscourts.gov/opndir/25/07/243137P.pdf | 2025-07-08 | practice |
-| S29 | FTC Staff Report — "Bringing Dark Patterns to Light" | https://www.ftc.gov/system/files/ftc_gov/pdf/P214800%20Dark%20Patterns%20Report%209.14.2022%20-%20FINAL.pdf | 2022-09-14 | practice |
+| S29 | FTC Staff Report: "Bringing Dark Patterns to Light" | https://www.ftc.gov/system/files/ftc_gov/pdf/P214800%20Dark%20Patterns%20Report%209.14.2022%20-%20FINAL.pdf | 2022-09-14 | practice |
 | S30 | FTC Press Release — "FTC Takes Action Against Amazon" | https://www.ftc.gov/news-events/news/press-releases/2023/06/ftc-takes-action-against-amazon-enrolling-consumers-amazon-prime-without-consent-sabotaging-their | 2023-06 | practice |
-| S31 | State of Subscription Apps 2026 — report landing page (RevenueCat) | https://www.revenuecat.com/state-of-subscription-apps | 2026-09 (accessed) | benchmark |
+| S31 | State of Subscription Apps 2026: report landing page (RevenueCat) | https://www.revenuecat.com/state-of-subscription-apps | 2026-09 (accessed) | benchmark |
 | S32 | "The Paywall Growth Lever Framework" (Superwall blog) | https://superwall.com/blog/the-paywall-growth-lever-framework-how-to-build-smarter-experiments-faster | 2026-05-29 | practice |
 | S33 | "8 paywall test ideas to grow app revenue" (RevenueCat blog) | https://www.revenuecat.com/blog/growth/paywall-tests-grow-app-revenue | 2023-09-15 | case study |
 | S34 | "10 types of mobile app paywalls and conversion hacks they use" (Adapty blog) | https://adapty.io/blog/the-10-types-of-mobile-app-paywalls/ | 2025-12-18 | benchmark |
@@ -46,8 +46,8 @@ Merged from four research passes (layout/trial/plans, proof/risk/CTA/personaliza
 | S38 | Effective paywall screen designs for mobile apps (FunnelFox blog) | https://blog.funnelfox.com/effective-paywall-screen-designs-mobile-apps/ | 2026-04-25 | practice |
 | S39 | Web-to-app onboarding funnel (RevenueCat blog) | https://www.revenuecat.com/blog/growth/web-to-app-onboarding-funnel | 2026-09 (accessed) | case study |
 | S40 | Calorie tracker app design (Screens Design) | https://screensdesign.com/articles/calorie-tracker-app-design/ | 2026-08-10 | practice |
-| S41 | Duolingo — language lessons app teardown (Screens Design) | https://screensdesign.com/apps/duolingo-language-lessons/ | 2026-09 (accessed) | practice |
-| S42 | Headspace — meditation & sleep app teardown (Screens Design) | https://screensdesign.com/showcase/headspace-meditation-sleep | 2026-09 (accessed) | practice |
+| S41 | Duolingo: language lessons app teardown (Screens Design) | https://screensdesign.com/apps/duolingo-language-lessons/ | 2026-09 (accessed) | practice |
+| S42 | Headspace: meditation & sleep app teardown (Screens Design) | https://screensdesign.com/showcase/headspace-meditation-sleep | 2026-09 (accessed) | practice |
 
 Note on dates marked "(accessed)": these sources gave either no publication date or only a bare year on the page as fetched by the research pass; per the normalisation rule, the access month (2026-09) is used instead of guessing a specific day.
 
@@ -177,9 +177,9 @@ Note on dates marked "(accessed)": these sources gave either no publication date
 - As of the current cycle the FTC is redoing this rulemaking from scratch rather than the vacated rule being in effect: "issuing an advance notice of proposed rulemaking." [S28]
 - FTC staff have flagged countdown timers implying a purchase deadline as a recognized dark pattern: "countdown timers designed to make consumers believe they only have a limited time." [S29]
 - FTC staff have flagged deliberately hard-to-find or multi-step cancellation flows as a dark pattern: "made it extremely difficult to cancel free trials and subscription plans." [S29]
-- The FTC has brought and won a live enforcement case against burying the "skip Prime" option and gating cancellation behind a maze of retention offers: "Consumers had to first locate the cancellation flow, which Amazon made difficult" (FTC v. Amazon, 2023). [S30]
+- The FTC has brought a live enforcement case against burying the "skip Prime" option and gating cancellation behind a maze of retention offers: "Consumers had to first locate the cancellation flow, which Amazon made difficult" (FTC v. Amazon, 2023). [S30]
 - Presenting several discounted "stay" offers before letting the consumer complete cancellation was itself part of the deceptive design the FTC challenged: "redirected to multiple pages that presented several offers to continue the subscription." [S30]
-- The checkout button itself failing to clearly disclose that clicking it also enrolls the consumer in a paid subscription was found deceptive: the button "did not clearly state" that choosing it also meant agreeing to join Prime. [S30]
+- The checkout button itself failing to clearly disclose that clicking it also enrolls the consumer in a paid subscription was alleged to be deceptive in the FTC's complaint: the button "did not clearly state" that choosing it also meant agreeing to join Prime. [S30]
 
 ### Archetype examples
 

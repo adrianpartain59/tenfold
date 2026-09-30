@@ -2,10 +2,10 @@
 
 How to read this. Every claim names its evidence: `benchmark` (aggregate data
 across many apps), `case study` (one app's reported result) or `practice`
-(practitioner consensus with no published number). A number without a source
-never appears here. Use it three ways: to plan a round (which levers a
-variation pulls), to judge one (the rubric in section 11), and to plan an A/B
-set (section 10).
+(practitioner guidance; any number it gives is a rule of thumb with no
+disclosed data behind it). A number without a source never appears here. Use
+it three ways: to plan a round (which levers a variation pulls), to judge one
+(the rubric in section 11), and to plan an A/B set (section 10).
 
 ## 1. Order: value before price
 
@@ -189,7 +189,7 @@ A delayed close, a countdown or a "one time offer" can slide from urgency into a
 **Do:** make cancellation as easy to find as the purchase path itself.
 **Don't:** interpose multiple retention offers between a user and completing cancellation: FTC v. Amazon challenged exactly this ("redirected to multiple pages that presented several offers to continue the subscription"). [S30]
 
-**Claim.** A checkout button that failed to clearly disclose it also enrolled the consumer in a paid subscription was found deceptive by the FTC. [S30] (practice)
+**Claim.** A checkout button that failed to clearly disclose it also enrolled the consumer in a paid subscription was alleged to be deceptive in the FTC's complaint. [S30] (practice)
 **Do:** state on or beside the CTA that tapping it starts a paid subscription.
 **Don't:** let a generic "Continue" or "Get Started" label silently start billing.
 
@@ -231,8 +231,8 @@ Flag any variation that uses one; the pick question names it.
 
 Answer each for every variation; the count of yes is its score. `agentPick`
 is the highest score; ties go to the variation whose archetype or lever has
-the better live number in `performance.md`. The pick question cites the line
-that decided it.
+the better live number in `performance.md` (never a small sample). The pick
+question cites the line that decided it.
 
 1. Value is clear before the price: the headline names the outcome, not the product.
 2. The billed amount is the most prominent price; breakdowns are smaller and subordinate.
@@ -249,14 +249,14 @@ that decided it.
 
 | id | Source | URL | Date | Strength |
 |---|---|---|---|---|
-| S2 | State of Subscription Apps 2026 — Business report (RevenueCat) (accessed 2026-09) | https://www.revenuecat.com/state-of-subscription-apps-2026-business/ | 2026-09 | benchmark |
+| S2 | State of Subscription Apps 2026: Business report (RevenueCat) (accessed 2026-09) | https://www.revenuecat.com/state-of-subscription-apps-2026-business/ | 2026-09 | benchmark |
 | S3 | State of Subscription Apps 2025 (RevenueCat) | https://www.revenuecat.com/state-of-subscription-apps-2025 | 2025-03-14 | benchmark |
 | S4 | "2.1% vs 10.7%: the paywall data that changes the strategy" (Neoads, citing RevenueCat 2026 data) | https://neoads.substack.com/p/hard-paywalls-convert-less-but-earn | 2026-03-13 | benchmark |
 | S5 | "How Solving Our Biggest Customer Complaint at Blinkist Led to a 23% Increase in Conversion" (Growth.Design case study) | https://growth.design/case-studies/trial-paywall-challenge | 2021-01-19 | case study |
 | S6 | "How four paywall redesigns boosted conversions and revenue" (RevenueCat blog) | https://www.revenuecat.com/blog/growth/paywall-redesigns-case-studies | 2025-03-27 | case study |
 | S7 | "What does a high-performing paywall look like in 2026?" (Adapty, State of In-App Subscriptions 2026) | https://adapty.io/blog/high-performing-paywall-2026/ | 2026-03-13 | benchmark |
-| S8 | Superwall docs — "Free Trials" (accessed 2026-09) | https://superwall.com/docs/framework/trials | 2026-09 | practice |
-| S9 | Superwall — "Free Trial Reminders" feature page (accessed 2026-09) | https://superwall.com/features/free-trial-reminders | 2026-09 | practice |
+| S8 | Superwall docs: "Free Trials" (accessed 2026-09) | https://superwall.com/docs/framework/trials | 2026-09 | practice |
+| S9 | Superwall: "Free Trial Reminders" feature page (accessed 2026-09) | https://superwall.com/features/free-trial-reminders | 2026-09 | practice |
 | S10 | "How to Design a Perfect Paywall for a Mobile App" (Airbridge) | https://www.airbridge.io/blog/perfect-mobile-paywall | 2022-12-21 | practice |
 | S11 | "Subscription App Onboarding: Get 100% of Users to Your Paywall" (Airbridge) | https://www.airbridge.io/en/blog/subscription-app-onboarding | 2023-02-16 | practice |
 | S12 | "5 Paywall Patterns Used By Million-Dollar Apps" (Superwall blog) | https://superwall.com/blog/5-paywall-patterns-used-by-million-dollar-apps | 2025-08-15 | case study |
@@ -271,14 +271,14 @@ that decided it.
 | S21 | "How to add trial notifications to your subscriptions" (RevenueCat blog) (accessed 2026-09) | https://www.revenuecat.com/blog/engineering/how-to-add-trial-notifications-to-your-subscriptions | 2026-09 | practice |
 | S22 | "20 live iOS paywalls and what to learn from them" (Superwall blog) | https://superwall.com/blog/20-ios-paywalls-in-production | 2024-03-12 | practice |
 | S23 | App Review Guidelines (Apple) (accessed 2026-09) | https://developer.apple.com/app-store/review/guidelines/ | 2026-09 | practice |
-| S24 | App Store Subscriptions — design guidance (Apple) (accessed 2026-09) | https://developer.apple.com/app-store/subscriptions/ | 2026-09 | practice |
+| S24 | App Store Subscriptions: design guidance (Apple) (accessed 2026-09) | https://developer.apple.com/app-store/subscriptions/ | 2026-09 | practice |
 | S25 | Subscriptions policy (Google Play Console Help) | https://support.google.com/googleplay/android-developer/answer/9900533 | 2025-10 | practice |
 | S26 | Create and manage subscriptions (Google Play Console Help) (accessed 2026-09) | https://support.google.com/googleplay/android-developer/answer/140504 | 2026-09 | practice |
 | S27 | California Business and Professions Code § 17602 (accessed 2026-09) | https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=17602 | 2026-09 | practice |
 | S28 | Custom Communications, Inc. v. FTC, No. 24-3137 (8th Cir.) | https://ecf.ca8.uscourts.gov/opndir/25/07/243137P.pdf | 2025-07-08 | practice |
-| S29 | FTC Staff Report — "Bringing Dark Patterns to Light" | https://www.ftc.gov/system/files/ftc_gov/pdf/P214800%20Dark%20Patterns%20Report%209.14.2022%20-%20FINAL.pdf | 2022-09-14 | practice |
+| S29 | FTC Staff Report: "Bringing Dark Patterns to Light" | https://www.ftc.gov/system/files/ftc_gov/pdf/P214800%20Dark%20Patterns%20Report%209.14.2022%20-%20FINAL.pdf | 2022-09-14 | practice |
 | S30 | FTC Press Release — "FTC Takes Action Against Amazon" | https://www.ftc.gov/news-events/news/press-releases/2023/06/ftc-takes-action-against-amazon-enrolling-consumers-amazon-prime-without-consent-sabotaging-their | 2023-06 | practice |
-| S31 | State of Subscription Apps 2026 — report landing page (RevenueCat) (accessed 2026-09) | https://www.revenuecat.com/state-of-subscription-apps | 2026-09 | benchmark |
+| S31 | State of Subscription Apps 2026: report landing page (RevenueCat) (accessed 2026-09) | https://www.revenuecat.com/state-of-subscription-apps | 2026-09 | benchmark |
 | S32 | "The Paywall Growth Lever Framework" (Superwall blog) | https://superwall.com/blog/the-paywall-growth-lever-framework-how-to-build-smarter-experiments-faster | 2026-05-29 | practice |
 | S33 | "8 paywall test ideas to grow app revenue" (RevenueCat blog) | https://www.revenuecat.com/blog/growth/paywall-tests-grow-app-revenue | 2023-09-15 | case study |
 | S34 | "10 types of mobile app paywalls and conversion hacks they use" (Adapty blog) | https://adapty.io/blog/the-10-types-of-mobile-app-paywalls/ | 2025-12-18 | benchmark |
@@ -288,5 +288,5 @@ that decided it.
 | S38 | Effective paywall screen designs for mobile apps (FunnelFox blog) | https://blog.funnelfox.com/effective-paywall-screen-designs-mobile-apps/ | 2026-04-25 | practice |
 | S39 | Web-to-app onboarding funnel (RevenueCat blog) (accessed 2026-09) | https://www.revenuecat.com/blog/growth/web-to-app-onboarding-funnel | 2026-09 | case study |
 | S40 | Calorie tracker app design (Screens Design) | https://screensdesign.com/articles/calorie-tracker-app-design/ | 2026-08-10 | practice |
-| S41 | Duolingo — language lessons app teardown (Screens Design) (accessed 2026-09) | https://screensdesign.com/apps/duolingo-language-lessons/ | 2026-09 | practice |
-| S42 | Headspace — meditation & sleep app teardown (Screens Design) (accessed 2026-09) | https://screensdesign.com/showcase/headspace-meditation-sleep | 2026-09 | practice |
+| S41 | Duolingo: language lessons app teardown (Screens Design) (accessed 2026-09) | https://screensdesign.com/apps/duolingo-language-lessons/ | 2026-09 | practice |
+| S42 | Headspace: meditation & sleep app teardown (Screens Design) (accessed 2026-09) | https://screensdesign.com/showcase/headspace-meditation-sleep | 2026-09 | practice |

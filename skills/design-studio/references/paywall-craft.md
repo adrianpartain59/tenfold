@@ -43,6 +43,10 @@ Several markers may share an element (`data-pw="renewal trial-terms"`).
 
 Step frames (`step-N`) are exempt from everything except `proof`.
 
+On a state whose offer has no trial, mark the line that says what is billed
+today (for example "Billed today, no free trial") with `trial-terms`. Never
+add trial copy to a screen that has no trial.
+
 ## States
 
 `manifest.states` lists the states this round covers. Every variation

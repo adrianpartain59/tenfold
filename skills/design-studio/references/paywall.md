@@ -11,6 +11,24 @@ The adapter says `surface: paywall`, or the brief names a paywall,
 subscription screen, upgrade screen, offer screen or exit offer. Start every
 round with `studio.sh new <project> <topic> --paywall`.
 
+## Adapter keys
+
+The project's `.design-studio/adapter.md` names these for paywall mode:
+
+- `surface: paywall`: turns paywall mode on.
+- `paywall-data`: a command run with `--out <TOPIC_DIR>` that writes `performance.md`.
+- `proof`: where real ratings, counts and quotes come from.
+- `offer`: products, prices, trial, and which states exist.
+- `buildable`: the components the build target supports.
+- `build`: where an approved design is built, and who publishes it.
+
+**performance.md contract.** Per live paywall: date range, impressions
+(opens), trial-start or conversion rate, revenue per user where available,
+finished experiments with their result and sample size, and an Archetype
+column filled in during the sweep. Rows with fewer than about 1,000
+impressions, or experiments not finished, are labelled small sample and
+never cited as a result.
+
 ## Stages
 
 `manifest.stage` names the stage.

@@ -30,7 +30,7 @@ Citations point at the Sources table in `paywall-playbook.md`.
 
 **Mechanism:** leading with a large star rating and review count borrows the credibility of an app-store consensus before the user reads anything else. [S12]
 **Anatomy:** oversized rating number and stars at the very top, review-count subhead, then benefit copy, then price and CTA.
-**Wins when:** the app has a genuinely strong, large-sample store rating to show off, a strong rating with a large review count behind it.
+**Wins when:** the app has a genuinely strong, large-sample store rating to show off.
 **Loses when:** the rating is new, thin, or mediocre; a small or middling number undercuts the whole mechanism.
 **Axes:** rating display size (headline-scale, medium, inline with logo) · supporting proof (review count only, review count plus user count, review count plus a named publication) · star rendering (filled stars, numeric score, both) · background treatment behind the rating (flat color, gradient, blurred app screenshot) · position of the rating relative to hero art (above, overlaid, beside) · secondary proof line (none, one outcome stat, one quote).
 **Hazards:** the rating and review count shown must match the current live store listing; a stale or rounded-up number is a proof-integrity risk the playbook's proof claims warn against reusing without your own real numbers. [S12]
@@ -123,7 +123,7 @@ Citations point at the Sources table in `paywall-playbook.md`.
 **Wins when:** the base offer already converts reasonably and the goal is to recover marginal price-sensitive users without discounting everyone up front.
 **Loses when:** the base paywall hasn't been tested on its own yet, since an exit offer can mask a weak primary paywall instead of fixing it.
 **Axes:** intercept form (full-screen takeover, bottom sheet, centered modal card) · hero visual on the intercept (product screenshot, single benefit icon, plain color field) · price display (strikethrough original price beside the new price, new price only, percent-off badge with the original price small) · offer duration shown (untimed, honestly time-boxed with a visible countdown) · number of exit steps (single intercept, one retention offer then exit) · visual urgency (plain card, accented/red treatment, animated attention grabber).
-**Hazards:** must not chain multiple retention offers between the user and actually leaving, and any countdown on the offer must be real and not reset on reload; both are dark patterns the FTC has specifically challenged (playbook section 8, and the FTC v. Amazon precedent in section 8). [S29][S30]
+**Hazards:** must not chain multiple retention offers between the user and actually leaving, and any countdown on the offer must be real and not reset on reload; both are dark patterns the FTC has specifically challenged (playbook section 8, and the FTC v. Amazon complaint). [S29][S30]
 **Seen in:** Bend [S37]
 
 ## 13. Friend gift
