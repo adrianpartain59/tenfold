@@ -93,6 +93,14 @@ set (section 10).
 **Do:** treat a bare price change as a low-priority test; spend test budget on plan count, trial and layout first.
 **Don't:** expect a price-only change to reliably move conversion.
 
+**Claim.** Win-rate ranking of monetization test types by LTV uplift: localization ranks highest (62.3% win rate), then trial structure (59.6%), plan duration (58.7%), price (45.5%), with visual and copy tests ranking lowest (34.6%). [S7] (benchmark)
+**Do:** prioritize trial-structure and plan-duration tests over visual-only or copy-only tests when optimizing for lifetime value.
+**Don't:** treat this 45.5% LTV win-rate figure for price as the same number as the 28.3% price-conversion win-rate above; they measure different outcomes (LTV vs conversion) from the same source and shouldn't be combined into one figure. [S7]
+
+**Claim.** Offer/plan-matrix changes, price, trial and plan mix changed together, are described as the single biggest paywall lever (10 to 40% range, "sometimes much more"). [S32] (practice)
+**Do:** when testing budget is limited, bundle plan, trial and price changes into one offer-matrix test rather than isolating one variable.
+**Don't:** expect to cleanly attribute the resulting lift to any single element; this claim bundles price, trial and plan changes together.
+
 ## 4. Proof
 
 **Claim.** High-revenue app paywalls use specific, large user-count and star-rating proof rather than vague claims: Speak cites 5 million users and a 4.8-star rating from 140,000+ reviews, alongside Flo and YAZIO using testimonials and ratings. [S12] (case study)
@@ -154,7 +162,7 @@ set (section 10).
 **Don't:** assume scale alone proves the personalization, and not the product, drove the result; this is one case study.
 
 **Claim.** Redesigning onboarding (trimmed copy, a clearer value proposition) ahead of the paywall, without personalizing per answer, drove ARPU up 102% and total revenue up 50% over four months, with activation revenue up 414%. [S18] (case study)
-**Do:** try clarity and brevity first; this result came from neither personalization nor a paywall change.
+**Do:** try clarity and brevity first; this result came from onboarding changes, not per-answer personalization.
 **Don't:** conflate "personalized onboarding" with "shorter, clearer onboarding"; they're different levers with different evidence.
 
 **Claim.** Running dozens of paywall A/B tests (packaging, billing cycle, intro offers, win-back) without engineering support doubled revenue over a year (42 tests, 2x revenue in 12 months). [S19] (case study)
@@ -162,8 +170,8 @@ set (section 10).
 **Don't:** expect a single redesign to match a year of compounding tests.
 
 **Claim.** Headline and value-proposition changes are one of the higher-leverage single-element paywall tests, with a successful lift of 5 to 20%. [S32] (practice)
-**Do:** personalize the headline to the onboarding answer when you have one.
-**Don't:** personalize decoration (colors, icons) before testing the headline itself.
+**Do:** name the user's outcome in the headline plainly, and test that before decoration.
+**Don't:** read this 5 to 20% figure [S32] as support for per-answer headline personalization specifically; that tactic is practice-level guidance only, with no published lift number (the research could not source one).
 
 ## 8. Urgency, delays and dark patterns
 
@@ -208,13 +216,13 @@ Flag any variation that uses one; the pick question names it.
 ## 10. A/B levers, ranked
 
 1. **Single vs multi-page.** Vary whether the paywall is one screen or a short sequence of steps before pricing: multi-page onboarding paywalls convert 37% better than single-page (12.41% vs 9.07%). [S13]
-2. **Plan layout.** Vary plan count and arrangement: a second and third plan lift conversion 61% and 44% over the prior count, and two plans is the dominant layout industry-wide. [S14][S2][S31]
-3. **Proof type.** Vary which proof leads (rating, review, outcome stat): a rating plus a specific outcome stat raised trial conversion 72% in one case study. [S6][S12]
-4. **CTA copy.** Vary the button label: simplifying to a single word lifted conversion 10% in one case study, and copy/framing tests compound 2 to 10% more broadly. [S16][S32]
-5. **Trial length display.** Vary whether the trial timeline (length, charge date, reminder) is shown explicitly: doing so raised trial signups 23% in one case study. [S5]
-6. **Headline.** Vary the outcome named in the headline: headline and value-proposition changes are a higher-leverage single-element test, 5 to 20% successful lift. [S32]
-7. **Trial toggle.** Vary whether the trial is on by default or user-selected: recommended as a testable variant, but no isolated lift number is published. [S11]
-8. **Default plan.** Vary which plan is preselected: one of the strongest levers on which plan people buy, but no clean isolated percentage is published, and the cheapest default can win conversion while cutting revenue. [S36]
+2. **Plan layout.** Vary plan count and arrangement: a second and third plan lift conversion 61% and 44% over the prior count, two plans is the dominant layout industry-wide, and plan-duration tests rank among the higher-win-rate categories for LTV (58.7%). [S14][S2][S31][S7]
+3. **Trial length display.** Vary whether the trial timeline (length, charge date, reminder) is shown explicitly: doing so raised trial signups 23% in one case study, and trial-structure tests as a category rank second-highest for LTV win rate (59.6%), just behind localization. [S5][S7]
+4. **Trial toggle.** Vary whether the trial is on by default or user-selected: a trial-structure lever, the category S7 rates second-highest for LTV win rate (59.6%); no isolated lift number for the toggle alone is published. [S7][S11]
+5. **Default plan.** Vary which plan is preselected: a plan-related lever in the category S7 rates 58.7% for LTV win rate; no clean isolated percentage for default-plan preselection specifically is published, and the cheapest-looking default can win conversion while cutting revenue. [S7][S36]
+6. **Proof type.** Vary which proof leads (rating, review, outcome stat): a rating plus a specific outcome stat raised trial conversion 72% in one case study. [S6][S12]
+7. **CTA copy.** Vary the button label: simplifying to a single word lifted conversion 10% in one case study, and copy/framing tests compound 2 to 10% more broadly; visual and copy tests are the lowest-win-rate category for LTV (34.6%), which is why this sits below the trial and plan levers above. [S16][S32][S7]
+8. **Headline.** Vary the outcome named in the headline: headline and value-proposition changes are a higher-leverage single-element test, 5 to 20% successful lift, though visual and copy tests as a category rank lowest for LTV win rate (34.6%). [S32][S7]
 9. **Close delay.** Vary how long the close (X) button is disabled: a recognized practitioner tactic to raise read-through, with no published isolated lift. [S35]
 10. **Proof position.** Vary whether proof sits above or below the CTA/price. (practice) No reported result was found for position in isolation; treat it as untested.
 11. **Price display (billed vs per-period).** Vary only the subordinate per-period breakdown; the billed amount's prominence is fixed by Apple's rule (section 9). (practice) No conversion-tested lift was found for the display format itself.
@@ -265,7 +273,7 @@ that decided it.
 | S23 | App Review Guidelines (Apple) (accessed 2026-09) | https://developer.apple.com/app-store/review/guidelines/ | 2026-09 | practice |
 | S24 | App Store Subscriptions — design guidance (Apple) (accessed 2026-09) | https://developer.apple.com/app-store/subscriptions/ | 2026-09 | practice |
 | S25 | Subscriptions policy (Google Play Console Help) | https://support.google.com/googleplay/android-developer/answer/9900533 | 2025-10 | practice |
-| S26 | Create and manage subscriptions (Google Play Console Help) | https://support.google.com/googleplay/android-developer/answer/140504 | 2026-09 | practice |
+| S26 | Create and manage subscriptions (Google Play Console Help) (accessed 2026-09) | https://support.google.com/googleplay/android-developer/answer/140504 | 2026-09 | practice |
 | S27 | California Business and Professions Code § 17602 (accessed 2026-09) | https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=17602 | 2026-09 | practice |
 | S28 | Custom Communications, Inc. v. FTC, No. 24-3137 (8th Cir.) | https://ecf.ca8.uscourts.gov/opndir/25/07/243137P.pdf | 2025-07-08 | practice |
 | S29 | FTC Staff Report — "Bringing Dark Patterns to Light" | https://www.ftc.gov/system/files/ftc_gov/pdf/P214800%20Dark%20Patterns%20Report%209.14.2022%20-%20FINAL.pdf | 2022-09-14 | practice |
