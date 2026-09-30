@@ -1,7 +1,7 @@
 /* design-studio paywall layer. Loads after tokens.css and screen.css.
    Pricing modules, plan pickers, trial timelines, proof and legal blocks for
    paywall frames. Every value reads a token, with a neutral fallback. */
-.pw { background: var(--c-background-root, #F4F4F6); color: var(--c-text, #111); min-height: 852px; }
+.pw { color: var(--c-text, #111); min-height: 852px; }
 .pw-body { position: relative; display: flex; flex-direction: column; gap: var(--space-lg, 16px); box-sizing: border-box; min-height: 852px;
   padding: calc(var(--safe-top, 59px) + 8px) var(--space-lg, 16px) calc(var(--safe-bottom, 34px) + 8px); }
 .pw-close { position: absolute; top: calc(var(--safe-top, 59px) - 4px); right: 16px; width: 32px; height: 32px; border-radius: 999px;

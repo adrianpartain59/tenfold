@@ -78,6 +78,10 @@ Every variation uses the same fixture prices and proof.
 | `.pw-table` | Free vs Pro comparison |
 
 A variation's own `<style>` may extend these. It never edits paywall.css.
+paywall.css never paints the page ground; set it in the variation or the
+project's paywall CSS. When the project has its own paywall stylesheet, link
+it after paywall.css so its classes win where names overlap (`.pw`,
+`.pw-plan`, `.pw-badge`).
 
 ## Buildability
 

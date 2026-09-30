@@ -66,7 +66,7 @@ def proof_list(topic):
     out, on = {}, False
     for line in open(p, encoding="utf-8"):
         if line.startswith("## "):
-            on = line.strip().lower() == "## proof"
+            on = line.strip()[3:].lower().startswith("proof")
             continue
         mt = PROOF_LINE.match(line) if on else None
         if mt:

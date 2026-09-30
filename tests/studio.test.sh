@@ -221,6 +221,10 @@ perl -pi -e 's|(<blockquote class="pw-quote" data-pw="proof" data-src="P1">.*</b
 out="$(bash "$STUDIO" check "$t/r1" 2>&1)"; st=$?
 [ $st -ne 0 ] && grep -q "FAIL v01/main: proof P2 has no checkable text (use alt or visible text)" <<<"$out" && ok "check fails a stars-only proof with no checkable text" || bad "check fails a stars-only proof with no checkable text" "$out"
 
+t="$(pfresh)"; perl -pi -e 's/^## Proof$/## Proof (fixture reviews)/' "$t/context.md"
+out="$(bash "$STUDIO" check "$t/r1" 2>&1)"; st=$?
+[ $st -eq 0 ] && [ "$out" = "OK 2 paywall variations (concept, 3 states)" ] && ok "check accepts a Proof heading with a suffix" || bad "check accepts a Proof heading with a suffix" "$out"
+
 # --- new tests above this line ---
 echo
 echo "$pass passed, $fail failed"
