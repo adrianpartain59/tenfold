@@ -9,8 +9,8 @@
     {
       "name": "tenfold",
       "source": "./",
-      "description": "Design rounds for Claude Code: sweeps your app or site for context, renders 10 distinct variations (phone mockups, or full scrollable web pages in web mode) on localhost, predicts your pick, and iterates on it until you say build.",
-      "version": "1.1.0"
+      "description": "Design rounds for Claude Code: sweeps your app or site for context, renders 10 distinct variations (phone mockups, full scrollable web pages, or paywalls in every offer state) on localhost, predicts your pick, and iterates on it until you say build.",
+      "version": "1.2.0"
     }
   ]
 }

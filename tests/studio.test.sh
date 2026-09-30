@@ -195,6 +195,16 @@ else
   echo "  skip paywall sheets (no Chrome/Chromium)"
 fi
 
+echo "paywall mode: docs"
+SK="$REPO/skills/design-studio"
+grep -q "paywall" <(sed -n '1,6p' "$SK/SKILL.md") && ok "SKILL.md description triggers on paywalls" || bad "SKILL.md description triggers on paywalls"
+grep -q "^## Paywall mode" "$SK/SKILL.md" && ok "SKILL.md has a Paywall mode section" || bad "SKILL.md has a Paywall mode section"
+for f in paywall.md paywall-craft.md paywall-playbook.md paywall-archetypes.md; do
+  grep -q "references/$f\|\`$f\`" "$SK/SKILL.md" "$SK/references/paywall.md" && ok "$f is referenced" || bad "$f is referenced"
+done
+grep -q '"version": "1.2.0"' "$REPO/.claude-plugin/plugin.json" && grep -q '"version": "1.2.0"' "$REPO/.claude-plugin/marketplace.json" && ok "version is 1.2.0" || bad "version is 1.2.0"
+grep -q "^## 1.2.0" "$REPO/CHANGELOG.md" && ok "CHANGELOG has 1.2.0" || bad "CHANGELOG has 1.2.0"
+
 # --- new tests above this line ---
 echo
 echo "$pass passed, $fail failed"

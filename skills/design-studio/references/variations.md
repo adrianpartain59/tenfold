@@ -47,6 +47,23 @@ type or colour alone doesn't count.
 | Colour field | light ground · dark ground · brand-colour bands · the app's own sky/ground |
 | Motion concept | still · reveal on scroll · one hero animation · interactive demo |
 
+### Paywall mode axes
+
+In paywall mode (`paywall.md`) a `concepts` round spreads across the
+archetype axis first; a `concept` round holds it fixed and uses the
+archetype's own Axes from `paywall-archetypes.md` plus these.
+
+| Axis | Positions (examples) |
+|---|---|
+| Archetype (`concepts` only) | the catalog's entries |
+| Hero | outcome headline · the user's own goal or number · product screen · coach or mascot · proof as the headline · video |
+| Proof | none · rating + count · one long quote · quote wall · user count · expert or press |
+| Pricing module | single price · plan cards · plan list · trial toggle · comparison table |
+| Trial presentation | one line · timeline · calendar · reminder promise · no trial |
+| CTA | outcome copy · trial copy · price copy · sticky bottom · inline |
+| Density | one screen, no scroll · scroll with a sticky CTA · multi-step |
+| Tone | clinical trust · warm coach · premium editorial · playful |
+
 ## Round 2+: converge on the pick
 
 The user picked #N (possibly with feedback, possibly "N's top with M's bottom").

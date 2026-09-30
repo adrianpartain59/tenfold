@@ -1,7 +1,7 @@
 ---
 name: design-studio
-argument-hint: "[screen, card, flow or website to design]"
-description: Use when the user wants to design, redesign, rethink, restyle, or see options, variations, directions, or mockups for an app screen, card, widget, component, sheet, or flow (mobile/iOS/React Native app UI especially), or for a website, landing page or marketing site (web mode), including "render an HTML doc with designs", "give me variations", "show me options for X", or picking a variation from an earlier design round to iterate on.
+argument-hint: "[screen, card, flow, website or paywall to design]"
+description: Use when the user wants to design, redesign, rethink, restyle, or see options, variations, directions, or mockups for an app screen, card, widget, component, sheet, or flow (mobile/iOS/React Native app UI especially), for a website, landing page or marketing site (web mode), or for a paywall, subscription screen, upgrade screen or exit offer (paywall mode), including "render an HTML doc with designs", "give me variations", "show me options for X", "ten testimonial paywalls", or picking a variation from an earlier design round to iterate on.
 ---
 
 # Design Studio
@@ -126,6 +126,27 @@ mockup-craft.md and the phone-only parts of principles.md. In short:
   `pages-vNN.png`).
 - TASTE.md is shared; log web rounds with `web` in the Project / topic column.
 
+## Paywall mode (paywalls, subscription and offer screens)
+
+On when the adapter says `surface: paywall` or the brief names a paywall,
+subscription screen, upgrade screen, offer screen or exit offer. Read
+`references/paywall.md` before step 1, and `references/paywall-craft.md`,
+`references/paywall-playbook.md` and `references/paywall-archetypes.md` as
+it directs. In short:
+
+- `studio.sh new <project> <topic> --paywall`: the round gets the paywall
+  gallery (a state switch across every card) and `paywall.css`.
+- A variation is a folder `vNN/` with one file per state in
+  `manifest.states` (`main`, `alt-plan`, `exit`, `friend`…).
+- Stages: `concepts` (ten archetypes), `concept` (one archetype ten ways),
+  `converge`, and `ab` (a control plus one-variable variants for an
+  experiment). A bare pick still means build; `Explore #N` and
+  `A/B set from #N` are explicit options.
+- The playbook's rubric decides `agentPick`; the adapter's `paywall-data`
+  puts live numbers in `performance.md` so the pick can cite them.
+- `check` enforces the legal markers, states and real proof; `sheets` writes
+  one set per state.
+
 ## Rules that hold every round
 
 - The link goes out as soon as the round renders, as a localhost URL the user
@@ -167,3 +188,7 @@ the same command with the sandbox disabled; it only serves mockups.
 | Judging a website on a static hero | Web mode renders full-length pages; the premium feel lives below the fold |
 | Ten web directions on one type system | Each direction owns its `vNN/tokens.css`; type + grid are axes, not skins |
 | System-stage pages drifting from the pick | Pages build on the direction's `tokens.css`/`site.css`/`chrome.js` and never edit them |
+| Ten paywalls that are one archetype re-skinned | A `concepts` round takes ten archetypes from the catalog |
+| An A/B variant that changes two things | One variable per variant, named in `variable`; everything else stays the control's |
+| Testimonials or ratings written for the mockup | Proof comes only from context.md's list; `check` fails anything else |
+| Judging a paywall with only the default plan selected | Every state in `manifest.states`; flip the gallery's state switch |

@@ -75,6 +75,24 @@ our marketing site", "10 directions for the landing page") or put
 3. **System proof:** your pick applied to every page template, linked into a
    site you can click through, before anything gets built.
 
+## Paywall mode
+
+Designing a paywall? Ask for it the same way ("ten paywall ideas", "ten
+testimonial paywalls", "redesign the exit offer") or put `surface: paywall`
+in your adapter. It knows what converts (a cited playbook), works from a
+catalog of paywall archetypes, and shows every variation in every state
+(the other plan selected, exit offer, friend price).
+
+1. **Concepts:** ten different archetypes: trial timeline, testimonial
+   wall, personalised plan, and so on.
+2. **Concept:** one archetype, done ten ways.
+3. **A/B set:** your pick as a control plus variants that each change one
+   thing, ready for an experiment.
+
+Give it a `paywall-data` command in your adapter and it reads your live
+paywall numbers before it designs. The command runs locally with your own
+credentials.
+
 ## Teach it your app (optional)
 
 Add `.design-studio/adapter.md` at your project root. The skill reads it
@@ -113,10 +131,12 @@ network can then open your mockups, so do it at home, not at a café).
 skills/design-studio/
   SKILL.md                  the loop Claude follows
   references/               design principles + pre-send checklist, the context
-                            sweep, how to get ten distinct variations, mockup craft
+                            sweep, how to get ten distinct variations, mockup
+                            craft, the paywall playbook and archetypes
   scripts/studio.sh         round folders, gallery server, checks, icons, contact sheets
   scripts/export-tokens.mjs React Native tokens module → tokens.css
-  assets/                   the gallery page and the phone-screen base CSS
+  assets/                   the gallery page, the paywall gallery and
+                            paywall.css, and the phone-screen base CSS
 docs/                       the live demo (GitHub Pages)
 ```
 
