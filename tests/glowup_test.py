@@ -360,6 +360,19 @@ class ImageAuditTest(unittest.TestCase):
             if os.path.exists(out):
                 os.remove(out)
 
+    def test_gradients_surface_as_accent_hues(self):
+        def pixel(x, y):
+            if y < 90:
+                return hexrgba("#0a0a0a")
+            t = x / 199  # a violet-to-purple gradient band, no single step above MIN_SHARE
+            return (int(124 + 60 * t) + x % 3, int(58 + 30 * t) + (x * 7 + y) % 4, int(237 - 10 * t) + y % 3, 255)
+
+        write_png(self.png, 200, 100, pixel)
+        r = self.ia.audit([self.png])
+        self.assertEqual(r["colors"]["count"], 1)
+        self.assertEqual([(a["name"], a["gradient"]) for a in r["accents"]], [("purple", True)])
+        self.assertTrue(r["headline"].endswith("· purple gradient"), r["headline"])
+
     def test_rejects_interlaced(self):
         data = bytearray(open(self.png, "rb").read())
         data[28] = 1  # IHDR interlace byte; read_png checks it before the CRC matters

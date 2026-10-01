@@ -7,7 +7,10 @@ The glow-up audit for a topic with no codebase (source: images). Decodes
 each PNG with the standard library, samples it, drops anti-aliasing (any
 exact colour under 0.2% of a screen), clusters the rest in OKLab, flags
 clusters that match Tailwind's default palette, and names the neutrals'
-temperature. Prints "IMAGE-AUDIT <headline>".
+temperature. Gradients never pass the anti-aliasing filter (each step is
+too small), so chromatic pixels are also binned by hue: any hue covering
+0.3% of the screens is an accent, and one spread over many distinct colours
+is reported as a gradient. Prints "IMAGE-AUDIT <headline>".
 """
 import json, math, os, struct, sys, zlib
 
@@ -18,6 +21,11 @@ MIN_SHARE = 0.002      # an exact colour must cover this much of a screen to cou
 MERGE = 0.03           # OKLab distance under which two colours are one
 TAILWIND_NEAR = 0.02   # OKLab distance under which a colour is a Tailwind default
 SAMPLE = 250_000       # pixels sampled per screen
+ACCENT_CHROMA = 0.06   # OKLCH chroma above which a pixel counts toward an accent hue
+ACCENT_SHARE = 0.003   # share of all screens a hue needs to be an accent
+GRADIENT_STEPS = 40    # distinct colours in one hue that mark it as a gradient
+HUES = ((20, "red"), (45, "orange"), (70, "yellow"), (160, "green"), (200, "teal"), (250, "blue"),
+        (320, "purple"), (350, "pink"), (360, "red"))
 CHANNELS = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}
 
 
@@ -100,8 +108,12 @@ def _dist(p, q):
     return math.dist(p, q)
 
 
-def screen_colours(path):
-    """{hex: share} for the exact colours covering at least MIN_SHARE of one screenshot."""
+def hue_name(h):
+    return next(name for limit, name in HUES if h < limit)
+
+
+def screen_counts(path):
+    """({hex: share} for every exact colour sampled from one screenshot)."""
     w, h, rgba = read_png(path)
     step = max(1, int(math.sqrt(w * h / SAMPLE)))
     counts, total = {}, 0
@@ -116,14 +128,22 @@ def screen_colours(path):
             total += 1
     if not total:
         return {}
-    return {"#%02x%02x%02x" % k: n / total for k, n in counts.items() if n / total >= MIN_SHARE}
+    return {"#%02x%02x%02x" % k: n / total for k, n in counts.items()}
 
 
 def audit(paths):
-    shares = {}
+    shares, hues = {}, {}
     for p in paths:
-        for col, s in screen_colours(p).items():
-            shares[col] = shares.get(col, 0) + s / len(paths)
+        for col, s in screen_counts(p).items():
+            if s >= MIN_SHARE:
+                shares[col] = shares.get(col, 0) + s / len(paths)
+            _, c, h = srgb_to_oklch(parse(col))
+            if c >= ACCENT_CHROMA:
+                b = hues.setdefault(hue_name(h), {"share": 0.0, "colours": set()})
+                b["share"] += s / len(paths)
+                b["colours"].add(col)
+    accents = sorted(({"name": n, "share": round(b["share"], 4), "gradient": len(b["colours"]) > GRADIENT_STEPS}
+                      for n, b in hues.items() if b["share"] >= ACCENT_SHARE), key=lambda a: -a["share"])
     clusters = []  # [rep_hex, rep_lab, share]
     for col, s in sorted(shares.items(), key=lambda kv: -kv[1]):
         lab = _lab(col)
@@ -155,10 +175,12 @@ def audit(paths):
     if tailwind:
         parts.append("Tailwind " + ", ".join(t["name"] for t in tailwind))
     parts.append(f"{neutrals} greys")
+    parts += [f"{a['name']} gradient" for a in accents if a["gradient"]]
     return {
         "images": [os.path.basename(p) for p in paths],
         "colors": {"count": n, "values": {rep: {"share": round(s, 4)} for rep, _, s in sorted(clusters, key=lambda c: c[0])}},
         "tailwind": tailwind,
+        "accents": accents,
         "neutrals": neutrals,
         "headline": " · ".join(parts),
     }
