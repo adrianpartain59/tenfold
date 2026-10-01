@@ -229,5 +229,52 @@ class EntropyTest(unittest.TestCase):
                 os.remove(out)
 
 
+class TellsTest(unittest.TestCase):
+    def setUp(self):
+        import tells_lint
+        self.tl = tells_lint
+
+    def families(self, fs):
+        c = {f: 0 for f in self.tl.FAMILIES}
+        for x in fs:
+            c[x["family"]] += 1
+        return c
+
+    def test_web_fixture(self):
+        fs = self.tl.scan(os.path.join(FIX, "glowup-web"))
+        self.assertEqual(self.families(fs), {"fingerprint": 9, "forms": 9, "copy": 8, "a11y": 4, "loading": 2, "second-order": 0}, fs)
+        rules = {x["rule"] for x in fs}
+        for r in ("F-gradient-purple", "F-gradient-text", "F-sparkles", "F-count-up", "F-arrow-cta", "F-shadcn-untouched",
+                  "F-inter-only", "F-uniform-card", "F-tailwind-hex", "FM-placeholder-only", "FM-no-autocomplete",
+                  "FM-small-input", "FM-asterisk", "FM-disabled-invalid", "FM-validate-onchange", "C-oops", "C-submit",
+                  "C-three-dots", "C-straight-quote", "C-buzzwords", "C-number-format", "C-tabular", "C-mixed-case",
+                  "A-outline-none", "A-div-onclick", "A-transition-all", "A-no-reduced-motion", "L-fullscreen-spinner",
+                  "L-no-delay"):
+            self.assertIn(r, rules)
+
+    def test_native_fixture(self):
+        fs = self.tl.scan(os.path.join(FIX, "glowup-native"))
+        self.assertEqual(self.families(fs), {"fingerprint": 4, "forms": 3, "copy": 3, "a11y": 0, "loading": 4, "second-order": 0}, fs)
+        rules = {x["rule"] for x in fs}
+        for r in ("FM-small-input-rn", "C-generic-welcome", "C-generic-error", "L-permission-on-mount", "L-launch-image"):
+            self.assertIn(r, rules)
+
+    def test_second_order_html(self):
+        html = ('<h1 class="t-h1">Notes for <em>teams</em> that ship</h1>\n<p>01</p><p>02</p><p>03</p>\n'
+                '<span class="dot"></span><span class="dot"></span><span class="dot"></span>')
+        rules = {x["rule"] for x in self.tl.scan_text(html, "x.html")}
+        self.assertTrue({"S-accent-word", "S-numbered-sections", "S-window-dots"} <= rules, rules)
+
+    def test_clean_markup_has_no_tells(self):
+        self.assertEqual(self.tl.scan_text('<h1 class="t-h1">Your notes</h1>\n<p class="t-body">12 notes this week</p>', "x.html"), [])
+
+    def test_cli_summary(self):
+        r = subprocess.run([sys.executable, os.path.join(SCRIPTS, "tells_lint.py"), os.path.join(FIX, "glowup-web")],
+                           capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0)
+        self.assertEqual(r.stdout.splitlines()[-1], "TELLS 32 (fingerprint 9 · forms 9 · copy 8 · a11y 4 · loading 2 · second-order 0)")
+        self.assertIn("TELL forms FM-asterisk src/pages/Settings.tsx:15 asterisk as the required marker", r.stdout)
+
+
 if __name__ == "__main__":
     unittest.main()
