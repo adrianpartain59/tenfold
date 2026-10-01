@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Regenerate the glow-up smoke fixture from r1/v01/theme.json and the two
 fixture apps. Run from the repo root: python3 tests/fixtures/glowup-smoke/make.py"""
-import base64, copy, json, os, subprocess, sys
+import copy, json, os, struct, subprocess, sys, zlib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FIX = os.path.dirname(HERE)
@@ -10,7 +10,15 @@ SCRIPTS = os.path.join(REPO, "skills", "design-studio", "scripts")
 sys.path.insert(0, SCRIPTS)
 import theme_tokens as tt
 
-PNG = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==")
+def _png(w, h, rgb):
+    """An opaque single-colour RGB PNG, so the before screens have something for image_audit.py to measure."""
+    chunk = lambda k, d: struct.pack(">I", len(d)) + k + d + struct.pack(">I", zlib.crc32(k + d) & 0xFFFFFFFF)
+    raw = b"".join(b"\x00" + bytes(rgb) * w for _ in range(h))
+    return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0))
+            + chunk(b"IDAT", zlib.compress(raw)) + chunk(b"IEND", b""))
+
+
+PNG = _png(8, 8, (0x6b, 0x72, 0x80))
 SCREENS = {
     "s1": ("Dashboard", "dashboard", '<h1 class="t-h1 span-all"{sig}>Your notes</h1>\n  <p class="t-eyebrow span-all">This week</p>\n  <p class="t-body tnum span-all">12 notes, 3 shared with the team</p>'),
     "s2": ("Notes list", "split", '<h2 class="t-h2 span-all"{sig}>All notes</h2>\n  <ul class="t-body span-all">\n    <li>Q3 planning review with the design, research and platform teams</li>\n    <li>Standup</li>\n    <li>Hiring loop</li>\n  </ul>'),
@@ -76,6 +84,12 @@ def main():
     write(os.path.join(HERE, "r3", "entropy-after.json"), json.dumps(after, indent=2, ensure_ascii=False) + "\n")
     tells = {"total": 9, "families": {"fingerprint": 0, "forms": 3, "copy": 2, "a11y": 2, "loading": 2, "second-order": 0}, "findings": []}
     write(os.path.join(HERE, "r3", "tells-after.json"), json.dumps(tells, indent=2) + "\n")
+    import handoff
+    hdir = os.path.join(HERE, "r4", "handoff")
+    handoff.write_handoff(v01, hdir)
+    sections = "".join(f"## {title}\n\nLayout: {tpl}. Keep every datum; restyle with the tokens and rewrite the copy in the voice.\n\n"
+                       for title, tpl, _ in SCREENS.values())
+    write(os.path.join(hdir, "screens.md"), "# Screens\n\n" + sections)
     print("OK glow-up smoke fixture regenerated")
 
 

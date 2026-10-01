@@ -13,12 +13,16 @@ at least two screens.
 system: the same theme checks, plus every manifest route as routes/<id>.html.
 apply: before/after evidence exists, entropy and tells did not rise (and
 entropy fell from stage 3), no literal colours outside the theme files, and
-a failed build was reverted.
+a failed build was reverted. An image-sourced topic (source: images) has no
+apply stage.
+handoff: every handoff.py file exists, tokens.css matches the theme, and
+screens.md has a "## <label>" section for every screen that wasn't invented.
 Prints WARN/FAIL lines, then "OK|FAIL <summary>". Exits 1 on any FAIL.
 """
 import json, os, re, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import handoff as ho
 import tells_lint as tl
 import theme_core as tc
 import theme_tokens as tt
@@ -204,6 +208,31 @@ def check_apply(d, m, errs, warns):
     return f"glow-up apply stage {st} (entropy {eb} → {ea}, tells {tb} → {ta})"
 
 
+def check_handoff(d, m, errs, warns):
+    h = m.get("handoff") or {}
+    hdir = os.path.join(d, h.get("dir", "handoff"))
+    rel = os.path.relpath(hdir, d)
+    try:
+        t = tc.load_theme(os.path.normpath(os.path.join(d, h.get("theme") or "missing")))
+    except (OSError, ValueError) as e:
+        errs.append(f"handoff.theme unreadable ({h.get('theme')}): {e}")
+        return "glow-up handoff"
+    errs += [f"handoff theme: {e}" for e in tc.validate_theme(t)]
+    missing = [f for f in ho.FILES if not os.path.isfile(os.path.join(hdir, f))]
+    errs += [f"{rel} is missing {f}" for f in missing]
+    tok = os.path.join(hdir, "tokens.css")
+    if not errs and open(tok, encoding="utf-8").read() != tt.css_vars(t):
+        errs.append(f"{rel}/tokens.css is stale; rerun handoff.py")
+    screens = [s for s in m.get("screens", []) if not s.get("invented")]
+    sp = os.path.join(hdir, "screens.md")
+    if not os.path.isfile(sp):
+        errs.append(f"{rel} is missing screens.md (one ## section per screen)")
+    else:
+        heads = {ln[3:].strip() for ln in open(sp, encoding="utf-8").read().splitlines() if ln.startswith("## ")}
+        errs += [f"{rel}/screens.md has no section for {s['label']}" for s in screens if s.get("label") not in heads]
+    return f"glow-up handoff ({len(ho.FILES)} files, {len(screens)} screens)"
+
+
 def main(d):
     errs, warns = [], []
     try:
@@ -218,8 +247,13 @@ def main(d):
         summary = check_directions(d, m, errs, warns)
     elif stage == "system":
         summary = check_system(d, m, errs, warns)
+    elif stage == "apply" and m.get("source") == "images":
+        errs.append("apply needs the codebase; an image-sourced topic ends at handoff")
+        summary = "glow-up apply"
     elif stage == "apply":
         summary = check_apply(d, m, errs, warns)
+    elif stage == "handoff":
+        summary = check_handoff(d, m, errs, warns)
     else:
         errs.append(f"unknown stage {stage}")
         summary = "glow-up round"

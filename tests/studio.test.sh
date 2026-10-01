@@ -301,6 +301,25 @@ t="$(gfresh)"; jedit "$t/r3/manifest.json" 'd["apply"]["build"] = "fail"'
 out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r3" 2>&1)"
 grep -q "FAIL build failed and the stage was not reverted" <<<"$out" && ok "check fails an unreverted broken build" || bad "check fails an unreverted broken build" "$out"
 
+echo "glow-up: from screenshots"
+t="$(gfresh)"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r4" 2>&1)"; st=$?
+[ $st -eq 0 ] && [ "$out" = "OK glow-up handoff (8 files, 3 screens)" ] && ok "check passes a handoff round" || bad "check passes a handoff round" "$out"
+t="$(gfresh)"; echo "/* hand edit */" >> "$t/r4/handoff/tokens.css"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r4" 2>&1)"
+grep -q "FAIL handoff/tokens.css is stale; rerun handoff.py" <<<"$out" && ok "check fails stale handoff tokens" || bad "check fails stale handoff tokens" "$out"
+t="$(gfresh)"; rm "$t/r4/handoff/theme.ts"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r4" 2>&1)"
+grep -q "FAIL handoff is missing theme.ts" <<<"$out" && ok "check wants every handoff file" || bad "check wants every handoff file" "$out"
+t="$(gfresh)"; perl -ni -e 'print unless /^## New note$/' "$t/r4/handoff/screens.md"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r4" 2>&1)"
+grep -q "FAIL handoff/screens.md has no section for New note" <<<"$out" && ok "check wants a section per uploaded screen" || bad "check wants a section per uploaded screen" "$out"
+t="$(gfresh)"; jedit "$t/r3/manifest.json" 'd["source"] = "images"'
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r3" 2>&1)"
+grep -q "FAIL apply needs the codebase; an image-sourced topic ends at handoff" <<<"$out" && ok "check refuses apply on an image-sourced topic" || bad "check refuses apply on an image-sourced topic" "$out"
+out="$(python3 "$SCRIPTS/image_audit.py" "$t/before/s1.png" 2>&1)"
+grep -q "^IMAGE-AUDIT 1 colour across 1 screen" <<<"$out" && ok "image_audit reads a fixture screenshot" || bad "image_audit reads a fixture screenshot" "$out"
+
 echo "glow-up: new, check and sheets routing"
 out="$(bash "$STUDIO" new demo glow --glowup 2>&1)"
 rd="$DESIGN_STUDIO_ROOT/demo/glow/r1"
@@ -348,6 +367,12 @@ if bash -c 'eval "$(sed -n "/^chrome_bin()/,/^}/p" "$0")"; chrome_bin' "$STUDIO"
   grep -q 'src="v01/routes/settings.html?theme=light"' <<<"$dom" && ok "gallery shows system routes" || bad "gallery shows system routes"
   dom="$(dump "$base/r3/index.html")"
   grep -q 'data-route="home"' <<<"$dom" && grep -q "Entropy 33 → 15" <<<"$dom" && ok "gallery shows the apply board" || bad "gallery shows the apply board"
+  cp "$ASSETS/gallery-glowup.html" "$t/r4/index.html"
+  dom="$(dump "$base/r4/index.html")"
+  grep -q 'href="handoff/theme.ts"' <<<"$dom" && grep -q "Apply the Ledger design system" <<<"$dom" && grep -q "## Empty state" <<<"$dom" && ok "gallery shows the handoff" || bad "gallery shows the handoff"
+  jedit "$t/r1/manifest.json" 'd["screens"][3]["invented"] = True'
+  dom="$(dump "$base/r1/index.html")"
+  grep -q "Empty state · invented" <<<"$dom" && ok "gallery labels invented screens" || bad "gallery labels invented screens"
 else
   echo "  skip glow-up gallery DOM tests (no Chrome/Chromium)"
 fi
@@ -365,7 +390,8 @@ need_heads glowup.md "## When it's on" "## Stages" "## Intake" "## Audit" "## Ca
 need_heads apply-web.md "## Before you start" "## Stage 1: theme layer" "## Stage 2: shared components" "## Stage 3: routes" "## Stage 4: brand surface" "## After every stage" "## Hard limits" "## Follow-ups"
 need_heads apply-native.md "## Before you start" "## Stage 1: theme layer" "## Stage 2: shared components" "## Stage 3: screens" "## Stage 4: brand surface" "## After every stage" "## Hard limits" "## Follow-ups"
 for f in glowup.md apply-web.md apply-native.md; do grep -q "—" "$SK/references/$f" && bad "$f has no em dashes" || ok "$f has no em dashes"; done
-for s in entropy.py tells_lint.py theme_tokens.py glowup_check.py; do grep -q "$s" "$SK/references/glowup.md" && ok "glowup.md uses $s" || bad "glowup.md uses $s"; done
+need_heads glowup.md "## From screenshots" "## Handoff"
+for s in entropy.py tells_lint.py theme_tokens.py glowup_check.py image_audit.py handoff.py; do grep -q "$s" "$SK/references/glowup.md" && ok "glowup.md uses $s" || bad "glowup.md uses $s"; done
 grep -q -- "--shadcn-hsl" "$SK/references/apply-web.md" && ok "apply-web.md covers HSL shadcn" || bad "apply-web.md covers HSL shadcn"
 grep -q -- "--rn" "$SK/references/apply-native.md" && ok "apply-native.md uses --rn" || bad "apply-native.md uses --rn"
 

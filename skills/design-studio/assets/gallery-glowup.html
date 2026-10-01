@@ -148,7 +148,8 @@ function frame(src, title, lazy = true) {
     : `<iframe ${lazy ? 'loading="lazy" ' : ""}src="${esc(src)}?theme=${theme}" title="${esc(title)}" onload="setFrameTheme(this)"></iframe>`;
   return `<div class="phone"><div class="viewport">${inner}</div></div>`;
 }
-function mainLabel() { return M.stage === "system" ? "System" : M.stage === "apply" ? `Apply · stage ${M.apply?.stage ?? ""}` : "Directions"; }
+function mainLabel() { return M.stage === "system" ? "System" : M.stage === "apply" ? `Apply · stage ${M.apply?.stage ?? ""}` : M.stage === "handoff" ? "Handoff" : "Directions"; }
+function slabel(s) { return s.invented ? `${s.label} · invented` : s.label; }
 function tabs() { return [M.before && ["before", "Before"], M.category && ["category", "Category"], ["main", mainLabel()]].filter(Boolean); }
 function renderHead() {
   const r = M.round ?? 1;
@@ -188,20 +189,28 @@ function renderMain() {
   if (M.stage === "system") {
     return vs.map((v, i) => `<section class="row sys" data-row="${esc(v.id)}">${rowMeta(v, i)}<div class="routes">${cells((M.routes ?? []).map((r) => [`${v.dir ?? v.id}/routes/${r.id}.html`, r.label ?? r.id, `${v.name} · ${r.label ?? r.id}`]))}</div></section>`).join("");
   }
-  return vs.map((v, i) => `<section class="row" data-row="${esc(v.id)}">${rowMeta(v, i)}${cells((M.screens ?? []).map((s) => [`${v.dir ?? v.id}/${s.id}.html`, s.label, `${v.name} · ${s.label}`]))}</section>`).join("");
+  return vs.map((v, i) => `<section class="row" data-row="${esc(v.id)}">${rowMeta(v, i)}${cells((M.screens ?? []).map((s) => [`${v.dir ?? v.id}/${s.id}.html`, slabel(s), `${v.name} · ${s.label}`]))}</section>`).join("");
 }
 function renderBefore() {
   const b = M.before ?? {};
   return `<p class="headline">${esc(b.headline ?? "")}</p><section class="row before" data-row="before"><div class="meta"><span class="name">Before</span><p class="idea">${esc(b.summary ?? "")}</p></div>
-    ${cells((M.screens ?? []).map((s) => [b[s.id], s.label, `Before · ${s.label}`]))}</section>`;
+    ${cells((M.screens ?? []).map((s) => [b[s.id], slabel(s), `Before · ${s.label}`]))}</section>`;
 }
 async function renderCategory() {
   try { const r = await fetch(M.category, { cache: "no-store" }); if (!r.ok) throw new Error(r.status); return `<pre class="cat">${esc(await r.text())}</pre>`; }
   catch (e) { return `<div class="err">Could not read ${esc(M.category)} (${esc(e.message)}).</div>`; }
 }
+const HANDOFF_FILES = ["prompt.md", "screens.md", "tokens.css", "tailwind-v4.css", "tailwind.config.v3.js", "shadcn.css", "shadcn-hsl.css", "theme.ts", "theme.css"];
+async function renderHandoff() {
+  const dir = M.handoff?.dir ?? "handoff";
+  const read = async (f) => { try { const r = await fetch(`${dir}/${f}`, { cache: "no-store" }); return r.ok ? await r.text() : `(no ${f})`; } catch (e) { return `(no ${f})`; } };
+  const links = HANDOFF_FILES.map((f) => `<a class="chip" href="${esc(dir)}/${esc(f)}" download>${esc(f)}</a>`).join(" ");
+  return `<p class="headline">Paste prompt.md into your AI builder with these files.</p><div class="chips">${links}</div>
+    <pre class="cat">${esc(await read("prompt.md"))}</pre><pre class="cat">${esc(await read("screens.md"))}</pre>`;
+}
 async function renderBody() {
   const g = $("#grid");
-  g.innerHTML = tab === "before" ? renderBefore() : tab === "category" ? await renderCategory() : renderMain();
+  g.innerHTML = tab === "before" ? renderBefore() : tab === "category" ? await renderCategory() : M.stage === "handoff" ? await renderHandoff() : renderMain();
   g.querySelectorAll("button.more").forEach((b) => (b.onclick = () => open(+b.dataset.i)));
 }
 async function loadTheme(v) {

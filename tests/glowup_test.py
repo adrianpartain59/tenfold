@@ -276,5 +276,125 @@ class TellsTest(unittest.TestCase):
         self.assertIn("TELL forms FM-asterisk src/pages/Settings.tsx:15 asterisk as the required marker", r.stdout)
 
 
+def write_png(path, w, h, pixel, filters=(0, 1, 2, 3, 4)):
+    """A non-interlaced 8-bit RGBA PNG, cycling row filters so the decoder meets all five."""
+    import struct, zlib
+
+    def paeth(a, b, c):
+        p = a + b - c
+        pa, pb, pc = abs(p - a), abs(p - b), abs(p - c)
+        return a if pa <= pb and pa <= pc else b if pb <= pc else c
+
+    raw, prev = bytearray(), bytes(w * 4)
+    for y in range(h):
+        row = bytes(v for x in range(w) for v in pixel(x, y))
+        f = filters[y % len(filters)]
+        out = bytearray()
+        for i, v in enumerate(row):
+            a = row[i - 4] if i >= 4 else 0
+            b = prev[i]
+            c = prev[i - 4] if i >= 4 else 0
+            pred = (0, a, b, (a + b) // 2, paeth(a, b, c))[f]
+            out.append((v - pred) & 255)
+        raw += bytes([f]) + out
+        prev = row
+
+    def chunk(kind, data):
+        return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data) & 0xFFFFFFFF)
+
+    png = b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 6, 0, 0, 0))
+    png += chunk(b"IDAT", zlib.compress(bytes(raw))) + chunk(b"IEND", b"")
+    with open(path, "wb") as f:
+        f.write(png)
+
+
+def hexrgba(h):
+    return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) + (255,)
+
+
+class ImageAuditTest(unittest.TestCase):
+    def setUp(self):
+        import image_audit
+        self.ia = image_audit
+        self.png = os.path.join(FIX, "_audit.png")
+
+        def pixel(x, y):
+            if (x, y) == (99, 99):
+                return hexrgba("#123456")
+            if y < 50:
+                return hexrgba("#ffffff" if x < 70 else "#f9fafb")
+            if y < 70:
+                return hexrgba("#6b7280")
+            return hexrgba("#4f46e5")
+
+        write_png(self.png, 100, 100, pixel)
+
+    def tearDown(self):
+        if os.path.exists(self.png):
+            os.remove(self.png)
+
+    def test_decodes_every_filter(self):
+        w, h, rgba = self.ia.read_png(self.png)
+        px = lambda x, y: tuple(rgba[(y * w + x) * 4:(y * w + x) * 4 + 4])
+        self.assertEqual((w, h), (100, 100))
+        self.assertEqual(px(0, 0), (255, 255, 255, 255))
+        self.assertEqual(px(3, 50), (0x6b, 0x72, 0x80, 255))
+        self.assertEqual(px(80, 10), (0xf9, 0xfa, 0xfb, 255))
+        self.assertEqual(px(99, 99), (0x12, 0x34, 0x56, 255))
+
+    def test_audit_clusters_and_flags_defaults(self):
+        r = self.ia.audit([self.png])
+        self.assertEqual(r["colors"]["count"], 3)
+        self.assertEqual(sorted(r["colors"]["values"]), ["#4f46e5", "#6b7280", "#ffffff"])
+        self.assertEqual([t["name"] for t in r["tailwind"]], ["gray-500", "indigo-600"])
+        self.assertEqual(r["neutrals"], "cool")
+        self.assertEqual(r["headline"], "3 colours across 1 screen · Tailwind gray-500, indigo-600 · cool greys")
+
+    def test_cli(self):
+        out = os.path.join(FIX, "_audit.json")
+        try:
+            p = subprocess.run([sys.executable, os.path.join(SCRIPTS, "image_audit.py"), self.png, "--out", out], capture_output=True, text=True)
+            self.assertEqual(p.stdout, "IMAGE-AUDIT 3 colours across 1 screen · Tailwind gray-500, indigo-600 · cool greys\n")
+            self.assertEqual(json.load(open(out))["colors"]["count"], 3)
+        finally:
+            if os.path.exists(out):
+                os.remove(out)
+
+    def test_rejects_interlaced(self):
+        data = bytearray(open(self.png, "rb").read())
+        data[28] = 1  # IHDR interlace byte; read_png checks it before the CRC matters
+        with open(self.png, "wb") as f:
+            f.write(data)
+        with self.assertRaisesRegex(ValueError, "interlaced"):
+            self.ia.read_png(self.png)
+
+
+class HandoffTest(unittest.TestCase):
+    def setUp(self):
+        import tempfile, handoff
+        self.h = handoff
+        self.out = tempfile.mkdtemp()
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.out)
+
+    def test_writes_every_format_and_prompt(self):
+        files = self.h.write_handoff(theme(), self.out)
+        self.assertEqual(sorted(files), sorted(self.h.FILES))
+        import theme_tokens as tt
+        self.assertEqual(open(os.path.join(self.out, "tokens.css")).read(), tt.css_vars(theme()))
+        prompt = open(os.path.join(self.out, "prompt.md")).read()
+        for s in ("# Apply the Ledger design system", "Fraunces", "Inter Tight", "| action | #3e63dd | #3e63dd |",
+                  "Reading column", "A ruled ledger line under every section heading",
+                  "“Welcome to your dashboard” → “Your notes”", "## Do not change", "screens.md"):
+            self.assertIn(s, prompt)
+        self.assertNotIn("—", prompt)
+
+    def test_cli(self):
+        p = subprocess.run([sys.executable, os.path.join(SCRIPTS, "handoff.py"), THEME, self.out], capture_output=True, text=True)
+        self.assertEqual(p.stdout, f"HANDOFF {len(self.h.FILES)} files in {self.out}\n")
+
+
 if __name__ == "__main__":
     unittest.main()

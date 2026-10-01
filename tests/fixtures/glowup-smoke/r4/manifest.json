@@ -1,0 +1,11 @@
+{
+  "project": "demo", "topic": "notes", "title": "Notes app glow-up", "round": 4,
+  "mode": "glowup", "surface": "web", "source": "images", "stage": "handoff",
+  "brief": "Smoke fixture: Ledger handed off for an AI builder.",
+  "parent": { "round": 2, "id": "v01", "name": "Ledger" },
+  "screens": [
+    { "id": "s1", "label": "Dashboard" }, { "id": "s2", "label": "Notes list" },
+    { "id": "s3", "label": "New note" }, { "id": "s4", "label": "Empty state", "invented": true }
+  ],
+  "handoff": { "dir": "handoff", "theme": "../r2/v01/theme.json" }
+}
