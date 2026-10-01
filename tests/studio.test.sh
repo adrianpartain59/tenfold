@@ -301,6 +301,30 @@ t="$(gfresh)"; jedit "$t/r3/manifest.json" 'd["apply"]["build"] = "fail"'
 out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r3" 2>&1)"
 grep -q "FAIL build failed and the stage was not reverted" <<<"$out" && ok "check fails an unreverted broken build" || bad "check fails an unreverted broken build" "$out"
 
+echo "glow-up: new, check and sheets routing"
+out="$(bash "$STUDIO" new demo glow --glowup 2>&1)"
+rd="$DESIGN_STUDIO_ROOT/demo/glow/r1"
+grep -qx "MODE glowup" <<<"$out" && ok "new --glowup prints MODE glowup" || bad "new --glowup prints MODE glowup" "$out"
+[ -f "$rd/screen.css" ] && [ -f "$rd/web.css" ] && ok "new --glowup copies both frame stylesheets" || bad "new --glowup copies both frame stylesheets" "$(ls "$rd")"
+grep -q "^SURFACE" <<<"$out" && bad "app glow-up prints no SURFACE line" "$out" || ok "app glow-up prints no SURFACE line"
+out="$(bash "$STUDIO" new demo glowweb --glowup --web 2>&1)"
+grep -qx "MODE glowup" <<<"$out" && grep -qx "SURFACE web" <<<"$out" && ok "new --glowup --web prints both lines" || bad "new --glowup --web prints both lines" "$out"
+out="$(bash "$STUDIO" new demo nope --sparkle 2>&1)"; st=$?
+[ $st -eq 2 ] && grep -q "unknown flag: --sparkle" <<<"$out" && ok "new rejects an unknown flag" || bad "new rejects an unknown flag" "$out"
+t="$(stage glowup-smoke demo groute)"
+out="$(bash "$STUDIO" check "$t/r1" 2>&1)"
+[ "$(tail -1 <<<"$out")" = "OK 2 glow-up directions (directions, 4 screens)" ] && ok "check routes glow-up rounds by mode" || bad "check routes glow-up rounds by mode" "$out"
+if bash -c 'eval "$(sed -n "/^chrome_bin()/,/^}/p" "$0")"; chrome_bin' "$STUDIO" >/dev/null 2>&1; then
+  t="$(stage glowup-smoke demo gsheets)"
+  cp "$ASSETS/web.css" "$t/r1/"
+  out="$(bash "$STUDIO" sheets "$t/r1" 2>&1)"
+  [ -s "$t/r1/sheet-v01.png" ] && [ -s "$t/r1/sheet-v02.png" ] && ok "glow-up sheets write one sheet per direction" || bad "glow-up sheets write one sheet per direction" "$out"
+  [ -s "$t/r1/sheet-before.png" ] && ok "glow-up sheets write the before sheet" || bad "glow-up sheets write the before sheet" "$out"
+  ls "$t/r1" | grep -q '^_' && bad "glow-up sheets clean up wrappers" "$(ls "$t/r1")" || ok "glow-up sheets clean up wrappers"
+else
+  echo "  skip glow-up sheets (no Chrome/Chromium)"
+fi
+
 # --- new tests above this line ---
 echo
 echo "$pass passed, $fail failed"

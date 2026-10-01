@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # design-studio round manager + localhost server.
 #
-#   studio.sh new <project> <topic> [--web|--paywall] → next round dir + gallery for that mode
+#   studio.sh new <project> <topic> [--web|--paywall|--glowup [--web]] → next round + gallery
 #                                        print ROUND_DIR and the URL
 #   studio.sh serve                   → make sure the server is up (idempotent)
 #   studio.sh url <path-under-root>   → print localhost (+ LAN) URLs for a path
@@ -61,15 +61,26 @@ url() {
 }
 
 new_round() {
-  local project topic dir n web="" pw=""
-  project="$(slug "$1")"; topic="$(slug "$2")"
-  [ "${3:-}" = "--web" ] && web=1
-  [ "${3:-}" = "--paywall" ] && pw=1
+  local project topic dir n web="" pw="" glow="" a
+  project="$(slug "$1")"; topic="$(slug "$2")"; shift 2
+  for a in "$@"; do
+    case "$a" in
+      --web) web=1 ;;
+      --paywall) pw=1 ;;
+      --glowup) glow=1 ;;
+      "") ;;
+      *) echo "unknown flag: $a" >&2; exit 2 ;;
+    esac
+  done
   dir="$ROOT/$project/$topic"
   mkdir -p "$dir"
   n=1; while [ -d "$dir/r$n" ]; do n=$((n+1)); done
   mkdir -p "$dir/r$n"
-  if [ -n "$web" ]; then
+  if [ -n "$glow" ]; then
+    cp "$SKILL_DIR/assets/gallery-glowup.html" "$dir/r$n/index.html"
+    cp "$SKILL_DIR/assets/screen.css" "$dir/r$n/screen.css"
+    cp "$SKILL_DIR/assets/web.css" "$dir/r$n/web.css"
+  elif [ -n "$web" ]; then
     cp "$SKILL_DIR/assets/gallery-web.html" "$dir/r$n/index.html"
     cp "$SKILL_DIR/assets/web.css" "$dir/r$n/web.css"
   elif [ -n "$pw" ]; then
@@ -85,6 +96,7 @@ new_round() {
   echo "ROUND r$n"
   echo "ROUND_DIR $dir/r$n"
   echo "TOPIC_DIR $dir"
+  [ -n "$glow" ] && echo "MODE glowup"
   [ "$n" -gt 1 ] && echo "PREV_ROUND_DIR $dir/r$((n-1))"
   [ -n "$web" ] && echo "SURFACE web"
   [ -n "$pw" ] && echo "SURFACE paywall"
@@ -103,8 +115,21 @@ print(m.get("surface") or "")
 PY
 }
 
+# mode_of <round-dir>: the manifest's "mode" (glowup), or nothing
+mode_of() {
+  python3 - "$1" <<'PY' 2>/dev/null || true
+import json, os, sys
+try:
+    m = json.load(open(os.path.join(sys.argv[1], "manifest.json")))
+except Exception:
+    sys.exit(0)
+print(m.get("mode") or "")
+PY
+}
+
 check() {
   local d="${1%/}"
+  if [ "$(mode_of "$d")" = "glowup" ]; then python3 "$SKILL_DIR/scripts/glowup_check.py" "$d"; return; fi
   case "$(surface_of "$d")" in
     web) python3 "$SKILL_DIR/scripts/web_check.py" "$d"; return ;;
     paywall) python3 "$SKILL_DIR/scripts/paywall_check.py" "$d"; return ;;
@@ -217,6 +242,9 @@ sheets() {
   local d; d="$(cd "$1" && pwd)"
   local rel="${d#"$ROOT"/}"
   local chrome; chrome="$(chrome_bin)" || { echo "no Chrome/Chromium found (set CHROME=/path)" >&2; exit 6; }
+  if [ "$(mode_of "$d")" = "glowup" ]; then
+    python3 "$SKILL_DIR/scripts/glowup_sheets.py" "$d" >/dev/null; shoot "$d" "$rel" "$chrome"; return
+  fi
   case "$(surface_of "$d")" in
     web) sheets_web "$d" "$rel" "$chrome"; return ;;
     paywall) python3 "$SKILL_DIR/scripts/paywall_sheets.py" "$d" >/dev/null; shoot "$d" "$rel" "$chrome"; return ;;
@@ -244,7 +272,7 @@ PY
 
 cmd="${1:-}"; shift || true
 case "$cmd" in
-  new)   [ $# -ge 2 ] || { echo "usage: studio.sh new <project> <topic> [--web|--paywall]" >&2; exit 2; }; new_round "$1" "$2" "${3:-}" ;;
+  new)   [ $# -ge 2 ] || { echo "usage: studio.sh new <project> <topic> [--web|--paywall|--glowup [--web]]" >&2; exit 2; }; new_round "$@" ;;
   serve) serve; url "" ;;
   url)   url "${1:-}" ;;
   check) check "$1"; [ -n "${DESIGN_STUDIO_NO_OPEN:-}" ] || open_round "$1" ;;
