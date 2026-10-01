@@ -97,7 +97,19 @@
   .row.sys { grid-template-columns: 240px 1fr; }
   .routes { display: grid; grid-template-columns: repeat(auto-fill, var(--w)); gap: 18px; }
   .row .meta { width: auto; }
-  .row.before .phone { outline: 2px dashed var(--ink3); outline-offset: 4px; }
+  .row.before .phone, .row.before .desk { outline: 2px dashed var(--ink3); outline-offset: 4px; }
+  /* Web surface: desktop frames, 1440 x 900 scaled to --dw, two per line */
+  body { --dw: 560; } body[data-size="s"] { --dw: 400; } body[data-size="l"] { --dw: 840; }
+  .desk { --ds: calc(var(--dw) / 1440); width: calc(var(--dw) * 1px + 2px); height: calc(var(--dw) * 900px / 1440 + 2px); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; position: relative; background: #fff; box-shadow: var(--shadow); }
+  .desk .viewport { position: absolute; left: 0; top: 0; width: 1440px; height: 900px; transform: scale(var(--ds)); transform-origin: 0 0; }
+  .desk iframe, .desk img { width: 1440px; height: 900px; border: 0; display: block; background: #fff; pointer-events: none; }
+  .desk img { object-fit: cover; object-position: top; }
+  body.web .row { grid-template-columns: 240px repeat(2, calc(var(--dw) * 1px + 2px)); }
+  body.web .row > .meta { grid-row: span 2; }
+  body.web .row.pair > .meta { grid-row: auto; }
+  body.web .routes { grid-template-columns: repeat(auto-fill, calc(var(--dw) * 1px + 2px)); }
+  .focus .desk { grid-column: 2; --dw: 820; cursor: default; }
+  .focus .desk iframe { pointer-events: auto; }
   .screenlbl { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink2); margin-bottom: 6px; }
   .more { justify-self: start; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 4px 12px; font: inherit; font-size: 12px; font-weight: 650; cursor: pointer; }
   .headline { margin: 0; font-size: 18px; font-weight: 700; }
@@ -146,7 +158,7 @@ function frame(src, title, lazy = true) {
   const inner = /\.(png|jpe?g|webp)$/i.test(src)
     ? `<img src="${esc(src)}" alt="${esc(title)}">`
     : `<iframe ${lazy ? 'loading="lazy" ' : ""}src="${esc(src)}?theme=${theme}" title="${esc(title)}" onload="setFrameTheme(this)"></iframe>`;
-  return `<div class="phone"><div class="viewport">${inner}</div></div>`;
+  return `<div class="${M?.surface === "web" ? "desk" : "phone"}"><div class="viewport">${inner}</div></div>`;
 }
 function mainLabel() { return M.stage === "system" ? "System" : M.stage === "apply" ? `Apply · stage ${M.apply?.stage ?? ""}` : M.stage === "handoff" ? "Handoff" : "Directions"; }
 function slabel(s) { return s.invented ? `${s.label} · invented` : s.label; }
@@ -252,7 +264,7 @@ async function open(i) {
   if (!vs.length || M.stage === "apply") return;
   cur = (i + vs.length) % vs.length;
   const v = vs[cur], f = $("#focus");
-  f.querySelectorAll(".phone, .side").forEach((n) => n.remove());
+  f.querySelectorAll(".phone, .desk, .side").forEach((n) => n.remove());
   const first = M.stage === "system" ? `${v.dir ?? v.id}/routes/${M.routes?.[0]?.id}.html` : `${v.dir ?? v.id}/${M.screens?.[0]?.id ?? "s1"}.html`;
   f.insertAdjacentHTML("beforeend", frame(first, v.name, false) + `<div class="side"><div class="top"><span class="num">${cur + 1}</span> <span class="name">${esc(v.name)}</span></div><p class="idea">${esc(v.idea)}</p><div class="loading">Loading spec…</div></div>`);
   f.classList.add("open");
@@ -274,6 +286,7 @@ addEventListener("keydown", (e) => {
 });
 fetch("manifest.json", { cache: "no-store" }).then((r) => r.json()).then(async (m) => {
   M = m;
+  document.body.classList.toggle("web", M.surface === "web");
   const q = new URLSearchParams(location.search).get("tab");
   tab = tabs().some(([k]) => k === q) ? q : "main";
   renderHead(); renderTabs(); await renderBody();

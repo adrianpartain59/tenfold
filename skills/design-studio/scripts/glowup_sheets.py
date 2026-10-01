@@ -17,21 +17,34 @@ CSS = ("body{margin:0;padding:24px;background:#ECECEF;display:flex;gap:24px;alig
        "iframe,img{width:393px;height:852px;border:0;border-radius:44px;background:#fff;"
        "box-shadow:0 10px 30px rgba(0,0,0,.12);display:block;object-fit:cover;object-position:top}")
 IMG = (".png", ".jpg", ".jpeg", ".webp")
+# Web surface: four 1440 x 900 screens at 0.45 scale in a 2 x 2 grid (fits the 2133 x 964 shot).
+WEB_CSS = (".grid{display:grid;grid-template-columns:repeat(2,648px);gap:24px}"
+           ".d{width:648px;height:405px;overflow:hidden;border-radius:10px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.12)}"
+           ".d iframe,.d img{width:1440px;height:900px;border:0;border-radius:0;box-shadow:none;transform:scale(.45);transform-origin:0 0;object-fit:cover;object-position:top}"
+           "figcaption{height:30px}")
+
+
+WEB = False
 
 
 def cell(src, cap):
     s = html.escape(src)
     tag = f'<img src="{s}">' if src.lower().endswith(IMG) else f'<iframe src="{s}?theme=light"></iframe>'
+    if WEB:
+        tag = f'<div class="d">{tag}</div>'
     return f"<figure><figcaption>{html.escape(cap)}</figcaption>{tag}</figure>"
 
 
 def page(label, sub, cells):
-    return (f'<!doctype html><meta charset="utf-8"><style>{CSS}</style>'
-            f'<div class="lbl"><b>{html.escape(label)}</b>{html.escape(sub)}</div>' + "".join(cells))
+    body = f'<div class="grid">{"".join(cells)}</div>' if WEB else "".join(cells)
+    return (f'<!doctype html><meta charset="utf-8"><style>{CSS}{WEB_CSS if WEB else ""}</style>'
+            f'<div class="lbl"><b>{html.escape(label)}</b>{html.escape(sub)}</div>' + body)
 
 
 def main(d):
+    global WEB
     m = json.load(open(os.path.join(d, "manifest.json"), encoding="utf-8"))
+    WEB = m.get("surface") == "web"
     screens = m.get("screens", [])
     out = []
     b = m.get("before") or {}

@@ -373,6 +373,10 @@ if bash -c 'eval "$(sed -n "/^chrome_bin()/,/^}/p" "$0")"; chrome_bin' "$STUDIO"
   jedit "$t/r1/manifest.json" 'd["screens"][3]["invented"] = True'
   dom="$(dump "$base/r1/index.html")"
   grep -q "Empty state · invented" <<<"$dom" && ok "gallery labels invented screens" || bad "gallery labels invented screens"
+  grep -q 'class="desk"' <<<"$dom" && ! grep -q 'class="phone"' <<<"$dom" && ok "gallery uses desktop frames for a web surface" || bad "gallery uses desktop frames for a web surface"
+  jedit "$t/r1/manifest.json" 'd["surface"] = "app"'
+  dom="$(dump "$base/r1/index.html")"
+  grep -q 'class="phone"' <<<"$dom" && ! grep -q 'class="desk"' <<<"$dom" && ok "gallery keeps phone frames for an app surface" || bad "gallery keeps phone frames for an app surface"
 else
   echo "  skip glow-up gallery DOM tests (no Chrome/Chromium)"
 fi
