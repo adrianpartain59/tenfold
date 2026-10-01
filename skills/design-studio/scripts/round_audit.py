@@ -6,7 +6,9 @@
 Ten directions that differ in type and colour can still share a layout, an
 interaction model or an icon family that nobody chose. This reads every
 direction's theme.json and screens, extracts a fixed set of features, and
-prints each feature that all directions but at most one share. A shared
+prints each feature that all directions but at most one share (SHARED),
+and each value 60% or more of them hold (MAJORITY), since a cluster can
+come from the brief's own examples rather than from a decision. A shared
 feature is not a failure: the category may call for it. Each one is a
 question for the agent before the link goes out: decided (a theme.json
 decision says why) or defaulted (fix it in the fix batch). Needs at least
@@ -19,6 +21,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from theme_core import parse, resolve, srgb_to_oklch
 
 MIN_DIRECTIONS = 4
+MAJORITY = 0.6  # a value this share of directions holds is a cluster worth a second look
 
 
 def _read(path):
@@ -51,6 +54,7 @@ def _bucket(v, edges, names):
 # (label, function(theme, screens dict) -> value)
 FEATURES = [
     ("home hero alignment", lambda t, s: "centred" if re.search(r"text-align:\s*center", s["s1"]) else "left or split"),
+    ("core task is keyboard-first", lambda t, s: _yes("keyboard" in t.get("decisions", {}).get("interaction", "").lower())),
     ("quiz moves with Previous / Next", lambda t, s: _yes(re.search(r"Previous", s["s4"]) and re.search(r"Next", s["s4"]))),
     ("quiz answers in a 2-column grid", lambda t, s: _yes(re.search(r"grid-template-columns:\s*(repeat\(2|1fr 1fr)", s["s4"]))),
     ("no <img> on any screen", lambda t, s: _yes(not any("<img" in h for h in s.values()))),
@@ -87,9 +91,14 @@ def audit(round_dir):
     lines = []
     for label, _ in FEATURES:
         value, count = Counter(values[label]).most_common(1)[0]
-        if count >= n - 1 and value != "unknown":
+        if value == "unknown":
+            continue
+        if count >= n - 1:
             lines.append(f"SHARED {count}/{n} {label}: {value}")
-    lines.append(f"AUDIT {n} directions · {len(lines)} shared features · decided or defaulted? check each against theme.json decisions")
+        elif count / n >= MAJORITY and value != "no":  # most directions NOT doing something is not a cluster
+            lines.append(f"MAJORITY {count}/{n} {label}: {value}")
+    shared = sum(1 for l in lines if l.startswith("SHARED"))
+    lines.append(f"AUDIT {n} directions · {shared} shared features · {len(lines) - shared} majority clusters · decided or defaulted? check each against theme.json decisions")
     return lines
 
 

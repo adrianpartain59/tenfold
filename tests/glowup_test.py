@@ -476,13 +476,26 @@ class RoundAuditTest(unittest.TestCase):
         lines = self.ra.audit(self.d)
         self.assertIn("SHARED 4/4 icon set: feather", lines)
         self.assertIn("SHARED 4/4 no <img> on any screen: yes", lines)
-        self.assertEqual(lines[-1], f"AUDIT 4 directions · {len(lines) - 1} shared features · decided or defaulted? check each against theme.json decisions")
+        self.assertEqual(lines[-1], f"AUDIT 4 directions · {len(lines) - 1} shared features · 0 majority clusters · decided or defaulted? check each against theme.json decisions")
 
     def test_varied_feature_is_not_listed(self):
         for vid, s in (("v01", "lucide"), ("v02", "tabler"), ("v03", "phosphor-bold")):
             p = os.path.join(self.d, vid, "theme.json")
             t = json.load(open(p)); t["icons"]["set"] = s; json.dump(t, open(p, "w"))
         self.assertFalse(any(l.startswith("SHARED") and "icon set" in l for l in self.ra.audit(self.d)))
+
+    def test_majority_cluster(self):
+        for i in range(1, 6):
+            vid = f"v{i:02d}"
+            if not os.path.isdir(os.path.join(self.d, vid)):
+                self.shutil.copytree(os.path.join(self.d, "v01"), os.path.join(self.d, vid))
+                m = json.load(open(os.path.join(self.d, "manifest.json")))
+                m["variations"].append({**m["variations"][0], "id": vid, "dir": vid})
+                json.dump(m, open(os.path.join(self.d, "manifest.json"), "w"))
+        for vid, s in (("v01", "lucide"), ("v02", "tabler")):
+            p = os.path.join(self.d, vid, "theme.json")
+            t = json.load(open(p)); t["icons"]["set"] = s; json.dump(t, open(p, "w"))
+        self.assertIn("MAJORITY 3/5 icon set: feather", self.ra.audit(self.d))
 
     def test_too_few(self):
         self.assertEqual(self.ra.audit(os.path.join(FIX, "glowup-smoke", "r1")), ["AUDIT 2 directions: too few to compare (needs 4)"])
