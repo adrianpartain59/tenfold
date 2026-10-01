@@ -337,6 +337,28 @@ board says which. `references/apply-web.md` and `references/apply-native.md`
 hold the stack-specific playbooks (where tokens live, how shadcn and
 NativeWind consume them, how fonts load, how to find literals).
 
+## From screenshots (`source: images`)
+
+Added 2026-09-30 after the first build. Glow-up also runs from screenshots
+alone, with no codebase. The directions are rebuilt from a content
+contract and a fixture anyway, and Claude reads both from a screenshot
+about as reliably as from source, so the core of the loop is unchanged.
+What changes is at the two ends.
+
+| Stage | From screenshots |
+|---|---|
+| Intake | Product, buyer and category read from the screens; surface from the aspect ratio (portrait phone means app, wide means web), confirmed in the brief question. Ask for three or four screenshots; accept one with a warning |
+| Audit | `image_audit.py` measures the colours the screenshots really use (a stdlib PNG decoder, clustering in OKLab, Tailwind-default matches, neutral temperature). The visible tells are judged by eye against the tells list and written into context.md. Spacing and type counts and the code-only tells drop out |
+| Key screens | The uploaded screens, in order. When fewer than four are uploaded, the rest are designed fresh and marked `"invented": true` in `manifest.screens`; the gallery labels them |
+| Research, directions, converge | Unchanged |
+| System | The uploaded screens plus their designed empty, loading and error states. `routes` lists them |
+| Apply | Not available. `check` fails an apply round on an image-sourced topic |
+| Handoff (new final stage) | `handoff.py` writes the picked theme in every token format plus `prompt.md`, a paste-ready brief for an AI builder (Lovable, v0, Bolt, Cursor). The agent adds `screens.md`, one section per screen. `check` verifies the files, that the tokens aren't stale, and that every uploaded screen has a section |
+
+The topic records `"source": "images"` in every manifest. The handoff stage
+also exists for code topics where the user wants the tokens without a
+branch.
+
 ## Tooling
 
 | Script | Does |

@@ -3201,46 +3201,17 @@ git commit -m "Tenfold 1.3.0: glow-up mode for design-studio"
 
 ---
 
-### Task 11: Hand run on three public vibe-coded repos
+### Task 11: Hand run on three vibe-coded apps, from screenshots
 
 **Files:**
 - Create: `specs/research/2026-10-glowup-handrun.md`
 
-This task is verification, not code. It decides whether glow-up is good enough to sell.
+Changed 2026-09-30: the hand run uses the screenshot path (`source: images`, see the spec's "From screenshots" section), which is the version a SaaS would launch with. It needs no repo, so licences don't limit the choice of apps.
 
-- [ ] **Step 1: Pick three repos**
-
-Search GitHub for public repos built with Lovable, v0 or Bolt (READMEs or commit messages mentioning them), plus one Expo app built the same way. Each must have an open-source licence and at least five routes. Pick two web and one Expo. Record the URL, licence and commit for each.
-
-- [ ] **Step 2: Run the full loop on each, in a scratch clone**
-
-```bash
-git clone <url> /tmp/glowup-<name> && cd /tmp/glowup-<name>
-```
-
-Then ask for a glow-up in Claude Code in that directory and run every stage through apply stage 4. Time each stage with wall-clock time, and note tokens from `/cost` (or the session usage view) at each stage boundary.
-
-- [ ] **Step 3: Record results**
-
-`specs/research/2026-10-glowup-handrun.md`: one table row per repo with these columns:
-
-- Repo
-- Stack
-- Entropy before → after
-- Tells before → after
-- Build passes after each stage (y/n)
-- Wall-clock per stage
-- Tokens per stage
-- Your pick vs Claude's pick vs predicted pick
-
-Add one paragraph per repo on what looked professional and what still looked generated. List any check that let a bad round through.
-
-- [ ] **Step 4: Commit**
-
-```bash
-git add specs/research/2026-10-glowup-handrun.md
-git commit -m "docs(glowup): hand run on three public vibe-coded repos"
-```
+- [ ] **Step 1: Pick three apps.** Public vibe-coded apps you can open in a browser (the Lovable, v0 and Bolt showcase galleries are fine), two web and one mobile. For each, take three or four screenshots of different screens (main, densest list, a form, an empty or onboarding state). Record the app URL and which screens.
+- [ ] **Step 2: Run glow-up on each** from intake through handoff, uploading the screenshots. Time each stage and note tokens at each stage boundary.
+- [ ] **Step 3: Record results** in `specs/research/2026-10-glowup-handrun.md`: per app, the image-audit headline, the visible tells found, how many key screens were invented, the three picks (yours, Claude's, predicted), wall-clock and tokens per stage, and one paragraph on what looked professional and what still looked generated. Note any check that let a bad round through. No screenshots of other people's apps in the public repo; numbers and notes only.
+- [ ] **Step 4: Commit** `docs(glowup): hand run on three vibe-coded apps from screenshots`.
 
 ---
 

@@ -168,11 +168,85 @@ Each stage gets its own round dir with `"stage": "apply"` and an `apply`
 block (see the manifest reference). It goes out with the same link and
 question as any round.
 
+## From screenshots
+
+Glow-up runs from screenshots alone when there is no codebase: a founder
+with a Lovable link, a phone screenshot, a page they can't share the repo
+for. The directions are rebuilt from a content contract and a fixture
+anyway, so the core of the loop is unchanged. Write `"source": "images"` in
+every manifest of the topic. What changes:
+
+- **Intake.** Ask for three or four screenshots of different screens, in
+  the order of the four key screens. Accept one, and say plainly that the
+  other key screens will be designed fresh. Read the product, buyer and
+  category from the screens, and the surface from the shape: a portrait
+  phone screenshot is an app, a wide one is web. Both go in the brief
+  question.
+- **Key screens.** The uploaded screens are `s1` onwards. A key screen
+  with no screenshot is designed from the brief and marked
+  `"invented": true` in `manifest.screens`; the gallery labels it.
+- **Audit.** Copy the screenshots to `TOPIC_DIR/before/<sid>.png`, then
+  measure the colours they really use:
+
+  ```bash
+  python3 <SKILL_DIR>/scripts/image_audit.py TOPIC_DIR/before/*.png --out TOPIC_DIR/image-audit.json
+  ```
+
+  It prints a headline such as `IMAGE-AUDIT 9 colours across 4 screens ·
+  Tailwind gray-500, indigo-600 · cool greys`; use it as `before.headline`.
+  Judge the visible tells by eye against the lists in `glowup-craft.md`
+  (gradient text, uniform cards, sparkle icons, centred everything, "Oops",
+  placeholder-only fields, straight quotes) and write what you find into
+  context.md and `before.summary`. Spacing and type-size counts and the
+  code-only tells (focus rings, reduced motion, validation timing) are out
+  of reach; say so in context.md rather than guessing.
+- **Content contract and UI strings.** Transcribe every datum, action and
+  string visible on each screenshot into context.md. That transcription is
+  the fixture and the source of the voice strings, so copy it exactly.
+- **Research, directions, converge.** Unchanged.
+- **System.** The uploaded screens plus their designed empty, loading and
+  error states; `routes` lists them.
+- **Apply.** Not available: `check` fails an apply round on an
+  image-sourced topic. The topic ends at handoff.
+
+## Handoff
+
+The last stage for an image-sourced topic, and an option for a code topic
+when the user wants the tokens without a branch. After the system pick
+(`Handoff #N`), write the files into the round:
+
+```bash
+python3 <SKILL_DIR>/scripts/handoff.py <system round>/vNN/theme.json ROUND_DIR/handoff
+```
+
+It writes `tokens.css`, `theme.css`, `tailwind-v4.css`,
+`tailwind.config.v3.js`, `shadcn.css`, `shadcn-hsl.css`, `theme.ts` and
+`prompt.md`, a brief the user pastes into Lovable, v0, Bolt or Cursor with
+those files. Then write `ROUND_DIR/handoff/screens.md` yourself: one
+`## <screen label>` section per uploaded screen, naming its layout template,
+what moves, what the copy becomes, and which states to add. The manifest:
+
+```json
+{
+  "project": "<project>", "topic": "<topic>", "title": "<App> glow-up", "round": 4,
+  "mode": "glowup", "surface": "web", "source": "images", "stage": "handoff",
+  "parent": { "round": 3, "id": "v01", "name": "Ledger" },
+  "screens": [{ "id": "s1", "label": "Dashboard" }, { "id": "s4", "label": "Empty state", "invented": true }],
+  "handoff": { "dir": "handoff", "theme": "../r3/v01/theme.json" }
+}
+```
+
+`check` verifies every file exists, `tokens.css` matches the theme, and
+`screens.md` has a section for every screen that wasn't invented. The
+gallery's Handoff tab shows `prompt.md`, `screens.md` and download links.
+
 ## Pick question
 
 - `directions` and `converge`: the usual four options. From `converge` on,
   option 3 becomes `System proof #N`.
-- `system`: `Apply #N (Recommended)`, a converge option, and a mix.
+- `system`: `Apply #N (Recommended)`, a converge option, and a mix. On an
+  image-sourced topic, `Handoff #N (Recommended)` takes Apply's place; a
+  code topic can offer it as the third option.
 - Every apply board: `Approve stage (Recommended)`, `Flag a route` (typed
   route names and what's wrong), `Revert stage`.
 

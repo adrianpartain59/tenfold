@@ -175,6 +175,11 @@ In short:
   entropy and tells fall.
 - The pick question adds `System proof #N` from `converge`, `Apply #N` in
   `system`, and approve, flag or revert on every apply board.
+- No codebase? It runs from screenshots (`"source": "images"`):
+  `image_audit.py` measures the colours they use, missing key screens are
+  designed and marked `invented`, and the topic ends with `handoff.py`
+  (every token format plus a prompt for Lovable, v0, Bolt or Cursor)
+  instead of apply.
 
 ## Rules that hold every round
 

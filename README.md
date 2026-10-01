@@ -103,7 +103,9 @@ carries), studies the apps in your category, then shows ten complete
 themes on the same four screens of your app. Pick one, see it on every
 screen, and it applies the theme to your code on a branch, one reviewable
 stage at a time, with before and after screenshots. Web (React, Next,
-Vite, Tailwind, shadcn) and React Native / Expo.
+Vite, Tailwind, shadcn) and React Native / Expo. No repo to share? Give it
+screenshots instead: you get the same ten themes, and a handoff folder with
+the tokens and a prompt to paste into your AI builder.
 
 ## Teach it your app (optional)
 
