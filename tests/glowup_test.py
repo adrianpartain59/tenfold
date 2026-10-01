@@ -188,5 +188,46 @@ class ThemeTokensTest(unittest.TestCase):
         self.assertIn("FAIL voice.adjectives needs exactly three words", r.stdout)
 
 
+KINDS = ("colors", "font-sizes", "font-weights", "spacing", "radii", "shadows")
+
+
+class EntropyTest(unittest.TestCase):
+    def setUp(self):
+        import entropy
+        self.e = entropy
+
+    def test_web_counts(self):
+        r = self.e.measure(os.path.join(FIX, "glowup-web"))
+        self.assertEqual({k: r[k]["count"] for k in KINDS},
+                         {"colors": 11, "font-sizes": 5, "font-weights": 3, "spacing": 8, "radii": 4, "shadows": 2})
+        self.assertEqual(r["total"], 33)
+        for v in ("tw:indigo-600", "tw:white", "#6b7280", "rgba(0,0,0,0.1)"):
+            self.assertIn(v, r["colors"]["values"])
+        self.assertEqual(sorted(r["spacing"]["values"], key=lambda v: float(v[:-2])),
+                         ["8px", "12px", "16px", "18px", "20px", "24px", "32px", "96px"])
+        self.assertEqual(sorted(r["radii"]["values"]), ["10px", "16px", "6px", "8px"])
+        self.assertEqual(r["colors"]["values"]["#6b7280"]["files"], ["src/index.css"])
+        self.assertEqual(r["colors"]["values"]["tw:indigo-600"]["files"], ["src/App.tsx", "src/pages/Settings.tsx"])
+
+    def test_native_counts(self):
+        r = self.e.measure(os.path.join(FIX, "glowup-native"))
+        self.assertEqual({k: r[k]["count"] for k in KINDS},
+                         {"colors": 6, "font-sizes": 3, "font-weights": 1, "spacing": 4, "radii": 2, "shadows": 2})
+        self.assertIn("#ffffff", r["colors"]["values"])
+        self.assertIn("rn:elevation-3", r["shadows"]["values"])
+        self.assertEqual(r["headline"], "6 colours · 3 font sizes · 1 weight · 4 spacing values · 2 radii · 2 shadows")
+
+    def test_cli(self):
+        out = os.path.join(FIX, "_entropy.json")
+        try:
+            r = subprocess.run([sys.executable, os.path.join(SCRIPTS, "entropy.py"), os.path.join(FIX, "glowup-web"), "--out", out],
+                               capture_output=True, text=True)
+            self.assertEqual(r.stdout, "ENTROPY 33 (11 colours · 5 font sizes · 3 weights · 8 spacing values · 4 radii · 2 shadows)\n")
+            self.assertEqual(json.load(open(out))["total"], 33)
+        finally:
+            if os.path.exists(out):
+                os.remove(out)
+
+
 if __name__ == "__main__":
     unittest.main()
