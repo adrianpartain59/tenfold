@@ -166,8 +166,12 @@ In short:
   (`category.md`), `directions` (ten themes on the four key screens),
   `converge`, `system` (every route), `apply` (staged commits on
   `glowup/<topic>`).
-- A direction is `vNN/theme.json` (the whole system), `tokens.css` from
-  `theme_tokens.py --css`, and `s1.html` to `s4.html`.
+- A direction is `vNN/theme.json` (the whole system, including a
+  `decisions` line for composition, interaction, navigation, anatomy, art,
+  icons, mark, motion and mobile), `tokens.css` from
+  `theme_tokens.py --css`, `s1.html` to `s4.html`, and `moment.html` (the
+  key moment, animated). After rendering, `round_audit.py` lists what every
+  direction shares, so nothing is left to a default.
 - `check` runs `glowup_check.py`: a valid theme, contrast, a reason for
   every framework default, second-order tells only as the named
   signature, fresh tokens, a layout template on every screen, the

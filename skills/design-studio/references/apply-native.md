@@ -106,7 +106,9 @@ About five screens per commit.
 ## Hard limits
 
 No changes to data fetching, state, navigation structure, API calls or test
-IDs. No new features or screens. The diff touches styles, render markup,
+IDs. No new features or screens. How navigation is presented (tabs, a
+drawer, a header) may change if the theme decided it; the screens and
+routes stay. The diff touches styles, render markup,
 copy strings and assets. A change outside that list is a follow-up, not
 part of apply.
 

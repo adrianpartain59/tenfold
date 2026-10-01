@@ -6,7 +6,8 @@
 directions / converge: every direction has a valid theme.json (contrast,
 defaults with reasons, second-order tells only as the named signature), a
 tokens.css that matches theme_tokens.py --css, voice strings found in
-context.md, notes.market, notes.signature and notes.composition, and four key screens that link
+context.md, notes.market and notes.signature, every theme.json decision, a
+moment.html (the key moment animated, honouring reduced motion), and four key screens that link
 their tokens and frame, declare a layout template, use no literal colours,
 carry no fingerprint, copy or second-order tells, and show the signature on
 at least two screens.
@@ -30,6 +31,8 @@ import theme_tokens as tt
 LITERAL = re.compile(r"(?<!&)#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch)\(")
 TEMPLATE = re.compile(r'data-template="([\w-]+)"')
 TOKENS_LINK = re.compile(r'href="(?:\.\./)?tokens\.css"')
+SPRITE_USE = re.compile(r'href="[^"#]*?(icons(?:-[\w-]+)?)\.svg#')
+PHONE_MEDIA = re.compile(r"@media[^{]*max-width")
 LINT_FAMILIES = ("fingerprint", "copy", "second-order")
 ENTROPY_KINDS = ("colors", "font-sizes", "font-weights", "spacing", "radii", "shadows")
 
@@ -84,6 +87,9 @@ def page_errors(path, rel, t, frame):
         errs.append(f"{rel}: literal colour {lit.group(0)!r}; use the tokens")
     if re.search(r"lorem ipsum", html, re.I):
         errs.append(f"{rel}: lorem ipsum")
+    want = "icons" if t["icons"]["set"] == "feather" else f"icons-{t['icons']['set']}"
+    for got in sorted(set(SPRITE_USE.findall(html)) - {want}):
+        errs.append(f"{rel}: uses {got}.svg but theme.icons.set is {t['icons']['set']} ({want}.svg)")
     uses = set(t["signature"].get("uses") or [])
     for f in tl.scan_text(html, rel):
         if f["family"] in LINT_FAMILIES and f["rule"] not in uses:
@@ -118,7 +124,7 @@ def check_directions(d, m, errs, warns):
         vid = v.get("id", "?")
         vdir = os.path.join(d, v.get("dir", vid))
         notes = v.get("notes") or {}
-        for k in ("market", "signature", "composition"):
+        for k in ("market", "signature"):
             if not str(notes.get(k, "")).strip():
                 errs.append(f"{vid}: notes.{k} is empty")
         t, te = theme_errors(vdir, vid, ctx)
@@ -136,6 +142,19 @@ def check_directions(d, m, errs, warns):
             sig += "data-signature" in html
         if sig < 2:
             errs.append(f"{vid}: signature element appears on {sig} screen{'' if sig == 1 else 's'} (need 2)")
+        s4 = os.path.join(vdir, "s4.html")
+        if m.get("surface") == "web" and os.path.isfile(s4) and not PHONE_MEDIA.search(open(s4, encoding="utf-8").read()):
+            errs.append(f"{vid}/s4.html has no phone layout (an @media max-width rule)")
+        mp = os.path.join(vdir, "moment.html")
+        if not os.path.isfile(mp):
+            errs.append(f"{vid}: missing moment.html (the key moment, animated)")
+        else:
+            pe, mh = page_errors(mp, f"{vid}/moment.html", t, _frame(m))
+            errs += pe
+            if not re.search(r"@keyframes|transition\s*:", mh):
+                errs.append(f"{vid}/moment.html has no animation (@keyframes or transition)")
+            if "prefers-reduced-motion" not in mh:
+                errs.append(f"{vid}/moment.html ignores prefers-reduced-motion")
     return f"{len(vs)} glow-up direction{'' if len(vs) == 1 else 's'} ({stage}, {len(tc.SCREENS)} screens)"
 
 

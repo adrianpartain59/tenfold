@@ -51,8 +51,9 @@ codebase.
   Chrome for images). The apply stage uses the target project's own
   toolchain (its package manager, build, typecheck, lint).
 - A theme may change look, voice and layout within a screen (hierarchy,
-  grouping, empty, loading and error states). It may not change
-  navigation, information architecture, features or data.
+  grouping, empty, loading and error states), and how navigation is
+  presented (top bar, sidebar, bottom bar). It may not change the routes,
+  information architecture, features or data.
 
 ## How a project turns glow-up on
 
@@ -358,6 +359,32 @@ What changes is at the two ends.
 The topic records `"source": "images"` in every manifest. The handoff stage
 also exists for code topics where the user wants the tokens without a
 branch.
+
+## The decision inventory
+
+Added 2026-09-30 after the Alpha Study hand run. All ten directions shared
+a split hero, a Previous / Next quiz, Feather icons, no imagery, a text-only
+mark, no FAQ and no motion: the skill varied what it named (type, colour,
+shape, density, signature, voice) and nothing else. Every direction now
+decides and justifies, in `theme.json` `decisions`: composition,
+interaction, navigation presentation, page anatomy, art, icons, mark,
+motion and mobile. There is no variety quota; a shared choice with a reason
+is fine. Supporting changes:
+
+- `icons.py` (via `studio.sh icons TOPIC_DIR <set>`): twelve open-licence
+  icon families, from published sprites (Feather, Lucide, Tabler outline and
+  filled) or built from npm tarballs (Phosphor in six weights, Heroicons
+  outline and solid). `check` fails a screen that uses another set's sprite.
+- `moment.html` per direction: the key moment animated, with a reduced
+  motion rule; `check` requires it, the gallery shows it.
+- A phone layout on the core screen for web topics; `check` requires an
+  `@media max-width` rule, the gallery shows it in a phone frame.
+- Category research records each comparable's home composition; the
+  content contract lists what each screen must hold, unordered, plus the
+  category's standard sections to consider.
+- `round_audit.py`: after rendering, lists every feature that all
+  directions (or all but one) share, for the agent to explain with a
+  decision or fix before the link goes out.
 
 ## Tooling
 

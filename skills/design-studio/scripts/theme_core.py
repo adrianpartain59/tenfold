@@ -13,6 +13,11 @@ DENSITIES = ("compact", "comfortable", "spacious")
 ELEVATION_STYLES = ("border", "shadow", "layered")
 CASES = ("sentence", "title", "upper")
 FACES = ("display", "body", "mono")
+# Decisions every direction makes and justifies in theme.json "decisions" (one line each).
+DECISIONS = ("composition", "interaction", "navigation", "anatomy", "art", "icons", "mark", "motion", "mobile")
+ICON_SETS = ("feather", "lucide", "tabler", "tabler-filled",
+             "phosphor-thin", "phosphor-light", "phosphor-regular", "phosphor-bold", "phosphor-fill", "phosphor-duotone",
+             "heroicons-outline", "heroicons-solid")
 WEIGHT_NAMES = {100: "Thin", 200: "ExtraLight", 300: "Light", 400: "Regular", 500: "Medium",
                 600: "SemiBold", 700: "Bold", 800: "ExtraBold", 900: "Black"}
 
@@ -241,6 +246,8 @@ def validate_theme(t):
         e.append("elevation.levels needs at least three named levels")
 
     ic = t.get("icons") or {}
+    if _str(ic.get("set")) and ic["set"] not in ICON_SETS:
+        e.append(f"icons.set must be one of {', '.join(ICON_SETS)} (got {ic['set']!r})")
     if not (_str(ic.get("set")) and _str(ic.get("license")) and _num(ic.get("stroke")) and isinstance(ic.get("sizes"), list) and ic["sizes"]):
         e.append("icons needs set, license, stroke and sizes")
 
@@ -282,6 +289,10 @@ def validate_theme(t):
     br = t.get("brand") or {}
     if not (_str(br.get("wordmark")) and _str(br.get("icon"))):
         e.append("brand needs wordmark and icon")
+    dec = t.get("decisions") or {}
+    for k in DECISIONS:
+        if not _str(dec.get(k)):
+            e.append(f"decisions.{k} missing (one line: what this direction chose and why)")
     if not isinstance(t.get("reasons", {}), dict):
         e.append("reasons must be an object")
     return e

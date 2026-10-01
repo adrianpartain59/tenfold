@@ -24,12 +24,13 @@ any of these:
 | `layout` | `space` (increasing), `templates` (3 or 4: `id`, `label`, `columns`, `max`, `gutter`, `margin`, `density`), `keylines` | See the system layer |
 | `shape.radius` | Named radii, `full: 999` for pills | At least two distinct values below 999 |
 | `elevation` | `style` (`border`, `shadow` or `layered`) and at least three named `levels` | |
-| `icons` | `set`, `license`, `stroke`, `sizes` | |
+| `icons` | `set`, `license`, `stroke`, `sizes` | `set` is one of the sets `icons.py` fetches (see the decision inventory) |
 | `motion` | `fast`, `base`, `slow` in ms, `easing.out`, `easing.in-out`, optional `spring` | |
 | `states` | `hover`, `pressed`, `disabled` as opacities, `focus.width`, `focus.offset` | |
 | `signature` | `what`, `where` (two or more of `s1` to `s4`), `never`, `uses` | See the human rules |
 | `voice` | Three `adjectives`, five `strings` (`before`, `after`), `case` for `button`, `title`, `label`, a `glossary` | `before` strings exist in context.md |
 | `brand` | `wordmark` and `icon` concepts | |
+| `decisions` | One line each for `composition interaction navigation anatomy art icons mark motion mobile`: what this direction chose and why | See the decision inventory; every key is required |
 | `reasons` | One line per framework default the theme keeps on purpose, keyed by path | See the human rules |
 
 Generate the direction's tokens from it, every time it changes:
@@ -245,6 +246,8 @@ Each `vNN/s1.html` to `s4.html`:
 - marks the signature element with `data-signature` on every screen listed
   in `signature.where`
 - uses only tokens: no hex, `rgb()`, `hsl()` or `oklch()` literals
+- uses icons only from the sprite for `theme.icons.set`: `../../icons.svg` for
+  Feather, `../../icons-<set>.svg` for any other set
 - shows the shared fixture from context.md, including the long string
 - keeps the content contract: it may regroup or reorder, never drop a datum
   or an action
@@ -253,27 +256,39 @@ Each `vNN/s1.html` to `s4.html`:
 The mockup rules in `mockup-craft.md` (app) or `web-craft.md` (web) hold
 too: real icons from the topic's sprite, real images, native patterns.
 
-## Composition is a decision
+Each direction also writes `vNN/moment.html`: the key moment of the core
+interaction, animated (for a quiz app, the answer landing, the explanation
+arriving, the streak ticking). Same rules as a screen, plus an `@keyframes`
+or `transition` and a `prefers-reduced-motion` rule that shows the end
+state still. It loops or has a replay control, so the gallery shows it
+moving. On a web topic, `s4.html` (the core screen) also carries a phone
+layout: the gallery shows it in a phone frame beside the desktop frames.
 
-Every screen's layout is chosen, not inherited from the most common pattern.
-The landing page matters most, because composition there is itself an idea:
-what the hero is (a product preview, a live demo, the input itself, a
-before/after, a scene, big type alone), what sits above the fold, and the
-order the story runs in.
+## The decision inventory
 
-Decide it from two sources and write the reason in `notes.composition`:
+A direction varies exactly what it is asked to decide; everything else
+falls back to the most common pattern, which is what reads as generated.
+So every direction makes these decisions and writes one line for each in
+`theme.json` `decisions`: what it chose and why, citing `category.md` or
+its own theme. `check` fails a missing one.
 
-- **The category:** `category.md` records each comparable's home
-  composition. Following the category's pattern is a fine answer when the
-  reason is that the buyer expects it; say so and cite the row.
-- **The theme:** a direction with its own world (a playful game, a desk of
-  objects, a book's title page) usually wants a composition that belongs to
-  that world rather than the generic split hero.
+There is no variety quota. Ten directions may make the same choice if each
+one chose it for a reason; "the category does this and students expect it
+(category.md, Home compositions 1)" is a good answer. What fails is the
+choice nobody made. After rendering, `round_audit.py` lists every feature
+all directions share, so a default shows up before the link goes out.
 
-There is no variety quota. Ten directions may share a layout if each one
-chose it for a reason. What fails is the layout nobody chose: the safe
-split hero (pitch left, preview card right, numbered steps below) reached
-by default. `check` fails a direction with no `notes.composition`.
+| Decision | What to decide | Draw on |
+|---|---|---|
+| `composition` | Each key screen's layout, above all the landing page: what the hero is (product preview, live demo, the input itself, before/after, a scene, big type alone), centred or split or full-bleed, what sits above the fold, the section order | `category.md` Home column and "Home compositions"; the theme's world |
+| `interaction` | How the core task works: for a quiz, one question at a time, a whole sheet, flip cards, keyboard-first, tap-to-advance tiles, a tutor conversation | The theme's world; how comparables run a session |
+| `navigation` | How navigation is presented: top bar, sidebar, bottom bar, command palette, a minimal back-and-title. The routes themselves stay fixed | Density and platform; the category |
+| `anatomy` | What each screen holds beyond the content contract: the category's standard sections (an honest proof slot, FAQ, pricing link, a door for parents or teachers, footer) considered one by one, each kept or left out on purpose | `category.md` table stakes; context.md's "Category sections to consider" |
+| `art` | The art stance: spot illustrations, diagrams of the real content, a mascot, a scene, textures, or none on purpose. Draw it as inline SVG on tokens (fills and strokes through `style="fill: var(--c-…)"` or classes, never literal colours). No stock images | The theme's world; the category's art |
+| `icons` | The icon family and weight: `feather`, `lucide`, `tabler`, `tabler-filled`, `phosphor-thin`, `phosphor-light`, `phosphor-regular`, `phosphor-bold`, `phosphor-fill`, `phosphor-duotone`, `heroicons-outline`, `heroicons-solid`. Fetch it with `studio.sh icons TOPIC_DIR <set>` | Match the type's weight and the theme's tone |
+| `mark` | The brand mark, drawn as inline SVG in the nav and larger where the theme wants it, not the product name in body text | The theme's signature and type |
+| `motion` | How the key moment moves (what animates, duration, easing, whether anything loops), shown in `moment.html` | `motion` tokens; the theme's tone |
+| `mobile` | What the core screen becomes on a phone: bottom navigation, swipeable cards, a thumb-reachable answer area, what collapses | How the buyer actually uses the product |
 
 ## Pre-send checklist
 
@@ -286,8 +301,10 @@ by default. `check` fails a direction with no `notes.composition`.
 7. It differs from every other direction on at least two axes; type or
    colour alone doesn't count.
 8. Contrast passes in light and dark (`check` tests the main pairs).
-9. `notes.composition` says why each key screen is laid out the way it is.
-10. The principles.md checklist passes: the mobile items for an app, the web
+9. Every `decisions` line names a choice and a reason, and each feature
+   `round_audit.py` lists as shared is one a decision explains.
+10. `moment.html` moves, and holds still under reduced motion.
+11. The principles.md checklist passes: the mobile items for an app, the web
    items for a website.
 
 ## Sources

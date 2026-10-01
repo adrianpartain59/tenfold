@@ -10,8 +10,8 @@
 #   studio.sh open <round-dir>        → open the round's gallery in the user's default
 #                                        browser. Set DESIGN_STUDIO_NO_OPEN=1 to skip the
 #                                        automatic open after `check`.
-#   studio.sh icons <topic-dir>       → download the Feather icon sprite (MIT) into the topic
-#                                        as icons.svg + icons.txt, for apps with no icon export
+#   studio.sh icons <topic-dir> [set] → download an icon sprite into the topic: Feather (MIT) as
+#                                        icons.svg + icons.txt by default, or a set from icons.py
 #   studio.sh sheets <round-dir>      → contact sheets (needs Chrome): mobile sheet-N.png;
 #                                        web heroes.png + full-length sheet-N.png (+ pages-vNN.png)
 #
@@ -277,7 +277,8 @@ case "$cmd" in
   url)   url "${1:-}" ;;
   check) check "$1"; [ -n "${DESIGN_STUDIO_NO_OPEN:-}" ] || open_round "$1" ;;
   open)  open_round "$1" ;;
-  icons) [ $# -ge 1 ] || { echo "usage: studio.sh icons <topic-dir>" >&2; exit 2; }; icons "$1" ;;
+  icons) [ $# -ge 1 ] || { echo "usage: studio.sh icons <topic-dir> [set]" >&2; exit 2; }
+         if [ -n "${2:-}" ] && [ "$2" != "feather" ]; then python3 "$SKILL_DIR/scripts/icons.py" "$1" "$2"; else icons "$1"; fi ;;
   sheets) [ $# -ge 1 ] || { echo "usage: studio.sh sheets <round-dir>" >&2; exit 2; }; sheets "$1" ;;
   *) sed -n '2,23p' "$0"; exit 2 ;;
 esac

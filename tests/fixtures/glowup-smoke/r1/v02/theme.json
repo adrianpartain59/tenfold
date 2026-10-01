@@ -241,7 +241,7 @@
     }
   },
   "icons": {
-    "set": "phosphor",
+    "set": "feather",
     "license": "MIT",
     "stroke": 1.5,
     "sizes": [
@@ -323,5 +323,16 @@
     "wordmark": "Lowercase “ledger” in Fraunces 700 with the ruled line under it",
     "icon": "A single ruled line on an action-colour square"
   },
-  "reasons": {}
+  "reasons": {},
+  "decisions": {
+    "composition": "Same dashboard-first order; the drafting-table theme earns a denser split layout.",
+    "interaction": "Notes open in a reading column and are edited in place; no modal editor.",
+    "navigation": "A quiet top bar with three items; routes unchanged.",
+    "anatomy": "Home is the signed-in app: the count, recent notes and one action, no marketing sections.",
+    "art": "None on purpose: the ruled line is the only ornament.",
+    "icons": "Feather at 1.5 px; the drafting theme stays thin.",
+    "mark": "Lowercase ledger wordmark with the ruled line under it.",
+    "motion": "The ruled line draws in under a heading on first view, 200 ms ease-out; nothing loops.",
+    "mobile": "Single column; the top bar becomes a bottom bar of three items."
+  }
 }

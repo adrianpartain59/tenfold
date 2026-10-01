@@ -100,6 +100,20 @@ Glossary:
 - note: note (never memo or entry)
 - space: space (never workspace)
 
+## Design decisions
+
+Why the design is the way it is. Keep these when you change anything.
+
+- Composition: Dashboard-first: this week's count leads, like the category's calm tools (category.md, table stakes 1).
+- Interaction: Notes open in a reading column and are edited in place; no modal editor.
+- Navigation: A quiet top bar with three items; routes unchanged.
+- Anatomy: Home is the signed-in app: the count, recent notes and one action, no marketing sections.
+- Art: None on purpose: the ruled line is the only ornament.
+- Icons: Feather at 1.5 px to match the light serif.
+- Mark: Lowercase ledger wordmark with the ruled line under it.
+- Motion: The ruled line draws in under a heading on first view, 200 ms ease-out; nothing loops.
+- Mobile: Single column; the top bar becomes a bottom bar of three items.
+
 ## Screen by screen
 
 Follow `screens.md` in this folder: one section per screen, naming its layout and what to change.

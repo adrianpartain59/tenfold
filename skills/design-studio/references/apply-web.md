@@ -116,7 +116,8 @@ About five routes per commit.
 ## Hard limits
 
 No changes to data fetching, state, routing, API calls or test IDs. No new
-features, screens or navigation. The diff touches styles, render markup,
+features or screens, and the routes stay as they are; how navigation is
+presented (top bar, sidebar, bottom bar) may change if the theme decided it. The diff touches styles, render markup,
 copy strings and assets. A change outside that list is a follow-up, not
 part of apply.
 

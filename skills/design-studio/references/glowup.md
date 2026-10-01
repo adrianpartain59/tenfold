@@ -99,7 +99,10 @@ weakest empty or onboarding state. They are `s1` to `s4` for the whole
 topic.
 
 Write `TOPIC_DIR/context.md` with the key screens and their templates, the
-content contract for each (every datum, action and state), the fixture
+content contract for each (every datum, action and state it must hold, in
+no particular order), a "Category sections to consider" list taken from
+`category.md` table stakes (proof slot, FAQ, pricing link, an adult door,
+footer: each direction keeps or drops each one on purpose), the fixture
 (including one deliberately long string), and a `## UI strings` section
 listing the real strings the app shows. `check` reads each direction's voice
 strings from that section.
@@ -122,16 +125,19 @@ Each direction is a folder `vNN/` with `theme.json`, `tokens.css` and
 using the brief in `variations.md` with this "Read first":
 `glowup-craft.md`, `mockup-craft.md` (app) or `web-craft.md` (web),
 `principles.md`, `context.md` and `category.md`. Give the subagents the content contract as a list of what each screen must
-hold, not an order to stack it in. Each subagent:
+hold, not an order to stack it in, plus the category's standard sections to
+consider. Each subagent:
 
-1. writes `vNN/theme.json`;
+1. writes `vNN/theme.json`, including every line of `decisions` (see the
+   decision inventory in glowup-craft.md), and fetches its icon set with
+   `bash <SKILL_DIR>/scripts/studio.sh icons TOPIC_DIR <set>` if the topic
+   doesn't have it yet;
 2. runs `python3 <SKILL_DIR>/scripts/theme_tokens.py vNN/theme.json --css --out vNN/tokens.css`;
-3. writes the four screens on those tokens.
+3. writes the four screens on those tokens, plus `moment.html` (the key
+   moment, animated), with a phone layout on the core screen for a web topic.
 
 Each manifest entry carries `notes.market` (why it fits this market, citing
-a numbered line in category.md), `notes.signature`, `notes.composition`
-(why the key screens, above all the landing page, are laid out the way they
-are; see glowup-craft.md), `notes.convention`,
+a numbered line in category.md), `notes.signature`, `notes.convention`,
 `notes.different` and `notes.ripple`.
 
 Converge rounds keep the four key screens: #1 Faithful is the pick with the
@@ -145,6 +151,17 @@ bash <SKILL_DIR>/scripts/studio.sh sheets ROUND_DIR
 ```
 
 `sheets` writes `sheet-before.png` and one `sheet-vNN.png` per direction.
+Then audit the round as a set:
+
+```bash
+python3 <SKILL_DIR>/scripts/round_audit.py ROUND_DIR
+```
+
+It lists every feature that all directions (or all but one) share: the
+hero alignment, the quiz's navigation, the icon set, imagery, footer, FAQ,
+the brand mark, motion and more. For each line, find the `decisions` entry
+that explains it. If none does, it was a default: fix it in the same fix
+batch, before the link goes out.
 
 ## System
 

@@ -9,6 +9,7 @@ Glow-up mode, for turning a vibe-coded or AI-made app into a designed one.
 - New scripts: `entropy.py` (distinct colours, sizes, weights, spacing, radii and shadows in an app), `tells_lint.py` (six families of vibe-coded tells), `theme_tokens.py` (one `theme.json` to CSS, Tailwind v3 and v4, shadcn and React Native), `glowup_check.py`, `glowup_sheets.py`.
 - New references: `glowup.md`, `glowup-craft.md` (the 13-part system layer and the tells), `category-research.md`, `apply-web.md`, `apply-native.md`.
 - Runs from screenshots alone (`"source": "images"`): `image_audit.py` measures the colours the screenshots use with a standard-library PNG decoder, and the topic ends with a `handoff` stage (`handoff.py`: every token format plus a paste-ready prompt for an AI builder) instead of apply.
+- Every direction records a decision inventory (composition, interaction, navigation, page anatomy, art, icons, mark, motion, mobile) in `theme.json`; `round_audit.py` lists what all directions share; `icons.py` offers twelve open icon families; each direction ships an animated `moment.html` and, on the web, a phone layout of its core screen.
 - Mobile, web and paywall modes are unchanged by glow-up mode.
 
 ## 1.2.0 · 2026-09-29

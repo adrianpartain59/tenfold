@@ -17,6 +17,21 @@ def theme():
 
 
 class ThemeCoreTest(unittest.TestCase):
+    def test_decisions_are_required(self):
+        t = theme()
+        del t["decisions"]["interaction"]
+        t["decisions"]["art"] = "  "
+        errs = tc.validate_theme(t)
+        self.assertIn("decisions.interaction missing (one line: what this direction chose and why)", errs)
+        self.assertIn("decisions.art missing (one line: what this direction chose and why)", errs)
+
+    def test_icon_set_must_be_known(self):
+        t = theme()
+        t["icons"]["set"] = "phosphor"
+        self.assertTrue(any(e.startswith("icons.set must be one of feather, lucide,") for e in tc.validate_theme(t)))
+        t["icons"]["set"] = "phosphor-duotone"
+        self.assertEqual(tc.validate_theme(t), [])
+
     def test_hex_round_trip(self):
         self.assertEqual(tc.to_hex(tc.parse("#3E63DD")), "#3e63dd")
         self.assertEqual(tc.to_hex(tc.parse("#fff")), "#ffffff")
@@ -400,13 +415,75 @@ class HandoffTest(unittest.TestCase):
         prompt = open(os.path.join(self.out, "prompt.md")).read()
         for s in ("# Apply the Ledger design system", "Fraunces", "Inter Tight", "| action | #3e63dd | #3e63dd |",
                   "Reading column", "A ruled ledger line under every section heading",
-                  "“Welcome to your dashboard” → “Your notes”", "## Do not change", "screens.md"):
+                  "“Welcome to your dashboard” → “Your notes”", "## Do not change", "screens.md",
+                  "## Design decisions", "- Interaction: Notes open in a reading column"):
             self.assertIn(s, prompt)
         self.assertNotIn("—", prompt)
 
     def test_cli(self):
         p = subprocess.run([sys.executable, os.path.join(SCRIPTS, "handoff.py"), THEME, self.out], capture_output=True, text=True)
         self.assertEqual(p.stdout, f"HANDOFF {len(self.h.FILES)} files in {self.out}\n")
+
+
+
+class IconsTest(unittest.TestCase):
+    def setUp(self):
+        import icons
+        self.ic = icons
+
+    def test_build_sprite_keeps_root_presentation(self):
+        files = [("house-duotone", '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor"><path d="M1 1" opacity="0.2"/><path d="M2 2"/></svg>'),
+                 ("check", '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" d="M3 3"/></svg>')]
+        sprite, ids = self.ic.build_sprite(files, strip_suffix="-duotone")
+        self.assertEqual(ids, ["check", "house"])
+        self.assertIn('<symbol id="house" viewBox="0 0 256 256"><g fill="currentColor"><path d="M1 1" opacity="0.2"/><path d="M2 2"/></g></symbol>', sprite)
+        self.assertIn('<symbol id="check" viewBox="0 0 24 24"><g fill="none" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" d="M3 3"/></g></symbol>', sprite)
+
+    def test_normalize_published_sprites(self):
+        self.assertEqual(self.ic.normalize('<symbol id="tabler-filled-flame" viewBox="0 0 24 24">', "tabler-filled"), '<symbol id="flame" viewBox="0 0 24 24">')
+        self.assertEqual(self.ic.normalize('<symbol id="flame">', "lucide"), '<symbol viewBox="0 0 24 24" id="flame">')
+
+    def test_sets_and_usage(self):
+        self.assertIn("phosphor-bold", self.ic.SETS)
+        self.assertEqual(self.ic.usage("feather"), 'fill="none" stroke="currentColor"')
+        self.assertEqual(self.ic.usage("phosphor-fill"), 'fill="currentColor"')
+        self.assertEqual(self.ic.sprite_name("feather"), "icons")
+        self.assertEqual(self.ic.sprite_name("tabler-filled"), "icons-tabler-filled")
+
+
+class RoundAuditTest(unittest.TestCase):
+    def setUp(self):
+        import tempfile, shutil, round_audit
+        self.ra = round_audit
+        self.d = tempfile.mkdtemp()
+        src = os.path.join(FIX, "glowup-smoke", "r1")
+        m = json.load(open(os.path.join(src, "manifest.json")))
+        base = m["variations"][0]
+        m["variations"] = []
+        for i in range(1, 5):
+            vid = f"v{i:02d}"
+            shutil.copytree(os.path.join(src, "v01"), os.path.join(self.d, vid))
+            m["variations"].append({**base, "id": vid, "dir": vid, "name": f"Dir {i}"})
+        json.dump(m, open(os.path.join(self.d, "manifest.json"), "w"))
+        self.shutil = shutil
+
+    def tearDown(self):
+        self.shutil.rmtree(self.d)
+
+    def test_identical_directions_share_everything(self):
+        lines = self.ra.audit(self.d)
+        self.assertIn("SHARED 4/4 icon set: feather", lines)
+        self.assertIn("SHARED 4/4 no <img> on any screen: yes", lines)
+        self.assertEqual(lines[-1], f"AUDIT 4 directions · {len(lines) - 1} shared features · decided or defaulted? check each against theme.json decisions")
+
+    def test_varied_feature_is_not_listed(self):
+        for vid, s in (("v01", "lucide"), ("v02", "tabler"), ("v03", "phosphor-bold")):
+            p = os.path.join(self.d, vid, "theme.json")
+            t = json.load(open(p)); t["icons"]["set"] = s; json.dump(t, open(p, "w"))
+        self.assertFalse(any(l.startswith("SHARED") and "icon set" in l for l in self.ra.audit(self.d)))
+
+    def test_too_few(self):
+        self.assertEqual(self.ra.audit(os.path.join(FIX, "glowup-smoke", "r1")), ["AUDIT 2 directions: too few to compare (needs 4)"])
 
 
 if __name__ == "__main__":

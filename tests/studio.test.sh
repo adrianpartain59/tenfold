@@ -258,9 +258,29 @@ jedit "$t/r1/v01/theme.json" 'd["reasons"]["shape.radius.md"] = "8px matches the
 out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"; st=$?
 [ $st -eq 0 ] && ok "a reason clears the default" || bad "a reason clears the default" "$out"
 
-t="$(gfresh)"; jedit "$t/r1/manifest.json" 'del d["variations"][0]["notes"]["composition"]'
+t="$(gfresh)"; jedit "$t/r1/v01/theme.json" 'del d["decisions"]["interaction"]'
 out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
-grep -q "FAIL v01: notes.composition is empty" <<<"$out" && ok "check wants a reasoned composition" || bad "check wants a reasoned composition" "$out"
+grep -q "FAIL v01/theme.json: decisions.interaction missing" <<<"$out" && ok "check wants every design decision" || bad "check wants every design decision" "$out"
+
+t="$(gfresh)"; rm "$t/r1/v02/moment.html"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
+grep -q "FAIL v02: missing moment.html (the key moment, animated)" <<<"$out" && ok "check wants the animated moment" || bad "check wants the animated moment" "$out"
+
+t="$(gfresh)"; perl -0pi -e 's/\@media \(prefers-reduced-motion: reduce\).*?<\/style>/<\/style>/s' "$t/r1/v01/moment.html"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
+grep -q "FAIL v01/moment.html ignores prefers-reduced-motion" <<<"$out" && ok "check wants reduced motion in the moment" || bad "check wants reduced motion in the moment" "$out"
+
+t="$(gfresh)"; perl -pi -e 's/\@media \(max-width: 600px\)/\@media print/' "$t/r1/v01/s4.html"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
+grep -q "FAIL v01/s4.html has no phone layout (an @media max-width rule)" <<<"$out" && ok "check wants a phone layout for the quiz pad" || bad "check wants a phone layout for the quiz pad" "$out"
+
+t="$(gfresh)"; perl -pi -e 's|<p class="t-eyebrow span-all">|<svg><use href="../../icons-lucide.svg#check"/></svg><p class="t-eyebrow span-all">|' "$t/r1/v01/s1.html"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
+grep -q "FAIL v01/s1.html: uses icons-lucide.svg but theme.icons.set is feather (icons.svg)" <<<"$out" && ok "check wants the theme's icon set" || bad "check wants the theme's icon set" "$out"
+
+echo "glow-up: round audit"
+out="$(python3 "$SCRIPTS/round_audit.py" "$t/r1" 2>&1)"
+[ "$out" = "AUDIT 2 directions: too few to compare (needs 4)" ] && ok "round_audit needs four directions" || bad "round_audit needs four directions" "$out"
 
 t="$(gfresh)"; echo "/* hand edit */" >> "$t/r1/v02/tokens.css"
 out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
@@ -377,7 +397,8 @@ if bash -c 'eval "$(sed -n "/^chrome_bin()/,/^}/p" "$0")"; chrome_bin' "$STUDIO"
   jedit "$t/r1/manifest.json" 'd["screens"][3]["invented"] = True'
   dom="$(dump "$base/r1/index.html")"
   grep -q "Empty state · invented" <<<"$dom" && ok "gallery labels invented screens" || bad "gallery labels invented screens"
-  grep -q 'class="desk"' <<<"$dom" && ! grep -q 'class="phone"' <<<"$dom" && ok "gallery uses desktop frames for a web surface" || bad "gallery uses desktop frames for a web surface"
+  [ "$(grep -o 'class="desk"' <<<"$dom" | wc -l | tr -d ' ')" = "10" ] && [ "$(grep -o 'class="phone"' <<<"$dom" | wc -l | tr -d ' ')" = "2" ] && ok "gallery: desktop frames plus one phone quiz pad per web direction" || bad "gallery: desktop frames plus one phone quiz pad per web direction" "$(grep -o 'class="[a-z]*"><div class="viewport"' <<<"$dom" | sort | uniq -c)"
+  grep -q 'src="v01/moment.html' <<<"$dom" && grep -q "Phone · Empty state" <<<"$dom" && ok "gallery shows the moment and the phone quiz pad" || bad "gallery shows the moment and the phone quiz pad"
   jedit "$t/r1/manifest.json" 'd["surface"] = "app"'
   dom="$(dump "$base/r1/index.html")"
   grep -q 'class="phone"' <<<"$dom" && ! grep -q 'class="desk"' <<<"$dom" && ok "gallery keeps phone frames for an app surface" || bad "gallery keeps phone frames for an app surface"
@@ -388,7 +409,7 @@ fi
 echo "glow-up: craft references"
 SK="$REPO/skills/design-studio"
 need_heads() { local f="$1"; shift; local h; for h in "$@"; do grep -qx "$h" "$SK/references/$f" && ok "$f has '$h'" || bad "$f has '$h'"; done; }
-need_heads glowup-craft.md "## theme.json" "## The system layer" "### 1. Layout system" "### 2. Brand surface" "### 3. Colour construction" "### 4. Component state matrix" "### 5. Type construction" "### 6. Signature element" "### 7. Content and voice system" "### 8. Loading policy" "### 9. Form system" "### 10. Numbers and tables" "### 11. Feedback and haptics" "### 12. Responsive components and navigation" "### 13. Density" "## Construction details" "## The human rules" "## The tells" "## Layout templates on each surface" "## Screens" "## Pre-send checklist" "## Sources"
+need_heads glowup-craft.md "## The decision inventory" "## theme.json" "## The system layer" "### 1. Layout system" "### 2. Brand surface" "### 3. Colour construction" "### 4. Component state matrix" "### 5. Type construction" "### 6. Signature element" "### 7. Content and voice system" "### 8. Loading policy" "### 9. Form system" "### 10. Numbers and tables" "### 11. Feedback and haptics" "### 12. Responsive components and navigation" "### 13. Density" "## Construction details" "## The human rules" "## The tells" "## Layout templates on each surface" "## Screens" "## Pre-send checklist" "## Sources"
 need_heads category-research.md "## Choosing comparables" "## Gathering screens" "## What to record" "## Table stakes and white space" "## Rules" "## category.md template"
 for f in glowup-craft.md category-research.md; do grep -q "—" "$SK/references/$f" && bad "$f has no em dashes" || ok "$f has no em dashes"; done
 grep -q "tests/fixtures/glowup-smoke/r1/v01/theme.json" "$SK/references/glowup-craft.md" && ok "glowup-craft.md points at the worked example" || bad "glowup-craft.md points at the worked example"
@@ -399,7 +420,7 @@ need_heads apply-web.md "## Before you start" "## Stage 1: theme layer" "## Stag
 need_heads apply-native.md "## Before you start" "## Stage 1: theme layer" "## Stage 2: shared components" "## Stage 3: screens" "## Stage 4: brand surface" "## After every stage" "## Hard limits" "## Follow-ups"
 for f in glowup.md apply-web.md apply-native.md; do grep -q "—" "$SK/references/$f" && bad "$f has no em dashes" || ok "$f has no em dashes"; done
 need_heads glowup.md "## From screenshots" "## Handoff"
-for s in entropy.py tells_lint.py theme_tokens.py glowup_check.py image_audit.py handoff.py; do grep -q "$s" "$SK/references/glowup.md" && ok "glowup.md uses $s" || bad "glowup.md uses $s"; done
+for s in entropy.py tells_lint.py theme_tokens.py glowup_check.py image_audit.py handoff.py round_audit.py; do grep -q "$s" "$SK/references/glowup.md" && ok "glowup.md uses $s" || bad "glowup.md uses $s"; done
 grep -q -- "--shadcn-hsl" "$SK/references/apply-web.md" && ok "apply-web.md covers HSL shadcn" || bad "apply-web.md covers HSL shadcn"
 grep -q -- "--rn" "$SK/references/apply-native.md" && ok "apply-native.md uses --rn" || bad "apply-native.md uses --rn"
 

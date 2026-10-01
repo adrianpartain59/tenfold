@@ -90,6 +90,8 @@ def prompt(t):
     out += [f"- “{s['before']}” → “{s['after']}”" for s in vo["strings"]]
     if vo["glossary"]:
         out += ["", "Glossary:", ""] + [f"- {k}: {v}" for k, v in vo["glossary"].items()]
+    out += ["", "## Design decisions", "", "Why the design is the way it is. Keep these when you change anything.", ""]
+    out += [f"- {k.capitalize()}: {v}" for k, v in t["decisions"].items()]
     out += ["", "## Screen by screen", "",
             "Follow `screens.md` in this folder: one section per screen, naming its layout and what to change.", "",
             "## Do not change", "",

@@ -25,6 +25,10 @@ SCREENS = {
     "s3": ("New note", "column", '<h2 class="t-h2"{sig}>New note</h2>\n  <label class="t-small" for="title">Title</label>\n  <input id="title" name="title" autocomplete="off">\n  <button class="btn">Save note</button>'),
     "s4": ("Empty state", "column", '<h2 class="t-h2"{sig}>No notes yet</h2>\n  <p class="t-body">Your first one takes ten seconds.</p>\n  <button class="btn">Start a note</button>'),
 }
+MOMENT = ("Moment", "column", '<h2 class="t-h2 rule"{sig}>No notes yet</h2>\n  <p class="t-body">The ruled line draws in once.</p>\n'
+          '  <style>.rule { background: linear-gradient(var(--c-action), var(--c-action)) 0 100% / 0 2px no-repeat; animation: draw var(--dur-slow) var(--ease-out) forwards; }'
+          ' @keyframes draw { to { background-size: 100% 2px; } }'
+          ' @media (prefers-reduced-motion: reduce) { .rule { animation: none; background-size: 100% 2px; } }</style>')
 SETTINGS = ("Settings", "column", '<h2 class="t-h2"{sig}>Settings</h2>\n  <p class="t-body">Notifications are on for shared notes.</p>')
 
 
@@ -39,7 +43,8 @@ def page(theme, screen, frame_href, tokens_href, sig):
     body = body.replace("{sig}", " data-signature" if sig else "")
     return (f'<!doctype html>\n<html lang="en" data-theme="light">\n<head>\n<meta charset="utf-8">\n'
             f'<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>{theme["name"]} · {title}</title>\n'
-            f'<link rel="stylesheet" href="{frame_href}">\n<link rel="stylesheet" href="{tokens_href}">\n</head>\n'
+            f'<link rel="stylesheet" href="{frame_href}">\n<link rel="stylesheet" href="{tokens_href}">\n'
+            f'<style>@media (max-width: 600px) {{ main {{ padding-inline: var(--space-4); }} }}</style>\n</head>\n'
             f'<body data-template="{tpl}">\n<main class="tpl-{tpl}">\n  {body}\n</main>\n</body>\n</html>\n')
 
 
@@ -61,11 +66,13 @@ def main():
     v02["signature"] = {"what": "Corner ticks on every card, like a drafting table", "where": ["s1", "s3"],
                         "never": "Never on buttons or the page edge", "uses": []}
     v02["voice"]["adjectives"] = ["direct", "technical", "dry"]
+    v02["decisions"] = dict(v01["decisions"], composition="Same dashboard-first order; the drafting-table theme earns a denser split layout.", icons="Feather at 1.5 px; the drafting theme stays thin.")
     for vid, th in (("v01", v01), ("v02", v02)):
         vdir = os.path.join(HERE, "r1", vid)
         direction(vdir, th)
         for sid, screen in SCREENS.items():
             write(os.path.join(vdir, f"{sid}.html"), page(th, screen, "../web.css", "tokens.css", sid in th["signature"]["where"]))
+        write(os.path.join(vdir, "moment.html"), page(th, MOMENT, "../web.css", "tokens.css", False))
     sysdir = os.path.join(HERE, "r2", "v01")
     direction(sysdir, v01)
     for rid, screen in (("home", SCREENS["s1"]), ("settings", SETTINGS)):

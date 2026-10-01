@@ -105,7 +105,8 @@
   .desk iframe, .desk img { width: 1440px; height: 900px; border: 0; display: block; background: #fff; pointer-events: none; }
   .desk img { object-fit: cover; object-position: top; }
   body.web .row { grid-template-columns: 240px repeat(2, calc(var(--dw) * 1px + 2px)); }
-  body.web .row > .meta { grid-row: span 2; }
+  body.web .row > .meta { grid-row: span 3; }
+  .row .phone { justify-self: start; }
   body.web .row.pair > .meta { grid-row: auto; }
   body.web .routes { grid-template-columns: repeat(auto-fill, calc(var(--dw) * 1px + 2px)); }
   .focus .desk { grid-column: 2; --dw: 820; cursor: default; }
@@ -163,11 +164,11 @@ function setFrameTheme(f) {
     if (v) h.dataset.theme = v; else delete h.dataset.theme;
   } catch {}
 }
-function frame(src, title, lazy = true) {
+function frame(src, title, lazy = true, kind = null) {
   const inner = /\.(png|jpe?g|webp)$/i.test(src)
     ? `<img src="${esc(src)}" alt="${esc(title)}">`
     : `<iframe ${lazy ? 'loading="lazy" ' : ""}src="${esc(src)}?theme=${theme}" title="${esc(title)}" onload="setFrameTheme(this)"></iframe>`;
-  return `<div class="${M?.surface === "web" ? "desk" : "phone"}"><div class="viewport">${inner}</div></div>`;
+  return `<div class="${kind ?? (M?.surface === "web" ? "desk" : "phone")}"><div class="viewport">${inner}</div></div>`;
 }
 function mainLabel() { return M.stage === "system" ? "System" : M.stage === "apply" ? `Apply · stage ${M.apply?.stage ?? ""}` : M.stage === "handoff" ? "Handoff" : "Directions"; }
 function slabel(s) { return s.invented ? `${s.label} · invented` : s.label; }
@@ -197,7 +198,16 @@ function rowMeta(v, i) {
     ${v.notes?.market ? `<p class="idea"><b>Market:</b> ${esc(v.notes.market)}</p>` : ""}
     <button class="more" data-i="${i}">Spec card</button></div>`;
 }
-function cells(items) { return items.map(([src, label, title]) => `<div class="cell"><div class="screenlbl">${esc(label)}</div>${src ? frame(src, title) : ""}</div>`).join(""); }
+function cells(items) { return items.map(([src, label, title, kind]) => `<div class="cell"><div class="screenlbl">${esc(label)}</div>${src ? frame(src, title, true, kind) : ""}</div>`).join(""); }
+// Directions and converge rows: the four key screens, then the quiz pad on a phone (web topics) and the animated moment.
+function directionCells(v) {
+  const dir = v.dir ?? v.id;
+  const items = (M.screens ?? []).map((s) => [`${dir}/${s.id}.html`, slabel(s), `${v.name} · ${s.label}`]);
+  const quiz = (M.screens ?? [])[3];
+  if (M.surface === "web" && quiz) items.push([`${dir}/${quiz.id}.html`, `Phone · ${quiz.label}`, `${v.name} · ${quiz.label} on a phone`, "phone"]);
+  items.push([`${dir}/moment.html`, "Moment", `${v.name} · the key moment, animated`]);
+  return cells(items);
+}
 function renderMain() {
   const vs = M.variations ?? [];
   if (M.stage === "apply") {
@@ -210,7 +220,7 @@ function renderMain() {
   if (M.stage === "system") {
     return vs.map((v, i) => `<section class="row sys" data-row="${esc(v.id)}">${rowMeta(v, i)}<div class="routes">${cells((M.routes ?? []).map((r) => [`${v.dir ?? v.id}/routes/${r.id}.html`, r.label ?? r.id, `${v.name} · ${r.label ?? r.id}`]))}</div></section>`).join("");
   }
-  return vs.map((v, i) => `<section class="row" data-row="${esc(v.id)}">${rowMeta(v, i)}${cells((M.screens ?? []).map((s) => [`${v.dir ?? v.id}/${s.id}.html`, slabel(s), `${v.name} · ${s.label}`]))}</section>`).join("");
+  return vs.map((v, i) => `<section class="row" data-row="${esc(v.id)}">${rowMeta(v, i)}${directionCells(v)}</section>`).join("");
 }
 function renderBefore() {
   const b = M.before ?? {};
