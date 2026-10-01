@@ -1,0 +1,88 @@
+{
+  "name": "Ledger",
+  "type": {
+    "display": { "family": "Fraunces", "weights": [600, 700], "fallback": "Georgia, serif" },
+    "body": { "family": "Inter Tight", "weights": [400, 500, 600] },
+    "pairing": "A soft serif for headings gives a notes tool a written, considered feel; a tight grotesk keeps dense lists legible.",
+    "ramp": {
+      "display": { "face": "display", "size": 40, "line": 44, "weight": 700, "track": -0.02 },
+      "h1": { "face": "display", "size": 32, "line": 38, "weight": 700, "track": -0.015 },
+      "h2": { "face": "display", "size": 24, "line": 30, "weight": 600, "track": -0.01 },
+      "h3": { "face": "body", "size": 18, "line": 24, "weight": 600, "track": -0.005 },
+      "lede": { "face": "body", "size": 18, "line": 28, "weight": 400, "track": 0 },
+      "body": { "face": "body", "size": 16, "line": 24, "weight": 400, "track": 0 },
+      "small": { "face": "body", "size": 14, "line": 20, "weight": 400, "track": 0.005 },
+      "caption": { "face": "body", "size": 12, "line": 16, "weight": 500, "track": 0.01 },
+      "eyebrow": { "face": "body", "size": 12, "line": 16, "weight": 600, "track": 0.08, "upper": true }
+    }
+  },
+  "color": {
+    "primitives": {
+      "neutral": { "1": "#fcfcfd", "2": "#f9f9fb", "3": "#f0f0f3", "4": "#e8e8ec", "5": "#e0e1e6", "6": "#d9d9e0", "7": "#cdced6", "8": "#b9bbc6", "9": "#8b8d98", "10": "#80838d", "11": "#60646c", "12": "#1c2024" },
+      "neutral-dark": { "1": "#111113", "2": "#18191b", "3": "#212225", "4": "#272a2d", "5": "#2e3135", "6": "#363a3f", "7": "#43484e", "8": "#5a6169", "9": "#696e77", "10": "#777b84", "11": "#b0b4ba", "12": "#edeef0" },
+      "brand": { "1": "#fdfdfe", "2": "#f7f9ff", "3": "#edf2fe", "4": "#e1e9ff", "5": "#d2deff", "6": "#c1d0ff", "7": "#abbdf9", "8": "#8da4ef", "9": "#3e63dd", "10": "#3358d4", "11": "#3a5bc7", "12": "#1f2d5c" },
+      "brand-dark": { "1": "#11131f", "2": "#141726", "3": "#182449", "4": "#1d2e62", "5": "#253974", "6": "#304384", "7": "#3a4f97", "8": "#435db1", "9": "#3e63dd", "10": "#5472e4", "11": "#9eb1ff", "12": "#d6e1ff" }
+    },
+    "light": {
+      "ground": "neutral.1", "surface": "#ffffff", "surface-2": "neutral.3", "border": "neutral.6",
+      "text": "neutral.12", "text-2": "neutral.11", "text-3": "neutral.9",
+      "action": "brand.9", "on-action": "#ffffff", "accent": "#ffc53d", "on-accent": "#4f3422",
+      "good": "#218358", "warn": "#ab6400", "error": "#ce2c31", "focus": "brand.8"
+    },
+    "dark": {
+      "ground": "neutral-dark.1", "surface": "neutral-dark.2", "surface-2": "neutral-dark.3", "border": "neutral-dark.6",
+      "text": "neutral-dark.12", "text-2": "neutral-dark.11", "text-3": "neutral-dark.9",
+      "action": "brand-dark.9", "on-action": "#ffffff", "accent": "#ffc53d", "on-accent": "#4f3422",
+      "good": "#3dd68c", "warn": "#ffca16", "error": "#ff9592", "focus": "brand-dark.10"
+    }
+  },
+  "layout": {
+    "space": [4, 8, 12, 16, 24, 32, 48, 64],
+    "templates": [
+      { "id": "column", "label": "Reading column", "columns": 1, "max": 680, "gutter": 24, "margin": 24, "density": "spacious" },
+      { "id": "split", "label": "Sidebar and content", "columns": 12, "max": 1200, "gutter": 24, "margin": 32, "density": "comfortable" },
+      { "id": "dashboard", "label": "Dashboard grid", "columns": 12, "max": 1280, "gutter": 16, "margin": 24, "density": "compact" }
+    ],
+    "keylines": [24, 72]
+  },
+  "shape": { "radius": { "sm": 4, "md": 10, "lg": 16, "full": 999 } },
+  "elevation": {
+    "style": "layered",
+    "levels": {
+      "0": "none",
+      "1": "0 1px 2px rgba(17, 17, 19, 0.06), 0 1px 1px rgba(17, 17, 19, 0.04)",
+      "2": "0 4px 12px rgba(17, 17, 19, 0.08), 0 1px 2px rgba(17, 17, 19, 0.06)",
+      "3": "0 12px 32px rgba(17, 17, 19, 0.12), 0 2px 6px rgba(17, 17, 19, 0.08)"
+    }
+  },
+  "icons": { "set": "phosphor", "license": "MIT", "stroke": 1.5, "sizes": [16, 20, 24] },
+  "motion": {
+    "fast": 120, "base": 200, "slow": 320,
+    "easing": { "out": "cubic-bezier(0.2, 0.8, 0.2, 1)", "in-out": "cubic-bezier(0.6, 0, 0.2, 1)" },
+    "spring": { "damping": 20, "stiffness": 240 }
+  },
+  "states": { "hover": 0.06, "pressed": 0.1, "disabled": 0.4, "focus": { "width": 2, "offset": 2 } },
+  "signature": {
+    "what": "A ruled ledger line under every section heading, in the action colour",
+    "where": ["s1", "s2"],
+    "never": "Never on buttons, inputs or list rows",
+    "uses": []
+  },
+  "voice": {
+    "adjectives": ["plain", "exact", "calm"],
+    "strings": [
+      { "before": "Welcome to your dashboard", "after": "Your notes" },
+      { "before": "Oops! Something went wrong", "after": "That didn’t save. Check your connection and try again." },
+      { "before": "Get Started", "after": "Start a note" },
+      { "before": "Submit", "after": "Save note" },
+      { "before": "No notes yet", "after": "No notes yet. Your first one takes ten seconds." }
+    ],
+    "case": { "button": "sentence", "title": "sentence", "label": "sentence" },
+    "glossary": { "note": "note (never memo or entry)", "space": "space (never workspace)" }
+  },
+  "brand": {
+    "wordmark": "Lowercase “ledger” in Fraunces 700 with the ruled line under it",
+    "icon": "A single ruled line on an action-colour square"
+  },
+  "reasons": {}
+}
