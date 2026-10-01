@@ -278,6 +278,12 @@ one chose it for a reason; "the category does this and students expect it
 choice nobody made. After rendering, `round_audit.py` lists every feature
 all directions share, so a default shows up before the link goes out.
 
+The positions named in this table are prompts, not a menu. When several
+directions land on the same listed example (round 2 of the first hand run
+made six of ten quizzes keyboard-first because the brief named it), the
+audit's MAJORITY line shows it; look for the option the theme itself
+suggests before reaching for a listed one.
+
 | Decision | What to decide | Draw on |
 |---|---|---|
 | `composition` | Each key screen's layout, above all the landing page: what the hero is (product preview, live demo, the input itself, before/after, a scene, big type alone), centred or split or full-bleed, what sits above the fold, the section order | `category.md` Home column and "Home compositions"; the theme's world |
