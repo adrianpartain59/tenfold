@@ -49,6 +49,7 @@ One row per comparable:
 | Density | Airy, balanced or dense, on the screens you saw |
 | Tone | Clinical, warm, editorial, playful, technical or premium, from type and copy together |
 | Signature | The one detail you'd recognise it by, or "none" |
+| Home | The home page's composition: what the hero is (product mock, demo, input, illustration, big type), what sits above the fold, and the section order |
 | Source | Which screenshots or pages the row came from |
 
 ## Table stakes and white space
@@ -77,9 +78,9 @@ stakes 2").
 ```markdown
 # Category: <category>
 
-| App | Type | Colour field | Neutral | Shape | Density | Tone | Signature | Source |
-|---|---|---|---|---|---|---|---|---|
-| <name> (direct) | ... | ... | ... | ... | ... | ... | ... | <pages or screenshots> |
+| App | Type | Colour field | Neutral | Shape | Density | Tone | Signature | Home | Source |
+|---|---|---|---|---|---|---|---|---|---|
+| <name> (direct) | ... | ... | ... | ... | ... | ... | ... | ... | <pages or screenshots> |
 
 ## Table stakes
 1. <convention shared by three or more comparables>

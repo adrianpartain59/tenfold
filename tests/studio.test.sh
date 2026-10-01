@@ -258,6 +258,10 @@ jedit "$t/r1/v01/theme.json" 'd["reasons"]["shape.radius.md"] = "8px matches the
 out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"; st=$?
 [ $st -eq 0 ] && ok "a reason clears the default" || bad "a reason clears the default" "$out"
 
+t="$(gfresh)"; jedit "$t/r1/manifest.json" 'del d["variations"][0]["notes"]["composition"]'
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
+grep -q "FAIL v01: notes.composition is empty" <<<"$out" && ok "check wants a reasoned composition" || bad "check wants a reasoned composition" "$out"
+
 t="$(gfresh)"; echo "/* hand edit */" >> "$t/r1/v02/tokens.css"
 out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
 grep -q "FAIL v02/tokens.css is stale; regenerate it with theme_tokens.py --css" <<<"$out" && ok "check fails stale tokens" || bad "check fails stale tokens" "$out"

@@ -121,14 +121,17 @@ Each direction is a folder `vNN/` with `theme.json`, `tokens.css` and
 `s1.html` to `s4.html`. Render them with five subagents × two directions,
 using the brief in `variations.md` with this "Read first":
 `glowup-craft.md`, `mockup-craft.md` (app) or `web-craft.md` (web),
-`principles.md`, `context.md` and `category.md`. Each subagent:
+`principles.md`, `context.md` and `category.md`. Give the subagents the content contract as a list of what each screen must
+hold, not an order to stack it in. Each subagent:
 
 1. writes `vNN/theme.json`;
 2. runs `python3 <SKILL_DIR>/scripts/theme_tokens.py vNN/theme.json --css --out vNN/tokens.css`;
 3. writes the four screens on those tokens.
 
 Each manifest entry carries `notes.market` (why it fits this market, citing
-a numbered line in category.md), `notes.signature`, `notes.convention`,
+a numbered line in category.md), `notes.signature`, `notes.composition`
+(why the key screens, above all the landing page, are laid out the way they
+are; see glowup-craft.md), `notes.convention`,
 `notes.different` and `notes.ripple`.
 
 Converge rounds keep the four key screens: #1 Faithful is the pick with the

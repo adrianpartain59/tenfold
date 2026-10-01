@@ -253,6 +253,28 @@ Each `vNN/s1.html` to `s4.html`:
 The mockup rules in `mockup-craft.md` (app) or `web-craft.md` (web) hold
 too: real icons from the topic's sprite, real images, native patterns.
 
+## Composition is a decision
+
+Every screen's layout is chosen, not inherited from the most common pattern.
+The landing page matters most, because composition there is itself an idea:
+what the hero is (a product preview, a live demo, the input itself, a
+before/after, a scene, big type alone), what sits above the fold, and the
+order the story runs in.
+
+Decide it from two sources and write the reason in `notes.composition`:
+
+- **The category:** `category.md` records each comparable's home
+  composition. Following the category's pattern is a fine answer when the
+  reason is that the buyer expects it; say so and cite the row.
+- **The theme:** a direction with its own world (a playful game, a desk of
+  objects, a book's title page) usually wants a composition that belongs to
+  that world rather than the generic split hero.
+
+There is no variety quota. Ten directions may share a layout if each one
+chose it for a reason. What fails is the layout nobody chose: the safe
+split hero (pitch left, preview card right, numbered steps below) reached
+by default. `check` fails a direction with no `notes.composition`.
+
 ## Pre-send checklist
 
 1. `theme_tokens.py --css` ran after the last edit to `theme.json`.
@@ -264,7 +286,8 @@ too: real icons from the topic's sprite, real images, native patterns.
 7. It differs from every other direction on at least two axes; type or
    colour alone doesn't count.
 8. Contrast passes in light and dark (`check` tests the main pairs).
-9. The principles.md checklist passes: the mobile items for an app, the web
+9. `notes.composition` says why each key screen is laid out the way it is.
+10. The principles.md checklist passes: the mobile items for an app, the web
    items for a website.
 
 ## Sources

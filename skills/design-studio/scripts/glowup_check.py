@@ -6,7 +6,7 @@
 directions / converge: every direction has a valid theme.json (contrast,
 defaults with reasons, second-order tells only as the named signature), a
 tokens.css that matches theme_tokens.py --css, voice strings found in
-context.md, notes.market and notes.signature, and four key screens that link
+context.md, notes.market, notes.signature and notes.composition, and four key screens that link
 their tokens and frame, declare a layout template, use no literal colours,
 carry no fingerprint, copy or second-order tells, and show the signature on
 at least two screens.
@@ -118,7 +118,7 @@ def check_directions(d, m, errs, warns):
         vid = v.get("id", "?")
         vdir = os.path.join(d, v.get("dir", vid))
         notes = v.get("notes") or {}
-        for k in ("market", "signature"):
+        for k in ("market", "signature", "composition"):
             if not str(notes.get(k, "")).strip():
                 errs.append(f"{vid}: notes.{k} is empty")
         t, te = theme_errors(vdir, vid, ctx)
