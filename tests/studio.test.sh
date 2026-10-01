@@ -325,6 +325,33 @@ else
   echo "  skip glow-up sheets (no Chrome/Chromium)"
 fi
 
+echo "glow-up: gallery"
+out="$(bash "$STUDIO" new demo glowgal --glowup 2>&1)"
+cmp -s "$DESIGN_STUDIO_ROOT/demo/glowgal/r1/index.html" "$ASSETS/gallery-glowup.html" && ok "new --glowup copies gallery-glowup.html" || bad "new --glowup copies gallery-glowup.html" "$out"
+grep -q "—" "$ASSETS/gallery-glowup.html" && bad "gallery-glowup.html has no em dashes" || ok "gallery-glowup.html has no em dashes"
+if bash -c 'eval "$(sed -n "/^chrome_bin()/,/^}/p" "$0")"; chrome_bin' "$STUDIO" >/dev/null 2>&1; then
+  CHROME_BIN="$(bash -c 'eval "$(sed -n "/^chrome_bin()/,/^}/p" "$0")"; chrome_bin' "$STUDIO")"
+  t="$(stage glowup-smoke demo ggal)"
+  for r in r1 r2 r3; do cp "$ASSETS/gallery-glowup.html" "$t/$r/index.html"; cp "$ASSETS/web.css" "$t/$r/"; done
+  bash "$STUDIO" serve >/dev/null
+  base="http://127.0.0.1:$DESIGN_STUDIO_PORT/demo/ggal"
+  dump() { "$CHROME_BIN" --headless=new --disable-gpu --virtual-time-budget=6000 --dump-dom "$1" 2>/dev/null; }
+  dom="$(dump "$base/r1/index.html")"
+  grep -q 'data-row="v01"' <<<"$dom" && grep -q 'src="v02/s4.html?theme=light"' <<<"$dom" && ok "gallery renders direction rows across the key screens" || bad "gallery renders direction rows across the key screens"
+  dom="$(dump "$base/r1/index.html?tab=before")"
+  grep -q 'data-row="before"' <<<"$dom" && grep -q 'src="../before/s1.png"' <<<"$dom" && ok "gallery ?tab=before shows the audit screens" || bad "gallery ?tab=before shows the audit screens"
+  dom="$(dump "$base/r1/index.html?tab=category")"
+  grep -q 'class="cat"' <<<"$dom" && grep -q "Table stakes" <<<"$dom" && ok "gallery ?tab=category shows category.md" || bad "gallery ?tab=category shows category.md"
+  dom="$(dump "$base/r1/index.html#v02")"
+  grep -q 'data-spec="v02"' <<<"$dom" && grep -q 'data-role="action"' <<<"$dom" && ok "gallery #v02 opens the spec card" || bad "gallery #v02 opens the spec card"
+  dom="$(dump "$base/r2/index.html")"
+  grep -q 'src="v01/routes/settings.html?theme=light"' <<<"$dom" && ok "gallery shows system routes" || bad "gallery shows system routes"
+  dom="$(dump "$base/r3/index.html")"
+  grep -q 'data-route="home"' <<<"$dom" && grep -q "Entropy 33 → 15" <<<"$dom" && ok "gallery shows the apply board" || bad "gallery shows the apply board"
+else
+  echo "  skip glow-up gallery DOM tests (no Chrome/Chromium)"
+fi
+
 # --- new tests above this line ---
 echo
 echo "$pass passed, $fail failed"
