@@ -79,11 +79,18 @@ at least two axes; type or colour alone doesn't count.
 | Colour field | light warm · light cool · dark · brand-tinted ground |
 | Shape | sharp · soft · pill · mixed by role |
 | Depth | flat with borders · soft shadow · layered surfaces |
-| Signature | a shape motif · a corner or edge treatment · an illustration style · a texture · a type treatment |
+| Signature | a shape motif · a corner or edge treatment · an illustration style · a texture inside a bounded element · a type treatment |
 | Voice | plain · warm coach · expert · playful |
 
 Round 1 mix of ten: three conventional done well, five in-category with a
 distinctive twist, two labelled wildcards that break the category.
+
+A wildcard breaks the category, not the platform. Its world can take over the
+type, shape, signature, art, voice and the ground's colour; it still ships as
+a real phone app (or website): a quiet flat ground, native navigation,
+44pt targets, legible text. Each wildcard writes `notes.platform`: the
+platform conventions it keeps and any it breaks, with the reason. "Fits the
+theme" is not a reason; a break has to make the app better to use.
 
 ## Round 2+: converge on the pick
 

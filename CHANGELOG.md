@@ -11,6 +11,9 @@ Glow-up mode, for turning a vibe-coded or AI-made app into a designed one.
 - Runs from screenshots alone (`"source": "images"`): `image_audit.py` measures the colours the screenshots use with a standard-library PNG decoder, and the topic ends with a `handoff` stage (`handoff.py`: every token format plus a paste-ready prompt for an AI builder) instead of apply.
 - Every direction records a decision inventory (composition, interaction, navigation, page anatomy, art, icons, mark, motion, mobile) in `theme.json`; `round_audit.py` lists what all directions share; `icons.py` offers twelve open icon families; each direction ships an animated `moment.html` and, on the web, a phone layout of its core screen.
 - Mobile, web and paywall modes are unchanged by glow-up mode.
+- The ground stays quiet: `check` fails a gradient, image or pattern painted on `html`, `body` or the scroller, and now reads every stylesheet a screen links (literal colours included), not just the HTML. Patterns, scenes and textures stay welcome inside bounded elements: a header band, chart, card or label.
+- Wildcards break the category, not the platform: each one writes `notes.platform` (the platform conventions it keeps, and any it breaks with the reason).
+- Fix: glow-up contact sheets render each direction in the mode it was designed in, so dark-first directions no longer render light.
 
 ## 1.2.0 · 2026-09-29
 

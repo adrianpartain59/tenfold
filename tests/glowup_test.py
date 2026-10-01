@@ -501,5 +501,59 @@ class RoundAuditTest(unittest.TestCase):
         self.assertEqual(self.ra.audit(os.path.join(FIX, "glowup-smoke", "r1")), ["AUDIT 2 directions: too few to compare (needs 4)"])
 
 
+class GroundRuleTest(unittest.TestCase):
+    """The ground stays a flat colour; patterns live inside bounded elements (Lab Report, pepai r1 2026-10-01)."""
+
+    def setUp(self):
+        import shutil, tempfile, glowup_check
+        self.gc, self.shutil = glowup_check, shutil
+        self.d = os.path.join(tempfile.mkdtemp(), "r1")
+        shutil.copytree(os.path.join(FIX, "glowup-smoke", "r1"), self.d)
+        shutil.copy(os.path.join(FIX, "glowup-smoke", "context.md"), os.path.join(self.d, "..", "context.md"))
+        self.s1 = os.path.join(self.d, "v01", "s1.html")
+
+    def tearDown(self):
+        self.shutil.rmtree(os.path.dirname(self.d))
+
+    def link(self, css, name="kit.css"):
+        open(os.path.join(self.d, "v01", name), "w").write(css)
+        html = open(self.s1).read().replace('href="tokens.css">', f'href="tokens.css">\n<link rel="stylesheet" href="{name}">', 1)
+        open(self.s1, "w").write(html)
+
+    def errs(self):
+        t = tc.load_theme(os.path.join(self.d, "v01", "theme.json"))
+        return self.gc.page_errors(self.s1, "v01/s1.html", t, "web.css")[0]
+
+    def test_grid_on_the_scroller_fails_from_a_linked_stylesheet(self):
+        self.link(".scroll {\n  background-color: var(--c-ground);\n  background-image:\n    linear-gradient(var(--c-border) 1px, transparent 1px);\n}")
+        self.assertTrue(any("v01/kit.css: .scroll paints the ground" in e for e in self.errs()))
+
+    def test_texture_on_body_fails_inline(self):
+        html = open(self.s1).read().replace("</head>", "<style>html[data-theme=\"dark\"] body { background: url(paper.png); }</style></head>")
+        open(self.s1, "w").write(html)
+        self.assertTrue(any("body paints the ground" in e for e in self.errs()))
+
+    def test_bounded_patterns_and_a_header_band_pass(self):
+        self.link(".sky { position: absolute; height: 340px; background: url(sky.png) center / cover no-repeat; }\n"
+                  ".scroll .chart { background: repeating-linear-gradient(90deg, var(--c-border) 0 1px, transparent 1px 24px); }\n"
+                  ".code { background: repeating-linear-gradient(90deg, var(--c-text) 0 2px, transparent 2px 4px); }\n"
+                  ".scroll::-webkit-scrollbar { display: none; }\n.scroll { background: var(--c-ground); }")
+        self.assertEqual([e for e in self.errs() if "ground" in e], [])
+
+    def test_literal_colour_in_a_linked_stylesheet_fails(self):
+        self.link(".card { border-color: #e5e7eb; }")
+        self.assertIn("v01/kit.css: literal colour '#e5e7eb'; use the tokens", self.errs())
+
+    def test_wildcard_needs_a_platform_note(self):
+        p = os.path.join(self.d, "manifest.json")
+        m = json.load(open(p)); m["variations"][1]["tags"] = ["wildcard"]; json.dump(m, open(p, "w"))
+        out = subprocess.run([sys.executable, os.path.join(SCRIPTS, "glowup_check.py"), self.d], capture_output=True, text=True).stdout
+        self.assertIn("FAIL v02: wildcard with no notes.platform", out)
+        m["variations"][1]["notes"]["platform"] = "Keeps the tab bar and system type sizes; breaks nothing."
+        json.dump(m, open(p, "w"))
+        out = subprocess.run([sys.executable, os.path.join(SCRIPTS, "glowup_check.py"), self.d], capture_output=True, text=True).stdout
+        self.assertNotIn("notes.platform", out)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -89,7 +89,10 @@ default tracking and sizes picked by feel.
 
 One recurring, ownable detail: a shape motif, a corner or edge treatment, an
 illustration style, a texture, a type treatment. Say where it appears and
-where it never does. A system that is only correct still reads as
+where it never does. A texture is a signature only inside a bounded element
+(a chart, card, label or header band); the ground itself stays a flat colour
+(principles.md, Colour), and `check` fails a pattern, scene or texture on
+`html`, `body` or the scroller. A system that is only correct still reads as
 generated; the signature is what makes it feel made by someone.
 
 ### 7. Content and voice system
@@ -290,7 +293,7 @@ suggests before reaching for a listed one.
 | `interaction` | How the core task works: for a quiz, one question at a time, a whole sheet, flip cards, keyboard-first, tap-to-advance tiles, a tutor conversation | The theme's world; how comparables run a session |
 | `navigation` | How navigation is presented: top bar, sidebar, bottom bar, command palette, a minimal back-and-title. The routes themselves stay fixed | Density and platform; the category |
 | `anatomy` | What each screen holds beyond the content contract: the category's standard sections (an honest proof slot, FAQ, pricing link, a door for parents or teachers, footer) considered one by one, each kept or left out on purpose | `category.md` table stakes; context.md's "Category sections to consider" |
-| `art` | The art stance: spot illustrations, diagrams of the real content, a mascot, a scene, textures, or none on purpose. Draw it as inline SVG on tokens (fills and strokes through `style="fill: var(--c-…)"` or classes, never literal colours). No stock images | The theme's world; the category's art |
+| `art` | The art stance: spot illustrations, diagrams of the real content, a mascot, a scene, textures (bounded, never the whole ground), or none on purpose. Draw it as inline SVG on tokens (fills and strokes through `style="fill: var(--c-…)"` or classes, never literal colours). No stock images | The theme's world; the category's art |
 | `icons` | The icon family and weight: `feather`, `lucide`, `tabler`, `tabler-filled`, `phosphor-thin`, `phosphor-light`, `phosphor-regular`, `phosphor-bold`, `phosphor-fill`, `phosphor-duotone`, `heroicons-outline`, `heroicons-solid`. Fetch it with `studio.sh icons TOPIC_DIR <set>` | Match the type's weight and the theme's tone |
 | `mark` | The brand mark, drawn as inline SVG in the nav and larger where the theme wants it, not the product name in body text | The theme's signature and type |
 | `motion` | How the key moment moves (what animates, duration, easing, whether anything loops), shown in `moment.html` | `motion` tokens; the theme's tone |

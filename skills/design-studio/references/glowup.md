@@ -138,7 +138,9 @@ consider. Each subagent:
 
 Each manifest entry carries `notes.market` (why it fits this market, citing
 a numbered line in category.md), `notes.signature`, `notes.convention`,
-`notes.different` and `notes.ripple`.
+`notes.different` and `notes.ripple`. Wildcards also carry `notes.platform`
+(the platform conventions kept, and any broken with the reason; see
+variations.md).
 
 Converge rounds keep the four key screens: #1 Faithful is the pick with the
 feedback applied literally, and the rest refine it.
@@ -298,7 +300,7 @@ Directions (and converge, with `"stage": "converge"` and a `parent`):
   "category": "../category.md",
   "variations": [
     { "id": "v01", "dir": "v01", "name": "Ledger", "idea": "One-line thesis.", "tags": ["conventional"],
-      "notes": { "market": "Why it fits, citing category.md", "signature": "The ownable detail", "convention": "What it keeps", "different": "What it changes", "ripple": "What else changes to match" } }
+      "notes": { "market": "Why it fits, citing category.md", "signature": "The ownable detail", "convention": "What it keeps", "different": "What it changes", "ripple": "What else changes to match", "platform": "Wildcards: platform conventions kept, any broken and why" } }
   ]
 }
 ```

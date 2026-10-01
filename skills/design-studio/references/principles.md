@@ -52,6 +52,14 @@ break the app's *conventions* in explore mode; it may not break these.
   (colour-blind users, glare, dark mode).
 - Dark mode is a separate palette, not an inversion: lighter surfaces sit closer
   to the viewer, shadows mostly disappear, saturated hues calm down.
+- The ground stays quiet: the screen's ground (and the scroller over it) is one
+  flat colour. A world's pattern, scene or texture (graph paper, paper grain, a
+  sky, a grid) goes inside a bounded element: a header band, a chart, a card, a
+  label. A pattern behind scrolling text competes with every rule, chart line
+  and letter on top of it, shimmers as it scrolls, and turns a print metaphor
+  into an endless strip. The theme still owns the ground's colour; the
+  pattern just moves to where it means something (a grid inside the chart reads
+  as "measured").
 
 ## 5. Touch and ergonomics (iOS first)
 
@@ -116,6 +124,8 @@ break the app's *conventions* in explore mode; it may not break these.
 
 - Everything centred; a centred stack of cards with no hierarchy.
 - Gradient backgrounds, glows, glassmorphism or neon used as decoration.
+- A pattern or texture painted on the whole ground (graph paper, grain, grid)
+  instead of inside a bounded element.
 - Emoji as icons. Mixed icon families on one screen.
 - Card soup: every element in its own card, cards in cards.
 - Five font sizes, three font weights for the same role.
@@ -136,7 +146,9 @@ break the app's *conventions* in explore mode; it may not break these.
 7. Safe areas respected; nothing hides under the tab bar or status bar.
 8. Real data, the shared fixture, longest-string case doesn't break it.
 9. Congruent variations: surfaces, headers, radii, icons match the neighbours in
-   context.md. Wildcards: the ripple is written in the notes.
+   context.md. Wildcards: the ripple is written in the notes, and so is the
+   platform line: a wildcard breaks the category's conventions, never the
+   platform's (ground, navigation, tap targets, system type sizes, legibility).
 10. Nothing from the failure list above.
 11. It is visibly different from every other variation in the round on ≥ 2 axes.
 

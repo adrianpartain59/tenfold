@@ -29,7 +29,7 @@ WEB = False
 
 def cell(src, cap):
     s = html.escape(src)
-    tag = f'<img src="{s}">' if src.lower().endswith(IMG) else f'<iframe src="{s}?theme=light"></iframe>'
+    tag = f'<img src="{s}">' if src.lower().endswith(IMG) else f'<iframe src="{s}"></iframe>'
     if WEB:
         tag = f'<div class="d">{tag}</div>'
     return f"<figure><figcaption>{html.escape(cap)}</figcaption>{tag}</figure>"

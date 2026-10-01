@@ -8,9 +8,11 @@ defaults with reasons, second-order tells only as the named signature), a
 tokens.css that matches theme_tokens.py --css, voice strings found in
 context.md, notes.market and notes.signature, every theme.json decision, a
 moment.html (the key moment animated, honouring reduced motion), and four key screens that link
-their tokens and frame, declare a layout template, use no literal colours,
-carry no fingerprint, copy or second-order tells, and show the signature on
-at least two screens.
+their tokens and frame, declare a layout template, use no literal colours
+(in the page or any stylesheet of its own it links), keep the ground flat
+(no gradient, image or pattern on html, body or .scroll), carry no
+fingerprint, copy or second-order tells, and show the signature on at least
+two screens. Wildcards carry notes.platform.
 system: the same theme checks, plus every manifest route as routes/<id>.html.
 apply: before/after evidence exists, entropy and tells did not rise (and
 entropy fell from stage 3), no literal colours outside the theme files, and
@@ -33,6 +35,14 @@ TEMPLATE = re.compile(r'data-template="([\w-]+)"')
 TOKENS_LINK = re.compile(r'href="(?:\.\./)?tokens\.css"')
 SPRITE_USE = re.compile(r'href="[^"#]*?(icons(?:-[\w-]+)?)\.svg#')
 PHONE_MEDIA = re.compile(r"@media[^{]*max-width")
+LOCAL_CSS = re.compile(r'<link[^>]+href="(?!\.\./|https?:|//)([^"#?]+\.css)"')
+STYLE_BLOCK = re.compile(r"<style[^>]*>(.*?)</style>", re.S | re.I)
+CSS_RULE = re.compile(r"([^{}]+)\{([^{}]*)\}")
+BG_PAINT = re.compile(r"background(?:-image)?\s*:([^;]*)", re.I)
+# The ground layer: the page itself and the frame's scroller, optionally
+# qualified (html[data-theme="dark"], body.no-tabbar .scroll), never a
+# pseudo-element (.scroll::-webkit-scrollbar).
+GROUND_SUBJECT = re.compile(r"^(?:html|body|:root|\.scroll)(?:\[[^\]]*\]|\.[\w-]+|:(?!:)[\w-]+(?:\([^)]*\))?)*$")
 LINT_FAMILIES = ("fingerprint", "copy", "second-order")
 ENTROPY_KINDS = ("colors", "font-sizes", "font-weights", "spacing", "radii", "shadows")
 
@@ -69,9 +79,43 @@ def theme_errors(vdir, vid, context_text):
     return t, errs
 
 
+def linked_css(path, html):
+    """The direction's own stylesheets a page links (not tokens.css, the frame or fonts)."""
+    out = []
+    for href in LOCAL_CSS.findall(html):
+        p = os.path.normpath(os.path.join(os.path.dirname(path), href))
+        if os.path.basename(p) != "tokens.css" and os.path.isfile(p):
+            out.append((href, open(p, encoding="utf-8").read()))
+    return out
+
+
+def ground_errors(css, where):
+    """A pattern, scene or texture painted on the ground layer, which must stay a flat colour."""
+    errs = []
+    for sel, body in CSS_RULE.findall(re.sub(r"/\*.*?\*/", "", css, flags=re.S)):
+        sel = sel.strip()
+        if sel.startswith("@"):
+            continue
+        ground = [s.strip() for s in sel.split(",") if GROUND_SUBJECT.match(re.split(r"[\s>+~]+", s.strip())[-1])]
+        paint = BG_PAINT.search(body)
+        if ground and paint and re.search(r"gradient\(|url\(", paint.group(1)):
+            errs.append(f"{where}: {ground[0]} paints the ground with {paint.group(1).strip()[:60]!r}; "
+                        "the ground stays a flat colour, so put the pattern, scene or texture inside a "
+                        "bounded element (a header band, chart, card or label)")
+    return errs
+
+
 def page_errors(path, rel, t, frame):
     html = open(path, encoding="utf-8").read()
     errs = []
+    css = linked_css(path, html)
+    errs += ground_errors("\n".join(STYLE_BLOCK.findall(html)), rel)
+    for href, text in css:
+        src = os.path.normpath(os.path.join(os.path.dirname(rel), href))
+        errs += ground_errors(text, src)
+        lit = LITERAL.search(text)
+        if lit:
+            errs.append(f"{src}: literal colour {lit.group(0)!r}; use the tokens")
     if not TOKENS_LINK.search(html):
         errs.append(f"{rel}: does not link its direction's tokens.css")
     if frame not in html:
@@ -127,6 +171,8 @@ def check_directions(d, m, errs, warns):
         for k in ("market", "signature"):
             if not str(notes.get(k, "")).strip():
                 errs.append(f"{vid}: notes.{k} is empty")
+        if "wildcard" in (v.get("tags") or []) and not str(notes.get("platform", "")).strip():
+            errs.append(f"{vid}: wildcard with no notes.platform (the platform conventions it keeps, and any it breaks and why)")
         t, te = theme_errors(vdir, vid, ctx)
         errs += te
         if t is None:
@@ -280,6 +326,7 @@ def main(d):
         for k in ("agentPick", "predictedPick"):
             if k not in m:
                 warns.append(f"manifest has no {k}")
+    errs = list(dict.fromkeys(errs))  # a stylesheet linked by every screen reports once
     for w in warns:
         print("WARN", w)
     for e in errs:

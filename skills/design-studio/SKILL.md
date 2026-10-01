@@ -175,8 +175,10 @@ In short:
 - `check` runs `glowup_check.py`: a valid theme, contrast, a reason for
   every framework default, second-order tells only as the named
   signature, fresh tokens, a layout template on every screen, the
-  signature on two screens, voice strings from context.md; at apply,
-  entropy and tells fall.
+  signature on two screens, voice strings from context.md, a flat
+  ground (no pattern or texture on `html`, `body` or the scroller, in the
+  page or any stylesheet it links), a `notes.platform` line on every
+  wildcard; at apply, entropy and tells fall.
 - The pick question adds `System proof #N` from `converge`, `Apply #N` in
   `system`, and approve, flag or revert on every apply board.
 - No codebase? It runs from screenshots (`"source": "images"`):
