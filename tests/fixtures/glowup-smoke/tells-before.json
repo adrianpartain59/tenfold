@@ -1,0 +1,237 @@
+{
+  "total": 32,
+  "families": {
+    "fingerprint": 9,
+    "forms": 9,
+    "copy": 8,
+    "a11y": 4,
+    "loading": 2,
+    "second-order": 0
+  },
+  "findings": [
+    {
+      "rule": "F-count-up",
+      "family": "fingerprint",
+      "file": "src/App.tsx",
+      "line": 3,
+      "message": "count-up stats"
+    },
+    {
+      "rule": "F-gradient-purple",
+      "family": "fingerprint",
+      "file": "src/App.tsx",
+      "line": 11,
+      "message": "purple-to-blue gradient"
+    },
+    {
+      "rule": "F-gradient-text",
+      "family": "fingerprint",
+      "file": "src/App.tsx",
+      "line": 12,
+      "message": "gradient headline text"
+    },
+    {
+      "rule": "C-buzzwords",
+      "family": "copy",
+      "file": "src/App.tsx",
+      "line": 12,
+      "message": "marketing filler words"
+    },
+    {
+      "rule": "F-arrow-cta",
+      "family": "fingerprint",
+      "file": "src/App.tsx",
+      "line": 14,
+      "message": "an arrow welded onto a CTA"
+    },
+    {
+      "rule": "A-outline-none",
+      "family": "a11y",
+      "file": "src/App.tsx",
+      "line": 14,
+      "message": "focus outline removed with no replacement"
+    },
+    {
+      "rule": "F-sparkles",
+      "family": "fingerprint",
+      "file": "src/App.tsx",
+      "line": 19,
+      "message": "the sparkle icon"
+    },
+    {
+      "rule": "C-oops",
+      "family": "copy",
+      "file": "src/App.tsx",
+      "line": 26,
+      "message": "\"Oops\""
+    },
+    {
+      "rule": "C-straight-quote",
+      "family": "copy",
+      "file": "src/App.tsx",
+      "line": 26,
+      "message": "straight apostrophe in UI text"
+    },
+    {
+      "rule": "A-div-onclick",
+      "family": "a11y",
+      "file": "src/App.tsx",
+      "line": 26,
+      "message": "a clickable div"
+    },
+    {
+      "rule": "C-three-dots",
+      "family": "copy",
+      "file": "src/App.tsx",
+      "line": 27,
+      "message": "three dots instead of an ellipsis"
+    },
+    {
+      "rule": "C-submit",
+      "family": "copy",
+      "file": "src/App.tsx",
+      "line": 28,
+      "message": "\"Submit\" instead of what happens"
+    },
+    {
+      "rule": "A-transition-all",
+      "family": "a11y",
+      "file": "src/App.tsx",
+      "line": 28,
+      "message": "transition: all"
+    },
+    {
+      "rule": "F-shadcn-untouched",
+      "family": "fingerprint",
+      "file": "src/index.css",
+      "line": 1,
+      "message": "6 untouched shadcn default colours"
+    },
+    {
+      "rule": "FM-validate-onchange",
+      "family": "forms",
+      "file": "src/pages/Settings.tsx",
+      "line": 5,
+      "message": "validation on every keystroke"
+    },
+    {
+      "rule": "FM-asterisk",
+      "family": "forms",
+      "file": "src/pages/Settings.tsx",
+      "line": 15,
+      "message": "asterisk as the required marker"
+    },
+    {
+      "rule": "C-number-format",
+      "family": "copy",
+      "file": "src/pages/Settings.tsx",
+      "line": 18,
+      "message": "number or date formatted without Intl options"
+    },
+    {
+      "rule": "FM-disabled-invalid",
+      "family": "forms",
+      "file": "src/pages/Settings.tsx",
+      "line": 19,
+      "message": "submit disabled until the form is valid"
+    },
+    {
+      "rule": "FM-placeholder-only",
+      "family": "forms",
+      "file": "src/pages/Settings.tsx",
+      "line": 16,
+      "message": "placeholder used as the only label"
+    },
+    {
+      "rule": "FM-no-autocomplete",
+      "family": "forms",
+      "file": "src/pages/Settings.tsx",
+      "line": 16,
+      "message": "no autocomplete hint on a field browsers can fill"
+    },
+    {
+      "rule": "FM-small-input",
+      "family": "forms",
+      "file": "src/pages/Settings.tsx",
+      "line": 16,
+      "message": "input text under 16px, so iOS zooms the page"
+    },
+    {
+      "rule": "FM-placeholder-only",
+      "family": "forms",
+      "file": "src/pages/Settings.tsx",
+      "line": 17,
+      "message": "placeholder used as the only label"
+    },
+    {
+      "rule": "FM-no-autocomplete",
+      "family": "forms",
+      "file": "src/pages/Settings.tsx",
+      "line": 17,
+      "message": "no autocomplete hint on a field browsers can fill"
+    },
+    {
+      "rule": "FM-small-input",
+      "family": "forms",
+      "file": "src/pages/Settings.tsx",
+      "line": 17,
+      "message": "input text under 16px, so iOS zooms the page"
+    },
+    {
+      "rule": "C-tabular",
+      "family": "copy",
+      "file": "src/pages/Settings.tsx",
+      "line": 18,
+      "message": "numbers without tabular figures"
+    },
+    {
+      "rule": "L-fullscreen-spinner",
+      "family": "loading",
+      "file": "src/pages/Settings.tsx",
+      "line": 6,
+      "message": "a spinner replaces the whole page while loading"
+    },
+    {
+      "rule": "L-no-delay",
+      "family": "loading",
+      "file": "src/pages/Settings.tsx",
+      "line": 9,
+      "message": "the loader shows at once; wait 150 to 300 ms"
+    },
+    {
+      "rule": "F-inter-only",
+      "family": "fingerprint",
+      "file": "src/index.css",
+      "line": 19,
+      "message": "Inter is the only typeface"
+    },
+    {
+      "rule": "F-uniform-card",
+      "family": "fingerprint",
+      "file": "src/App.tsx",
+      "line": 18,
+      "message": "the same rounded, shadowed card on 3 elements"
+    },
+    {
+      "rule": "F-tailwind-hex",
+      "family": "fingerprint",
+      "file": "src/index.css",
+      "line": 23,
+      "message": "#6b7280 is Tailwind's gray-500"
+    },
+    {
+      "rule": "C-mixed-case",
+      "family": "copy",
+      "file": "src/App.tsx",
+      "line": 14,
+      "message": "buttons mix Title Case and sentence case"
+    },
+    {
+      "rule": "A-no-reduced-motion",
+      "family": "a11y",
+      "file": "",
+      "line": 0,
+      "message": "animation with no reduced-motion handling"
+    }
+  ]
+}

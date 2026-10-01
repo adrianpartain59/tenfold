@@ -1,23 +1,22 @@
 {
-  "name": "Ledger",
+  "name": "Studio",
   "type": {
     "display": {
-      "family": "Fraunces",
+      "family": "Space Grotesk",
       "weights": [
-        600,
+        500,
         700
-      ],
-      "fallback": "Georgia, serif"
+      ]
     },
     "body": {
-      "family": "Inter Tight",
+      "family": "IBM Plex Sans",
       "weights": [
         400,
         500,
         600
       ]
     },
-    "pairing": "A soft serif for headings gives a notes tool a written, considered feel; a tight grotesk keeps dense lists legible.",
+    "pairing": "A technical grotesk with a humanist workhorse: precise without being cold.",
     "ramp": {
       "display": {
         "face": "display",
@@ -37,7 +36,7 @@
         "face": "display",
         "size": 24,
         "line": 30,
-        "weight": 600,
+        "weight": 500,
         "track": -0.01
       },
       "h3": {
@@ -226,14 +225,14 @@
   },
   "shape": {
     "radius": {
-      "sm": 4,
-      "md": 10,
-      "lg": 16,
+      "sm": 2,
+      "md": 6,
+      "lg": 12,
       "full": 999
     }
   },
   "elevation": {
-    "style": "layered",
+    "style": "border",
     "levels": {
       "0": "none",
       "1": "0 1px 2px rgba(17, 17, 19, 0.06), 0 1px 1px rgba(17, 17, 19, 0.04)",
@@ -274,19 +273,19 @@
     }
   },
   "signature": {
-    "what": "A ruled ledger line under every section heading, in the action colour",
+    "what": "Corner ticks on every card, like a drafting table",
     "where": [
       "s1",
-      "s2"
+      "s3"
     ],
-    "never": "Never on buttons, inputs or list rows",
+    "never": "Never on buttons or the page edge",
     "uses": []
   },
   "voice": {
     "adjectives": [
-      "plain",
-      "exact",
-      "calm"
+      "direct",
+      "technical",
+      "dry"
     ],
     "strings": [
       {

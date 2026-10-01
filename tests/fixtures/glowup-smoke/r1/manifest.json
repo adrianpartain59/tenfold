@@ -1,0 +1,22 @@
+{
+  "project": "demo", "topic": "notes", "title": "Notes app glow-up", "round": 1,
+  "mode": "glowup", "surface": "web", "stage": "directions",
+  "brief": "Smoke fixture: two theme directions for a small team notes app.",
+  "agentPick": "v01", "predictedPick": "v02",
+  "screens": [
+    { "id": "s1", "label": "Dashboard" }, { "id": "s2", "label": "Notes list" },
+    { "id": "s3", "label": "New note" }, { "id": "s4", "label": "Empty state" }
+  ],
+  "before": {
+    "s1": "../before/s1.png", "s2": "../before/s2.png", "s3": "../before/s3.png", "s4": "../before/s4.png",
+    "headline": "33 values: 11 colours · 5 font sizes · 3 weights · 8 spacing values · 4 radii · 2 shadows",
+    "summary": "32 tells (fingerprint 9 · forms 9 · copy 8 · a11y 4 · loading 2)"
+  },
+  "category": "../category.md",
+  "variations": [
+    { "id": "v01", "dir": "v01", "name": "Ledger", "idea": "A calm, ruled notebook: serif headings, one blue action, a generous reading column.", "tags": ["conventional"],
+      "notes": { "market": "Team notes tools earn trust with calm neutrals and one action colour (category.md, table stakes 1).", "signature": "A ruled line under every section heading.", "convention": "Neutral ground, blue action, sidebar on desktop.", "different": "A serif display face where the category uses grotesks.", "ripple": "Settings and onboarding take the ruled headings too." } },
+    { "id": "v02", "dir": "v02", "name": "Studio", "idea": "A drafting table: square corners, hairline borders, a technical grotesk.", "tags": ["twist"],
+      "notes": { "market": "Keeps the category's calm neutrals (table stakes 1) and swaps softness for precision.", "signature": "Corner ticks on every card.", "convention": "Neutral ground, one action colour.", "different": "Hairline borders instead of shadows.", "ripple": "Every card in the app gets corner ticks." } }
+  ]
+}

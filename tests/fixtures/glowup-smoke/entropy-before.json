@@ -1,0 +1,241 @@
+{
+  "root": "glowup-web",
+  "files": 3,
+  "colors": {
+    "count": 11,
+    "values": {
+      "#6b7280": {
+        "count": 1,
+        "files": [
+          "src/index.css"
+        ]
+      },
+      "rgba(0,0,0,0.1)": {
+        "count": 1,
+        "files": [
+          "src/index.css"
+        ]
+      },
+      "tw:blue-500": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      },
+      "tw:gray-300": {
+        "count": 2,
+        "files": [
+          "src/pages/Settings.tsx"
+        ]
+      },
+      "tw:gray-400": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      },
+      "tw:gray-500": {
+        "count": 2,
+        "files": [
+          "src/App.tsx",
+          "src/pages/Settings.tsx"
+        ]
+      },
+      "tw:indigo-500": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      },
+      "tw:indigo-600": {
+        "count": 2,
+        "files": [
+          "src/App.tsx",
+          "src/pages/Settings.tsx"
+        ]
+      },
+      "tw:purple-600": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      },
+      "tw:slate-50": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      },
+      "tw:white": {
+        "count": 5,
+        "files": [
+          "src/App.tsx",
+          "src/pages/Settings.tsx"
+        ]
+      }
+    }
+  },
+  "font-sizes": {
+    "count": 5,
+    "values": {
+      "12px": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      },
+      "14px": {
+        "count": 5,
+        "files": [
+          "src/App.tsx",
+          "src/pages/Settings.tsx"
+        ]
+      },
+      "18px": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      },
+      "20px": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      },
+      "48px": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      }
+    }
+  },
+  "font-weights": {
+    "count": 3,
+    "values": {
+      "500": {
+        "count": 1,
+        "files": [
+          "src/pages/Settings.tsx"
+        ]
+      },
+      "600": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      },
+      "700": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      }
+    }
+  },
+  "spacing": {
+    "count": 8,
+    "values": {
+      "12px": {
+        "count": 3,
+        "files": [
+          "src/App.tsx",
+          "src/pages/Settings.tsx"
+        ]
+      },
+      "16px": {
+        "count": 3,
+        "files": [
+          "src/App.tsx",
+          "src/pages/Settings.tsx"
+        ]
+      },
+      "18px": {
+        "count": 1,
+        "files": [
+          "src/index.css"
+        ]
+      },
+      "20px": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      },
+      "24px": {
+        "count": 6,
+        "files": [
+          "src/App.tsx",
+          "src/pages/Settings.tsx"
+        ]
+      },
+      "32px": {
+        "count": 3,
+        "files": [
+          "src/App.tsx"
+        ]
+      },
+      "8px": {
+        "count": 3,
+        "files": [
+          "src/pages/Settings.tsx"
+        ]
+      },
+      "96px": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      }
+    }
+  },
+  "radii": {
+    "count": 4,
+    "values": {
+      "10px": {
+        "count": 1,
+        "files": [
+          "src/index.css"
+        ]
+      },
+      "16px": {
+        "count": 3,
+        "files": [
+          "src/App.tsx"
+        ]
+      },
+      "6px": {
+        "count": 3,
+        "files": [
+          "src/pages/Settings.tsx"
+        ]
+      },
+      "8px": {
+        "count": 1,
+        "files": [
+          "src/App.tsx"
+        ]
+      }
+    }
+  },
+  "shadows": {
+    "count": 2,
+    "values": {
+      "0 2px 4px rgba(0, 0, 0, 0.1)": {
+        "count": 1,
+        "files": [
+          "src/index.css"
+        ]
+      },
+      "tw:shadow-lg": {
+        "count": 3,
+        "files": [
+          "src/App.tsx"
+        ]
+      }
+    }
+  },
+  "total": 33,
+  "headline": "11 colours · 5 font sizes · 3 weights · 8 spacing values · 4 radii · 2 shadows"
+}

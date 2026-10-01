@@ -1,0 +1,37 @@
+{
+  "root": "glowup-web",
+  "files": 3,
+  "total": 15,
+  "colors": {
+    "count": 1,
+    "values": {
+      "#ffffff": {
+        "count": 1,
+        "files": [
+          "src/index.css"
+        ]
+      }
+    }
+  },
+  "font-sizes": {
+    "count": 4,
+    "values": {}
+  },
+  "font-weights": {
+    "count": 2,
+    "values": {}
+  },
+  "spacing": {
+    "count": 5,
+    "values": {}
+  },
+  "radii": {
+    "count": 2,
+    "values": {}
+  },
+  "shadows": {
+    "count": 1,
+    "values": {}
+  },
+  "headline": "1 colour · 4 font sizes · 2 weights · 5 spacing values · 2 radii · 1 shadow"
+}

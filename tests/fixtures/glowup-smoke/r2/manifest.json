@@ -1,0 +1,15 @@
+{
+  "project": "demo", "topic": "notes", "title": "Notes app glow-up", "round": 2,
+  "mode": "glowup", "surface": "web", "stage": "system",
+  "brief": "Smoke fixture: Ledger across every route.",
+  "parent": { "round": 1, "id": "v01", "name": "Ledger" },
+  "agentPick": "v01", "predictedPick": "v01",
+  "screens": [
+    { "id": "s1", "label": "Dashboard" }, { "id": "s2", "label": "Notes list" },
+    { "id": "s3", "label": "New note" }, { "id": "s4", "label": "Empty state" }
+  ],
+  "routes": [ { "id": "home", "label": "Home" }, { "id": "settings", "label": "Settings" } ],
+  "variations": [
+    { "id": "v01", "dir": "v01", "name": "Ledger", "idea": "Ledger on every route.", "tags": [], "notes": { "market": "As round 1.", "signature": "Ruled headings." } }
+  ]
+}

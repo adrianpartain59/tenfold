@@ -225,6 +225,82 @@ t="$(pfresh)"; perl -pi -e 's/^## Proof$/## Proof (fixture reviews)/' "$t/contex
 out="$(bash "$STUDIO" check "$t/r1" 2>&1)"; st=$?
 [ $st -eq 0 ] && [ "$out" = "OK 2 paywall variations (concept, 3 states)" ] && ok "check accepts a Proof heading with a suffix" || bad "check accepts a Proof heading with a suffix" "$out"
 
+echo "glow-up: python units"
+out="$(python3 "$HERE/glowup_test.py" 2>&1)"; st=$?
+[ $st -eq 0 ] && ok "glowup_test.py passes" || bad "glowup_test.py passes" "$(tail -30 <<<"$out")"
+
+echo "glow-up: check"
+SCRIPTS="$REPO/skills/design-studio/scripts"
+gfresh() { stage glowup-smoke demo "g$RANDOM$RANDOM"; }
+regen() { python3 "$SCRIPTS/theme_tokens.py" "$1/theme.json" --css --out "$1/tokens.css"; }
+jedit() { python3 - "$1" "$2" <<'PY'
+import json, sys
+p, code = sys.argv[1], sys.argv[2]
+d = json.load(open(p)); exec(code); json.dump(d, open(p, "w"), indent=2, ensure_ascii=False)
+PY
+}
+t="$(gfresh)"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"; st=$?
+[ $st -eq 0 ] && [ "$(tail -1 <<<"$out")" = "OK 2 glow-up directions (directions, 4 screens)" ] && ok "check passes a directions round" || bad "check passes a directions round" "$out"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r2" 2>&1)"; st=$?
+[ $st -eq 0 ] && [ "$(tail -1 <<<"$out")" = "OK 1 glow-up system (2 routes)" ] && ok "check passes a system round" || bad "check passes a system round" "$out"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r3" 2>&1)"; st=$?
+[ $st -eq 0 ] && [ "$out" = "OK glow-up apply stage 3 (entropy 33 → 15, tells 32 → 9)" ] && ok "check passes an apply round" || bad "check passes an apply round" "$out"
+
+t="$(gfresh)"; perl -pi -e 's/ data-signature//' "$t/r1/v01/s2.html"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"; st=$?
+[ $st -ne 0 ] && grep -q "FAIL v01: signature element appears on 1 screen (need 2)" <<<"$out" && ok "check wants the signature on two screens" || bad "check wants the signature on two screens" "$out"
+
+t="$(gfresh)"; jedit "$t/r1/v01/theme.json" 'd["shape"]["radius"]["md"] = 8'; regen "$t/r1/v01"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
+grep -q "FAIL v01: shape.radius.md is shadcn's 0.5rem radius; give it a line in reasons or change it" <<<"$out" && ok "check wants a reason for a default" || bad "check wants a reason for a default" "$out"
+jedit "$t/r1/v01/theme.json" 'd["reasons"]["shape.radius.md"] = "8px matches the platform input radius"'; regen "$t/r1/v01"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"; st=$?
+[ $st -eq 0 ] && ok "a reason clears the default" || bad "a reason clears the default" "$out"
+
+t="$(gfresh)"; echo "/* hand edit */" >> "$t/r1/v02/tokens.css"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
+grep -q "FAIL v02/tokens.css is stale; regenerate it with theme_tokens.py --css" <<<"$out" && ok "check fails stale tokens" || bad "check fails stale tokens" "$out"
+
+t="$(gfresh)"; perl -pi -e 's|<h2 class="t-h2">New note</h2>|<h2 class="t-h2" style="color:#ff0000">New note</h2>|' "$t/r1/v01/s3.html"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
+grep -q "FAIL v01/s3.html: literal colour '#ff0000'; use the tokens" <<<"$out" && ok "check fails a literal colour" || bad "check fails a literal colour" "$out"
+
+t="$(gfresh)"; perl -ni -e 'print unless /^- Submit$/' "$t/context.md"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
+grep -q "FAIL v01: voice string 'Submit' is not in context.md" <<<"$out" && ok "check wants real voice strings" || bad "check wants real voice strings" "$out"
+
+t="$(gfresh)"; perl -pi -e 's/data-template="column"/data-template="hero"/' "$t/r1/v01/s4.html"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
+grep -q "FAIL v01/s4.html: data-template hero is not in theme.layout.templates" <<<"$out" && ok "check wants a declared layout template" || bad "check wants a declared layout template" "$out"
+
+t="$(gfresh)"; perl -pi -e 's|>Your notes<|>Elevate your notes<|' "$t/r1/v01/s1.html"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
+grep -q "FAIL v01/s1.html:[0-9]*: C-buzzwords" <<<"$out" && ok "check runs the tells on screens" || bad "check runs the tells on screens" "$out"
+
+t="$(gfresh)"; jedit "$t/r1/v01/theme.json" 'd["color"]["light"]["ground"] = "oklch(0.96 0.02 80)"; d["color"]["light"]["action"] = "oklch(0.55 0.13 40)"'; regen "$t/r1/v01"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
+grep -q "FAIL v01: second-order tell cream-terracotta" <<<"$out" && ok "check fails an unnamed second-order tell" || bad "check fails an unnamed second-order tell" "$out"
+jedit "$t/r1/v01/theme.json" 'd["signature"]["uses"] = ["cream-terracotta"]'; regen "$t/r1/v01"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r1" 2>&1)"
+grep -q "second-order tell cream-terracotta" <<<"$out" && bad "a named signature allows a second-order pattern" "$out" || ok "a named signature allows a second-order pattern"
+
+t="$(gfresh)"; rm "$t/r2/v01/routes/settings.html"
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r2" 2>&1)"
+grep -q "FAIL v01: missing route settings (routes/settings.html)" <<<"$out" && ok "check wants every route" || bad "check wants every route" "$out"
+
+t="$(gfresh)"; jedit "$t/r3/entropy-after.json" 'd["colors"]["count"] = 30'
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r3" 2>&1)"
+grep -q "FAIL entropy rose: 33 → 44" <<<"$out" && ok "check fails rising entropy" || bad "check fails rising entropy" "$out"
+
+t="$(gfresh)"; jedit "$t/r3/entropy-after.json" 'd["colors"]["values"]["#ffffff"]["files"].append("src/App.tsx")'
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r3" 2>&1)"
+grep -q "FAIL literal colours outside the theme files: src/App.tsx" <<<"$out" && ok "check fails stray literal colours" || bad "check fails stray literal colours" "$out"
+
+t="$(gfresh)"; jedit "$t/r3/manifest.json" 'd["apply"]["build"] = "fail"'
+out="$(python3 "$SCRIPTS/glowup_check.py" "$t/r3" 2>&1)"
+grep -q "FAIL build failed and the stage was not reverted" <<<"$out" && ok "check fails an unreverted broken build" || bad "check fails an unreverted broken build" "$out"
+
 # --- new tests above this line ---
 echo
 echo "$pass passed, $fail failed"

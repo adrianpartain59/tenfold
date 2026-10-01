@@ -1,0 +1,12 @@
+{
+  "total": 9,
+  "families": {
+    "fingerprint": 0,
+    "forms": 3,
+    "copy": 2,
+    "a11y": 2,
+    "loading": 2,
+    "second-order": 0
+  },
+  "findings": []
+}

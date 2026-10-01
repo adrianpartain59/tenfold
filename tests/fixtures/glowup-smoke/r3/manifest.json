@@ -1,0 +1,16 @@
+{
+  "project": "demo", "topic": "notes", "title": "Notes app glow-up", "round": 3,
+  "mode": "glowup", "surface": "web", "stage": "apply",
+  "brief": "Smoke fixture: apply stage 3 of Ledger.",
+  "parent": { "round": 2, "id": "v01", "name": "Ledger" },
+  "apply": {
+    "stage": 3, "branch": "glowup/notes",
+    "themeFiles": ["src/index.css", "tailwind.config.js"],
+    "entropyBefore": "../entropy-before.json", "entropyAfter": "entropy-after.json",
+    "tellsBefore": "../tells-before.json", "tellsAfter": "tells-after.json",
+    "build": "pass", "reverted": false,
+    "headline": "Entropy 33 → 15 · tells 32 → 9",
+    "routes": [ { "id": "home", "label": "Home", "before": "../before/s1.png", "after": "after/home.png" } ],
+    "followUps": ["FM-validate-onchange in src/pages/Settings.tsx:5 changes behaviour, so apply left it alone"]
+  }
+}
