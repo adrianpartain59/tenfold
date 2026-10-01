@@ -236,6 +236,10 @@ child that spans the grid and `.tnum` for tabular figures.
 Each `vNN/s1.html` to `s4.html`:
 
 - links `../screen.css` (app) or `../web.css` (web), then `tokens.css`
+- sets `data-theme="light"` or `data-theme="dark"` on `<html>`: the mode
+  the direction is designed in. Without it the screen follows the viewer's
+  OS setting, so a light-first direction shows its dark alternate on a
+  dark-mode machine. The gallery's As designed view keeps this value
 - puts `data-template="<template id>"` on `<body>`, naming a template from
   the theme
 - marks the signature element with `data-signature` on every screen listed
