@@ -129,7 +129,7 @@
 <header id="head"></header>
 <div class="bar"><div>
   <div class="seg" id="tab"></div>
-  <div class="seg" id="theme"><button data-v="light" class="on">Light</button><button data-v="dark">Dark</button></div>
+  <div class="seg" id="theme"><button data-v="native" class="on">As designed</button><button data-v="light">Light</button><button data-v="dark">Dark</button></div>
   <div class="seg" id="size"><button data-v="s">S</button><button data-v="m" class="on">M</button><button data-v="l">L · 1:1</button></div>
   <span class="hint">Spec card opens a direction · ← → to step · 1 to 9, 0 = #10 · Esc</span>
 </div></div>
@@ -144,16 +144,25 @@ const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const ROLES = ["ground", "surface", "surface-2", "border", "text", "text-2", "text-3", "action", "on-action", "accent", "on-accent", "good", "warn", "error", "focus"];
 const RAMP = ["display", "h1", "h2", "h3", "lede", "body", "small", "caption", "eyebrow"];
-let M, theme = "light", tab = "main", cur = -1;
+let M, theme = "native", tab = "main", cur = -1;
 const themes = {};
 
 function applyTheme(t) {
   theme = t;
-  document.documentElement.dataset.theme = t;
+  document.documentElement.dataset.theme = t === "dark" ? "dark" : "light";
   document.querySelectorAll("#theme button").forEach((b) => b.classList.toggle("on", b.dataset.v === t));
   document.querySelectorAll("iframe").forEach(setFrameTheme);
 }
-function setFrameTheme(f) { try { f.contentDocument.documentElement.dataset.theme = theme; } catch {} }
+// "native" shows each screen as designed (a dark-first direction sets data-theme="dark" itself);
+// Light and Dark force every frame. The frame's own value is remembered so "As designed" restores it.
+function setFrameTheme(f) {
+  try {
+    const h = f.contentDocument.documentElement;
+    if (!("native" in f.dataset)) f.dataset.native = h.dataset.theme ?? "";
+    const v = theme === "native" ? f.dataset.native : theme;
+    if (v) h.dataset.theme = v; else delete h.dataset.theme;
+  } catch {}
+}
 function frame(src, title, lazy = true) {
   const inner = /\.(png|jpe?g|webp)$/i.test(src)
     ? `<img src="${esc(src)}" alt="${esc(title)}">`
