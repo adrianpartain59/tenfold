@@ -352,6 +352,23 @@ else
   echo "  skip glow-up gallery DOM tests (no Chrome/Chromium)"
 fi
 
+echo "glow-up: craft references"
+SK="$REPO/skills/design-studio"
+need_heads() { local f="$1"; shift; local h; for h in "$@"; do grep -qx "$h" "$SK/references/$f" && ok "$f has '$h'" || bad "$f has '$h'"; done; }
+need_heads glowup-craft.md "## theme.json" "## The system layer" "### 1. Layout system" "### 2. Brand surface" "### 3. Colour construction" "### 4. Component state matrix" "### 5. Type construction" "### 6. Signature element" "### 7. Content and voice system" "### 8. Loading policy" "### 9. Form system" "### 10. Numbers and tables" "### 11. Feedback and haptics" "### 12. Responsive components and navigation" "### 13. Density" "## Construction details" "## The human rules" "## The tells" "## Layout templates on each surface" "## Screens" "## Pre-send checklist" "## Sources"
+need_heads category-research.md "## Choosing comparables" "## Gathering screens" "## What to record" "## Table stakes and white space" "## Rules" "## category.md template"
+for f in glowup-craft.md category-research.md; do grep -q "—" "$SK/references/$f" && bad "$f has no em dashes" || ok "$f has no em dashes"; done
+grep -q "tests/fixtures/glowup-smoke/r1/v01/theme.json" "$SK/references/glowup-craft.md" && ok "glowup-craft.md points at the worked example" || bad "glowup-craft.md points at the worked example"
+
+echo "glow-up: loop and apply references"
+need_heads glowup.md "## When it's on" "## Stages" "## Intake" "## Audit" "## Category research" "## Directions and converge" "## System" "## Apply" "## Pick question" "## TASTE.md" "## Manifest reference"
+need_heads apply-web.md "## Before you start" "## Stage 1: theme layer" "## Stage 2: shared components" "## Stage 3: routes" "## Stage 4: brand surface" "## After every stage" "## Hard limits" "## Follow-ups"
+need_heads apply-native.md "## Before you start" "## Stage 1: theme layer" "## Stage 2: shared components" "## Stage 3: screens" "## Stage 4: brand surface" "## After every stage" "## Hard limits" "## Follow-ups"
+for f in glowup.md apply-web.md apply-native.md; do grep -q "—" "$SK/references/$f" && bad "$f has no em dashes" || ok "$f has no em dashes"; done
+for s in entropy.py tells_lint.py theme_tokens.py glowup_check.py; do grep -q "$s" "$SK/references/glowup.md" && ok "glowup.md uses $s" || bad "glowup.md uses $s"; done
+grep -q -- "--shadcn-hsl" "$SK/references/apply-web.md" && ok "apply-web.md covers HSL shadcn" || bad "apply-web.md covers HSL shadcn"
+grep -q -- "--rn" "$SK/references/apply-native.md" && ok "apply-native.md uses --rn" || bad "apply-native.md uses --rn"
+
 # --- new tests above this line ---
 echo
 echo "$pass passed, $fail failed"
