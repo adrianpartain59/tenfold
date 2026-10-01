@@ -442,10 +442,12 @@ class IconsTest(unittest.TestCase):
     def test_normalize_published_sprites(self):
         self.assertEqual(self.ic.normalize('<symbol id="tabler-filled-flame" viewBox="0 0 24 24">', "tabler-filled"), '<symbol id="flame" viewBox="0 0 24 24">')
         self.assertEqual(self.ic.normalize('<symbol id="flame">', "lucide"), '<symbol viewBox="0 0 24 24" id="flame">')
+        self.assertEqual(self.ic.normalize('<symbol id="tabler-x" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="currentColor">', "tabler"),
+                         '<symbol id="x" viewBox="0 0 24 24" fill="none" stroke="currentColor">')
 
     def test_sets_and_usage(self):
         self.assertIn("phosphor-bold", self.ic.SETS)
-        self.assertEqual(self.ic.usage("feather"), 'fill="none" stroke="currentColor"')
+        self.assertEqual(self.ic.usage("feather"), 'fill="none" stroke="currentColor" stroke-width="1.75"')
         self.assertEqual(self.ic.usage("phosphor-fill"), 'fill="currentColor"')
         self.assertEqual(self.ic.sprite_name("feather"), "icons")
         self.assertEqual(self.ic.sprite_name("tabler-filled"), "icons-tabler-filled")

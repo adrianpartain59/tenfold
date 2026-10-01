@@ -39,7 +39,7 @@ def sprite_name(s):
 
 
 def usage(s):
-    return 'fill="currentColor"' if s in FILL_SETS else 'fill="none" stroke="currentColor"'
+    return 'fill="currentColor"' if s in FILL_SETS else 'fill="none" stroke="currentColor" stroke-width="1.75"'
 
 
 def build_sprite(files, strip_suffix=""):
@@ -58,10 +58,12 @@ def build_sprite(files, strip_suffix=""):
 
 
 def normalize(sprite, s):
-    """Make published sprites behave like the built ones: plain ids (no "tabler-" prefix) and a viewBox on every symbol."""
+    """Make published sprites behave like the built ones: plain ids (no "tabler-" prefix), a viewBox on every
+    symbol, and no stroke-width baked into a symbol, so the page's stroke-width sets the icon weight."""
     prefix = {"tabler": "tabler-", "tabler-filled": "tabler-filled-"}.get(s)
     if prefix:
         sprite = sprite.replace(f'id="{prefix}', 'id="')
+    sprite = re.sub(r'(<symbol\b[^>]*?)\s+stroke-width="[^"]*"', r"\1", sprite)
     return re.sub(r"<symbol\b(?![^>]*viewBox)", '<symbol viewBox="0 0 24 24"', sprite)
 
 
