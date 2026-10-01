@@ -1,7 +1,7 @@
 ---
 name: design-studio
 argument-hint: "[screen, card, flow, website or paywall to design]"
-description: Use when the user wants to design, redesign, rethink, restyle, or see options, variations, directions, or mockups for an app screen, card, widget, component, sheet, or flow (mobile/iOS/React Native app UI especially), for a website, landing page or marketing site (web mode), or for a paywall, subscription screen, upgrade screen or exit offer (paywall mode), including "render an HTML doc with designs", "give me variations", "show me options for X", "ten testimonial paywalls", or picking a variation from an earlier design round to iterate on.
+description: Use when the user wants to design, redesign, rethink, restyle, or see options, variations, directions, or mockups for an app screen, card, widget, component, sheet, or flow (mobile/iOS/React Native app UI especially), for a website, landing page or marketing site (web mode), or for a paywall, subscription screen, upgrade screen or exit offer (paywall mode), or for turning a vibe-coded or AI-made app into a professionally designed one across every screen (glow-up mode), including "render an HTML doc with designs", "give me variations", "show me options for X", "ten testimonial paywalls", or picking a variation from an earlier design round to iterate on.
 ---
 
 # Design Studio
@@ -147,6 +147,35 @@ it directs. In short:
 - `check` enforces the legal markers, states and real proof; `sheets` writes
   one set per state.
 
+## Glow-up mode (a vibe-coded app into a designed one)
+
+On when the adapter says `mode: glowup` or the brief asks to make an app
+look professional, says it looks vibe-coded or AI-made, or asks for themes
+for the whole app. Read `references/glowup.md` before step 1, and
+`references/glowup-craft.md`, `references/category-research.md`,
+`references/apply-web.md` and `references/apply-native.md` as it directs.
+In short:
+
+- `studio.sh new <project> <topic> --glowup` (add `--web` for a web app):
+  the round gets the theme board (`gallery-glowup.html`) and both frame
+  stylesheets.
+- Glow-up is a job, not a surface: directions render in the phone frames
+  (app) or the web frames (web) the other modes already use.
+- Stages: `intake` (a confirmed brief), `audit` (before screenshots,
+  `entropy.py`, `tells_lint.py`, four key screens), `research`
+  (`category.md`), `directions` (ten themes on the four key screens),
+  `converge`, `system` (every route), `apply` (staged commits on
+  `glowup/<topic>`).
+- A direction is `vNN/theme.json` (the whole system), `tokens.css` from
+  `theme_tokens.py --css`, and `s1.html` to `s4.html`.
+- `check` runs `glowup_check.py`: a valid theme, contrast, a reason for
+  every framework default, second-order tells only as the named
+  signature, fresh tokens, a layout template on every screen, the
+  signature on two screens, voice strings from context.md; at apply,
+  entropy and tells fall.
+- The pick question adds `System proof #N` from `converge`, `Apply #N` in
+  `system`, and approve, flag or revert on every apply board.
+
 ## Rules that hold every round
 
 - The link goes out as soon as the round renders, as a localhost URL the user
@@ -192,3 +221,7 @@ the same command with the sandbox disabled; it only serves mockups.
 | An A/B variant that changes two things | One variable per variant, named in `variable`; everything else stays the control's |
 | Testimonials or ratings written for the mockup | Proof comes only from context.md's list; `check` fails any marked proof not in it, so mark every rating, count and quote |
 | Judging a paywall with only the default plan selected | Every state in `manifest.states`; flip the gallery's state switch |
+| Matching the vibe-coded app's own look | Glow-up replaces it; the current screens are the Before board, not the authority |
+| A theme that only swaps colours and fonts | `theme.json` carries layout templates, states, voice and a signature; `check` fails without them |
+| Trading purple slop for tasteful slop | Second-order patterns only as the named signature (`signature.uses`) |
+| An apply that changes behaviour | Apply touches styles, markup, copy and assets; behaviour goes to follow-ups |

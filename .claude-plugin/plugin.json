@@ -1,12 +1,12 @@
 {
   "name": "tenfold",
-  "version": "1.2.0",
-  "description": "Design rounds for Claude Code: sweeps your app or site for context, renders 10 distinct variations (phone mockups, full scrollable web pages, or paywalls in every offer state) on localhost, predicts your pick, and iterates on it until you say build.",
+  "version": "1.3.0",
+  "description": "Design rounds for Claude Code: sweeps your app or site for context, renders 10 distinct variations (phone mockups, full scrollable web pages, paywalls in every offer state, or whole-app themes for vibe-coded apps) on localhost, predicts your pick, and iterates on it until you say build.",
   "author": {
     "name": "Adrian Partain",
     "url": "https://github.com/adrianpartain59"
   },
   "repository": "https://github.com/adrianpartain59/tenfold",
   "license": "MIT",
-  "keywords": ["design", "ui", "mobile", "ios", "react-native", "mockups", "web", "website", "variations", "claude-code", "skill", "paywall", "subscription", "conversion"]
+  "keywords": ["design", "ui", "mobile", "ios", "react-native", "mockups", "web", "website", "variations", "claude-code", "skill", "paywall", "subscription", "conversion", "vibe-coded", "theme", "design-system", "glow-up"]
 }

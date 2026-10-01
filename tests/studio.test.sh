@@ -202,7 +202,7 @@ grep -q "^## Paywall mode" "$SK/SKILL.md" && ok "SKILL.md has a Paywall mode sec
 for f in paywall.md paywall-craft.md paywall-playbook.md paywall-archetypes.md; do
   grep -q "references/$f\|\`$f\`" "$SK/SKILL.md" "$SK/references/paywall.md" && ok "$f is referenced" || bad "$f is referenced"
 done
-grep -q '"version": "1.2.0"' "$REPO/.claude-plugin/plugin.json" && grep -q '"version": "1.2.0"' "$REPO/.claude-plugin/marketplace.json" && ok "version is 1.2.0" || bad "version is 1.2.0"
+grep -q '"version": "1.3.0"' "$REPO/.claude-plugin/plugin.json" && grep -q '"version": "1.3.0"' "$REPO/.claude-plugin/marketplace.json" && ok "version is 1.3.0" || bad "version is 1.3.0"
 grep -q "^## 1.2.0" "$REPO/CHANGELOG.md" && ok "CHANGELOG has 1.2.0" || bad "CHANGELOG has 1.2.0"
 
 echo "paywall mode: check (void-tag proof holes)"
@@ -368,6 +368,18 @@ for f in glowup.md apply-web.md apply-native.md; do grep -q "—" "$SK/reference
 for s in entropy.py tells_lint.py theme_tokens.py glowup_check.py; do grep -q "$s" "$SK/references/glowup.md" && ok "glowup.md uses $s" || bad "glowup.md uses $s"; done
 grep -q -- "--shadcn-hsl" "$SK/references/apply-web.md" && ok "apply-web.md covers HSL shadcn" || bad "apply-web.md covers HSL shadcn"
 grep -q -- "--rn" "$SK/references/apply-native.md" && ok "apply-native.md uses --rn" || bad "apply-native.md uses --rn"
+
+echo "glow-up: docs"
+grep -qi "vibe-coded" <(sed -n '1,6p' "$SK/SKILL.md") && ok "SKILL.md description triggers on vibe-coded apps" || bad "SKILL.md description triggers on vibe-coded apps"
+grep -q "^## Glow-up mode" "$SK/SKILL.md" && ok "SKILL.md has a Glow-up mode section" || bad "SKILL.md has a Glow-up mode section"
+for f in glowup.md glowup-craft.md category-research.md apply-web.md apply-native.md; do
+  grep -q "references/$f\|\`$f\`" "$SK/SKILL.md" "$SK/references/glowup.md" && ok "$f is referenced" || bad "$f is referenced"
+done
+grep -q "^### Glow-up mode axes" "$SK/references/variations.md" && ok "variations.md has glow-up axes" || bad "variations.md has glow-up axes"
+grep -q "^## 1.3.0" "$REPO/CHANGELOG.md" && ok "CHANGELOG has 1.3.0" || bad "CHANGELOG has 1.3.0"
+grep -q "^## Glow-up mode" "$REPO/README.md" && ok "README has a Glow-up mode section" || bad "README has a Glow-up mode section"
+new_sections="$(sed -n '/^## Glow-up mode/,/^## [^G]/p' "$SK/SKILL.md"; sed -n '/^## 1.3.0/,/^## 1.2.0/p' "$REPO/CHANGELOG.md"; sed -n '/^## Glow-up mode/,/^## [^G]/p' "$REPO/README.md")"
+grep -q "—" <<<"$new_sections" && bad "the glow-up doc sections have no em dashes" "$(grep -n "—" <<<"$new_sections" | head -3)" || ok "the glow-up doc sections have no em dashes"
 
 # --- new tests above this line ---
 echo

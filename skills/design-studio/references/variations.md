@@ -64,6 +64,27 @@ archetype's own Axes from `paywall-archetypes.md` plus these.
 | Density | one screen, no scroll · scroll with a sticky CTA · multi-step |
 | Tone | clinical trust · warm coach · premium editorial · playful |
 
+### Glow-up mode axes
+
+In glow-up mode (`glowup.md`) each direction is a whole theme
+(`theme.json`), shown on the same four key screens. Every pair differs on
+at least two axes; type or colour alone doesn't count.
+
+| Axis | Positions (examples) |
+|---|---|
+| Category stance | conventional · conventional with a twist · category-breaking |
+| Personality | clinical · warm · editorial · playful · technical · premium |
+| Layout system | airy editorial column · balanced cards · dense pro grid · split panes |
+| Type personality | geometric grotesk · humanist sans · serif display + sans · condensed display · rounded |
+| Colour field | light warm · light cool · dark · brand-tinted ground |
+| Shape | sharp · soft · pill · mixed by role |
+| Depth | flat with borders · soft shadow · layered surfaces |
+| Signature | a shape motif · a corner or edge treatment · an illustration style · a texture · a type treatment |
+| Voice | plain · warm coach · expert · playful |
+
+Round 1 mix of ten: three conventional done well, five in-category with a
+distinctive twist, two labelled wildcards that break the category.
+
 ## Round 2+: converge on the pick
 
 The user picked #N (possibly with feedback, possibly "N's top with M's bottom").

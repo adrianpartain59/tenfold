@@ -93,6 +93,18 @@ Give it a `paywall-data` command in your adapter and it reads your live
 paywall numbers before it designs. The command runs locally with your own
 credentials.
 
+## Glow-up mode
+
+Built an app with Lovable, v0, Bolt or Cursor and it looks like every other
+one? Ask for a glow-up ("make this look professional", "it looks
+vibe-coded"). Tenfold measures what's there (how many colours, font sizes
+and spacing values the code really uses, and which AI-design tells it
+carries), studies the apps in your category, then shows ten complete
+themes on the same four screens of your app. Pick one, see it on every
+screen, and it applies the theme to your code on a branch, one reviewable
+stage at a time, with before and after screenshots. Web (React, Next,
+Vite, Tailwind, shadcn) and React Native / Expo.
+
 ## Teach it your app (optional)
 
 Add `.design-studio/adapter.md` at your project root. The skill reads it
