@@ -176,12 +176,13 @@ check_paywall() {
   if chrome="$(chrome_bin)"; then
     serve >/dev/null
     ad="$(cd "$d" && pwd)"; rel="${ad#"$ROOT"/}"
-    python3 "$SKILL_DIR/scripts/paywall_check.py" measure-page "$d" >/dev/null
+    local n="_pwmeasure-$$"  # per run, so parallel checks of one round don't collide
+    python3 "$SKILL_DIR/scripts/paywall_check.py" measure-page "$d" "$n.html" >/dev/null
     "$chrome" --headless=new --disable-gpu --virtual-time-budget=15000 --window-size=1200,900 \
-      --dump-dom "http://127.0.0.1:$PORT/$rel/_pwmeasure.html" > "$d/_pwmeasure.out" 2>/dev/null || true
-    rm -f "$d/_pwmeasure.html"
-    python3 "$SKILL_DIR/scripts/paywall_check.py" "$d" --measured "$d/_pwmeasure.out"; local rc=$?
-    rm -f "$d/_pwmeasure.out"; return $rc
+      --dump-dom "http://127.0.0.1:$PORT/$rel/$n.html" > "$d/$n.out" 2>/dev/null || true
+    rm -f "$d/$n.html"
+    python3 "$SKILL_DIR/scripts/paywall_check.py" "$d" --measured "$d/$n.out"; local rc=$?
+    rm -f "$d/$n.out"; return $rc
   fi
   python3 "$SKILL_DIR/scripts/paywall_check.py" "$d"
 }

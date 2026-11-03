@@ -3,7 +3,7 @@
 
   paywall_check.py <round-dir>                      static checks
   paywall_check.py <round-dir> --measured <file>    static checks + layout measures
-  paywall_check.py measure-page <round-dir>         write _pwmeasure.html (studio.sh
+  paywall_check.py measure-page <round-dir> [name]  write _pwmeasure.html (studio.sh
                                                      dumps it through headless Chrome)
 
 Prints WARN/FAIL lines, then "OK|FAIL <n> paywall variation(s) (<stage>, <k> state(s))".
@@ -141,13 +141,13 @@ for (const f of files) {
 """
 
 
-def measure_page(d):
+def measure_page(d, name="_pwmeasure.html"):
     m = json.load(open(os.path.join(d, "manifest.json")))
     files = screens(d, m)
     js = MEASURE_JS % (json.dumps(list(EXEMPT)), json.dumps(files))
-    with open(os.path.join(d, "_pwmeasure.html"), "w", encoding="utf-8") as f:
+    with open(os.path.join(d, name), "w", encoding="utf-8") as f:
         f.write(f'<!doctype html><meta charset="utf-8"><pre id="out"></pre><script>{js}</script>')
-    print("_pwmeasure.html")
+    print(name)
     return 0
 
 
@@ -288,8 +288,8 @@ def main(d, measured_path=None):
 
 if __name__ == "__main__":
     a = sys.argv[1:]
-    if len(a) == 2 and a[0] == "measure-page":
-        sys.exit(measure_page(a[1].rstrip("/")))
+    if len(a) in (2, 3) and a[0] == "measure-page":
+        sys.exit(measure_page(a[1].rstrip("/"), *a[2:]))
     if len(a) == 3 and a[1] == "--measured":
         sys.exit(main(a[0].rstrip("/"), a[2]))
     if len(a) != 1:
