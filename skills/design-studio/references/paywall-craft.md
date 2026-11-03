@@ -13,8 +13,12 @@ ROUND_DIR/
   screen.css      phone base
   paywall.css     pricing modules, plan pickers, timeline, proof, legal
   manifest.json
-  v01/main.html  v01/alt-plan.html  v01/exit.html  …
+  v01/step-1.html  v01/step-2.html  v01/main.html  v01/alt-plan.html  v01/exit.html  …
 ```
+
+`step-N` files are the screens before the purchase screen, in the order
+`manifest.flow` (or the variation's own `flow`) lists them. `main` is always
+the last screen of a flow.
 
 A frame sits one folder deeper than a mobile frame, so its links are:
 
@@ -40,12 +44,69 @@ Several markers may share an element (`data-pw="renewal trial-terms"`).
 | `restore` | Restore purchases | |
 | `terms`, `privacy` | Links | |
 | `proof` | Any rating, count, quote or claim, with `data-src="P#"` | The text must appear in context.md's `## Proof` entry P# |
+| `visual` | The screen's hero visual: device or product shot, illustration, photo, chart, the note card, the timeline graphic | Every screen, steps included. Several elements may carry it; their union is what `check` measures |
+| `plan` | Each plan card or the plan list | Its words don't count against the word budget |
+| `legal` | The footer block (Apple row, fine print, links, utility row) | Its words don't count against the word budget |
+| `note` | The body of a letter or note card | Counted on its own budget (60 words) |
 
 Step frames (`step-N`) are exempt from everything except `proof`.
 
 On a state whose offer has no trial, mark the line that says what is billed
 today (for example "Billed today, no free trial") with `trial-terms`. Never
 add trial copy to a screen that has no trial.
+
+## Visual first
+
+A paywall is a picture with a price under it, not a page of copy. Users give
+a paywall a couple of seconds; they read the hero, the price and the button.
+`studio.sh check` loads every screen in headless Chrome and measures the first
+393×852 viewport:
+
+| Screen | Visual share (min) | Words outside price, plans, CTA, legal (max) |
+|---|---|---|
+| `step-N` | 40% | 30 |
+| `main`, `alt-plan`, `exit`, … | 25% | 40 |
+| a `note` letter | counts as visual when it is a card object | 60 words in the letter body |
+
+How to stay inside them:
+
+- **The top 40–55% of a step screen is the visual.** A real product capture in a
+  device frame, a big brand object, a photo, an illustration, a chart drawn
+  with real-looking data, or a styled object (a ticket, a letter, a calendar).
+  A grey box with text in it is not a visual.
+- **Headline 3–7 words, at most one support line.** Benefits are 3 icon rows of
+  2–5 words each, never sentences. Proof is a rating badge or one short quote
+  (cut to a contiguous piece), not a wall of paragraphs.
+- **Split, don't cram.** When a concept needs a timeline AND reviews AND a
+  feature list, each goes on its own screen of the flow. The purchase screen
+  holds the visual, the plans and the button.
+- Text inside a picture (labels on a chart, values on an app capture) is part
+  of the visual: give the visual element `data-pw="visual"` and those words
+  still count, so keep in-visual text sparse too.
+
+## Flows
+
+The best-converting paywalls are multi-screen (playbook section 10, lever 1).
+In paywall mode a variation is a flow by default: 2 to 4 screens, the last
+one `main` (the purchase screen). Each step screen does one job and ends in
+one full-width Continue button (not a purchase: steps carry no `cta` marker,
+no price and no trial claim that the purchase screen would have to correct).
+Common jobs, in the order apps run them (`paywall-techniques.md` has the
+real-app examples):
+
+1. **Hook:** the product or outcome as a big visual, one headline.
+2. **How the trial works:** an illustrated timeline (today, mid-trial, charge
+   date) when there is a trial. Only promise a reminder that really fires.
+3. **Proof:** a rating badge with laurels, or one or two short real reviews.
+4. **Personal:** a letter or note from the team, or a summary of the user's
+   own answers when those really reach the paywall.
+5. **Plans:** the purchase screen.
+
+A step screen that mentions a trial gives its length and the price after it,
+in the same element, at the same size (a later screen may not correct an
+earlier one's impression). Show progress dots on step screens when the
+flow has 3 or more screens. The `current` frame in the manifest can carry a
+`flow` too, so today's flow sits beside the new ones.
 
 ## States
 
@@ -97,5 +158,7 @@ and says what in `notes.build`.
 - [ ] `alt-plan` changes only plan-dependent parts.
 - [ ] The longest real testimonial in the fixture renders without breaking the layout.
 - [ ] The first viewport holds headline, value or proof, price and CTA.
+- [ ] Every screen has a `visual`, and `studio.sh check` passes the visual share and word budgets.
+- [ ] Each step screen does one job; no step promises what the purchase screen doesn't show.
 - [ ] The close button is visible, or the variation is flagged per playbook section 8.
 - [ ] Every rating, count and quote has a `data-src` from the proof list.

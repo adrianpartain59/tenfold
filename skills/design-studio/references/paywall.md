@@ -1,9 +1,27 @@
 # Paywall mode: how the loop changes
 
-Paywall mode designs a subscription paywall and its states. Read it with
-`paywall-craft.md` (how a frame is built), `paywall-playbook.md` (what
-converts, the rules, the rubric) and `paywall-archetypes.md` (the concepts).
-Everything in SKILL.md holds unless this file says otherwise.
+Paywall mode designs a subscription paywall: the flow of screens that leads
+to the purchase screen, and the purchase screen's states. Read it with
+`paywall-craft.md` (how a frame is built, the visual-first budgets, flows),
+`paywall-techniques.md` (the visual techniques real paywalls use, with
+examples), `paywall-playbook.md` (what converts, the rules, the rubric) and
+`paywall-archetypes.md` (the concepts). Everything in SKILL.md holds unless
+this file says otherwise.
+
+Two failures this mode exists to prevent: a paywall that reads as a wall of
+text (every screen leads with a visual and stays inside the word budget), and
+a single crammed screen where real apps use a short flow (each concept is a
+flow of 2 to 4 screens unless the brief asks for one screen).
+
+## Build on what wins
+
+When the project has a paywall that is measurably winning (a finished or
+interim experiment in `performance.md`, or one the user names), a `concepts`
+round builds on it: its mechanism stays, and the ten concepts vary how the
+flow around it is staged, which techniques carry it, and what the purchase
+screen looks like. Starting from a blank catalog when a winner exists throws
+away the one thing the data has proven. Say in context.md which paywall is
+the base and which result made it the base.
 
 ## When it's on
 
@@ -83,6 +101,15 @@ allowed as a wildcard, with its mechanism stated. Pairs differ in archetype
 plus at least one axis of the paywall table in `variations.md`. Leave out
 archetypes whose "Loses when" fits this offer, and name them in context.md.
 
+When the round builds on a winning paywall (above), the archetype axis is
+replaced by the winner's mechanism combined with a second archetype or a
+technique from `paywall-techniques.md` (a note + a trial timeline, a note +
+a laurel rating, a note on a device shot…), so ten concepts still differ.
+
+Plan each concept as its flow: list the screens and the one job of each
+(`"flow": ["step-1", "step-2", "main"]`) before anything is drawn, and name
+the technique that carries each screen's visual.
+
 ## Planning a `concept` round
 
 All ten keep the archetype's mechanism. Vary the entry's **Axes**; each pair
@@ -100,9 +127,14 @@ provides every state.
 ## Rendering
 
 The subagent brief from `variations.md`, with "Read first" changed to
-`paywall-craft.md`, playbook sections 9 and 11, the archetype's catalog
-entry, and `context.md`. Each subagent writes `vNN/<state>.html` for every
-state in `manifest.states`, for its two variations.
+`paywall-craft.md` (all of it, especially "Visual first" and "Flows"),
+`paywall-techniques.md`, playbook sections 9 and 11, the archetype's catalog
+entry, and `context.md`. Each subagent writes `vNN/step-N.html` for every
+step of the variation's flow and `vNN/<state>.html` for every state in
+`manifest.states`, for its two variations, then runs `studio.sh check` on the
+round and fixes every visual-share and word-budget failure on its own two
+before replying. The brief gives each subagent its variations' flows screen
+by screen (job + technique), not only a thesis.
 
 ## manifest.json (paywall)
 
@@ -112,6 +144,7 @@ state in `manifest.states`, for its two variations.
   "surface": "paywall", "stage": "concepts",
   "archetype": "trial-timeline",
   "states": ["main", "alt-plan", "exit"],
+  "flow": ["step-1", "step-2", "main"],
   "trial": true,
   "brief": "The job and the constraint that matters most.",
   "agentPick": "v04", "predictedPick": "v07",
@@ -122,6 +155,8 @@ state in `manifest.states`, for its two variations.
       "idea": "One-line thesis.",
       "tags": ["congruent"],
       "archetype": "trial-timeline",
+      "flow": ["step-1", "main"],
+      "screens": { "step-1": "Hook: device shot of the app's main screen", "main": "Plans under a laurel rating" },
       "notes": { "changes": "…", "keeps": "…", "build": "…", "levers": "Playbook levers this pulls" }
     }
   ]
@@ -132,14 +167,22 @@ state in `manifest.states`, for its two variations.
 `concepts` each variation names its own. In `ab`, one variation has
 `"control": true` and the rest have `"variable"`.
 
+`flow` (round level, or per variation to override it) lists the screens in
+order and ends with `main`. `screens` names each screen's job and technique;
+the gallery doesn't show it, it is for the build spec. The gallery opens on
+a **Flow** view (each variation as a row of its screens) and keeps the state
+switch for the purchase screen.
+
 ## Check, sheets, send
 
 `check` runs the paywall checks when the manifest says `"surface":
-"paywall"`: every state file exists, the required `data-pw` markers are
-present with exactly one CTA, proof matches the proof list, and an `ab`
-round has one control and a variable per variant. `sheets` writes
-`sheet-<state>-<k>.png`. Send every `sheet-main-*` and the first sheet of
-each other state with the link.
+"paywall"`: every flow screen and state file exists, every screen has a
+`visual`, the required `data-pw` markers are present with exactly one CTA,
+proof matches the proof list, an `ab` round has one control and a variable
+per variant, and (one headless Chrome pass) every screen meets the visual
+share and word budgets in `paywall-craft.md`. `sheets` writes
+`sheet-flow-<k>.png` (four flows per sheet) and `sheet-<state>-<k>.png`.
+Send every `sheet-flow-*`, then `sheet-main-*`, with the link.
 
 ## Finalise
 

@@ -61,7 +61,8 @@ archetype's own Axes from `paywall-archetypes.md` plus these.
 | Pricing module | single price · plan cards · plan list · trial toggle · comparison table |
 | Trial presentation | one line · timeline · calendar · reminder promise · no trial |
 | CTA | outcome copy · trial copy · price copy · sticky bottom · inline |
-| Density | one screen, no scroll · scroll with a sticky CTA · multi-step |
+| Flow | 2 screens (hook + plans) · 3 screens (hook + trial/proof + plans) · 4 screens · one screen only when the brief asks |
+| Visual technique | a catalog entry from `paywall-techniques.md` per screen: device shot · UI chunks · team photo · laurel badge · illustrated timeline · note object · offer ticket |
 | Tone | clinical trust · warm coach · premium editorial · playful |
 
 ### Glow-up mode axes

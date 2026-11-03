@@ -244,6 +244,8 @@ question cites the line that decided it.
 8. The first viewport holds headline, value or proof, price and CTA without scrolling.
 9. Dismissing is visible from the first frame; any delay is flagged per section 8.
 10. Nothing fails section 9: renewal terms, restore, terms and privacy are present and legible.
+11. Visual first: every screen leads with a real visual and stays inside the word budget (`paywall-craft.md`), so the user who reads only the biggest things on each screen still gets the value, the price and the button.
+12. The flow splits the persuasion: each step screen does one job (hook, how the trial works, proof, a personal note) and the purchase screen is not asked to carry all of them.
 
 ## Sources
 

@@ -132,7 +132,7 @@ check() {
   if [ "$(mode_of "$d")" = "glowup" ]; then python3 "$SKILL_DIR/scripts/glowup_check.py" "$d"; return; fi
   case "$(surface_of "$d")" in
     web) python3 "$SKILL_DIR/scripts/web_check.py" "$d"; return ;;
-    paywall) python3 "$SKILL_DIR/scripts/paywall_check.py" "$d"; return ;;
+    paywall) check_paywall "$d"; return ;;
   esac
   python3 - "$d" <<'PY'
 import json, os, sys, re
@@ -167,6 +167,23 @@ for e in errs: print("FAIL", e)
 print(f"{'FAIL' if errs else 'OK'} {len(vs)} variations")
 sys.exit(1 if errs else 0)
 PY
+}
+
+# check_paywall <round-dir>: static checks, plus the visual-share and word-budget
+# measures from one headless Chrome pass over every screen (needs the server).
+check_paywall() {
+  local d="$1" chrome rel ad
+  if chrome="$(chrome_bin)"; then
+    serve >/dev/null
+    ad="$(cd "$d" && pwd)"; rel="${ad#"$ROOT"/}"
+    python3 "$SKILL_DIR/scripts/paywall_check.py" measure-page "$d" >/dev/null
+    "$chrome" --headless=new --disable-gpu --virtual-time-budget=15000 --window-size=1200,900 \
+      --dump-dom "http://127.0.0.1:$PORT/$rel/_pwmeasure.html" > "$d/_pwmeasure.out" 2>/dev/null || true
+    rm -f "$d/_pwmeasure.html"
+    python3 "$SKILL_DIR/scripts/paywall_check.py" "$d" --measured "$d/_pwmeasure.out"; local rc=$?
+    rm -f "$d/_pwmeasure.out"; return $rc
+  fi
+  python3 "$SKILL_DIR/scripts/paywall_check.py" "$d"
 }
 
 open_round() {

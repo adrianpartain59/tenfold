@@ -63,6 +63,19 @@
   .phone iframe, .phone img { width: 393px; height: 852px; border: 0; display: block; background: #fff; pointer-events: none; }
   .phone img { object-fit: cover; object-position: top; }
   .island { position: absolute; top: calc(11px * var(--s)); left: 50%; width: calc(124px * var(--s)); height: calc(36px * var(--s)); transform: translateX(-50%); background: #000; border-radius: 999px; z-index: 2; pointer-events: none; }
+  /* flow view: one row per variation, every screen of its flow left to right */
+  main.flows { grid-template-columns: 1fr; gap: 36px; }
+  .row { display: grid; grid-template-columns: minmax(200px, 260px) 1fr; gap: 22px; align-items: start; cursor: default; }
+  .row .meta { width: auto; position: sticky; top: 64px; }
+  .strip { display: flex; gap: 14px; align-items: flex-start; overflow-x: auto; padding: 6px 4px 14px; }
+  .shot { display: grid; gap: 8px; justify-items: center; cursor: zoom-in; flex: none; }
+  .shot .cap { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink2); }
+  .shot .cap i { font-style: normal; color: var(--ink3); margin-right: 4px; }
+  .arrow { align-self: center; color: var(--ink3); font-size: 22px; flex: none; margin-top: -20px; }
+  .flowstrip { display: flex; gap: 8px; flex-wrap: wrap; }
+  .flowstrip button { border: 1px solid var(--line); background: var(--panel); color: var(--ink2); font: inherit; font-size: 12px; font-weight: 650; padding: 4px 10px; border-radius: 999px; cursor: pointer; }
+  .flowstrip button.on { background: var(--ink); color: var(--page); border-color: var(--ink); }
+  @media (max-width: 820px) { .row { grid-template-columns: 1fr; } .row .meta { position: static; } }
   /* focus */
   .focus { position: fixed; inset: 0; z-index: 20; background: color-mix(in srgb, var(--page) 94%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: none; grid-template-columns: 1fr auto minmax(260px, 380px) 1fr; gap: 36px; align-items: center; padding: 24px; }
   .focus.open { display: grid; }
@@ -99,7 +112,7 @@
   <div class="seg" id="theme"><button data-v="light" class="on">Light</button><button data-v="dark">Dark</button></div>
   <div class="seg" id="size"><button data-v="s">S</button><button data-v="m" class="on">M</button><button data-v="l">L · 1:1</button></div>
   <div class="seg" id="state"></div>
-  <span class="hint">Click a phone to focus · ← → to step · 1–9, 0 = #10 · S = next state · Esc</span>
+  <span class="hint">Click a phone to focus · ← → to step · 1–9, 0 = #10 · S = next view · Esc</span>
   <div class="legend" id="legend"></div>
 </div></div>
 <main id="grid"></main>
@@ -111,7 +124,11 @@
 <script>
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-let M, items = [], theme = "light", cur = -1, state = "main";
+let M, items = [], theme = "light", cur = -1, state = "main", screen = null;
+// A flow is the ordered screens of one paywall (step-1 … main). "flow" is a view, not a state.
+const flowOf = (item) => item.flow ?? M.flow ?? null;
+const hasFlow = () => !!(M.flow || (M.variations ?? []).some((v) => v.flow));
+const views = () => [...(hasFlow() ? ["flow"] : []), ...(M.states ?? ["main"])];
 try { theme = localStorage.getItem("ds-theme") || "light"; } catch {}
 
 function applyTheme(t) {
@@ -125,14 +142,15 @@ function setFrameTheme(f) { try { f.contentDocument.documentElement.dataset.them
 
 // What a card shows for the current state: a variation's vNN/<state>.html, or
 // the current design's per-state image/file (falling back to its main).
-function srcOf(item) {
-  const s = item.states?.[state] ?? item.states?.main;
+function srcOf(item, as) {
+  const st = as ?? (state === "flow" ? "main" : state);
+  const s = item.states?.[st] ?? (item.isCurrent ? item.states?.main : null);
   if (s) return s.image ? { img: s.image } : { file: s.file };
-  if (item.dir) return { file: `${item.dir}/${state}.html` };
+  if (item.dir) return { file: `${item.dir}/${st}.html` };
   return item.image ? { img: item.image } : { file: item.file };
 }
 function renderStates() {
-  const ss = M.states ?? ["main"];
+  const ss = views();
   $("#state").style.display = ss.length > 1 ? "" : "none";
   $("#state").innerHTML = ss.map((s) => `<button data-v="${esc(s)}" class="${s === state ? "on" : ""}">${esc(s)}</button>`).join("");
   document.querySelectorAll("#state button").forEach((b) => (b.onclick = () => setState(b.dataset.v)));
@@ -144,12 +162,12 @@ function setState(s) {
   applyTheme(theme);
 }
 
-function phone(item, big) {
+function phone(item, big, as) {
   const cls = ["phone", item.id === M.agentPick && "pick", item.id === M.predictedPick && "fav"].filter(Boolean).join(" ");
-  const s = srcOf(item);
+  const s = srcOf(item, as);
   const src = s.img
     ? `<img src="${esc(s.img)}" alt="">`
-    : `<iframe ${big ? "" : 'loading="lazy"'} src="${esc(s.file)}?theme=${theme}" title="${esc(item.name)} · ${esc(state)}" onload="setFrameTheme(this)"></iframe>`;
+    : `<iframe ${big ? "" : 'loading="lazy"'} src="${esc(s.file)}?theme=${theme}" title="${esc(item.name)} · ${esc(as ?? state)}" onload="setFrameTheme(this)"></iframe>`;
   return `<div class="${cls}"><div class="island"></div><div class="viewport">${src}</div></div>`;
 }
 function chips(item) {
@@ -176,6 +194,8 @@ function render() {
     ${M.feedback ? `<div class="feedback"><b>Your feedback this round answers</b>${esc(M.feedback)}</div>` : ""}`;
   document.title = `${M.title ?? "Design"} · R${r}`;
   $("#legend").innerHTML = `<span style="color:var(--pick)">■ Claude's pick</span><span style="color:var(--fav)">■ Your likely pick</span><span style="color:var(--wild)">■ Wildcard</span>`;
+  $("#grid").classList.toggle("flows", state === "flow");
+  if (state === "flow") return renderFlows();
   $("#grid").innerHTML = items.map((it, i) => `
     <section class="card" id="${esc(it.id)}" data-i="${i}">
       <div class="meta"><div class="top"><span class="num">${label(it, i)}</span><span class="name">${esc(it.name)}</span></div>
@@ -185,14 +205,37 @@ function render() {
   document.querySelectorAll(".card").forEach((c) => c.addEventListener("click", () => open(+c.dataset.i)));
 }
 
-function open(i) {
+// Screen names a flow shows, in order. The current design shows only the screens it has images or files for.
+function screensOf(it) {
+  const f = flowOf(it) ?? ["main"];
+  return it.isCurrent ? f.filter((s) => it.states?.[s]) : f;
+}
+function capOf(s, k, n) { return `<span class="cap"><i>${k + 1}/${n}</i>${esc(s === "main" ? "plans" : s)}</span>`; }
+function renderFlows() {
+  $("#grid").innerHTML = items.map((it, i) => {
+    const ss = screensOf(it);
+    const shots = ss.map((s, k) => `${k ? '<span class="arrow">→</span>' : ""}<div class="shot" data-i="${i}" data-s="${esc(s)}">${phone(it, false, s)}${capOf(s, k, ss.length)}</div>`).join("");
+    return `<section class="row" id="${esc(it.id)}">
+      <div class="meta"><div class="top"><span class="num">${label(it, i)}</span><span class="name">${esc(it.name)}</span></div>
+      <p class="idea">${esc(it.idea ?? "")}</p>${chips(it)}</div>
+      <div class="strip">${shots || '<span class="hint">no flow screens</span>'}</div></section>`;
+  }).join("");
+  document.querySelectorAll(".shot").forEach((c) => c.addEventListener("click", () => open(+c.dataset.i, c.dataset.s)));
+}
+
+function open(i, s) {
   cur = (i + items.length) % items.length;
   const it = items[cur], f = $("#focus");
+  const flow = state === "flow" ? screensOf(it) : null;
+  screen = flow ? (flow.includes(s) ? s : flow.includes(screen) ? screen : flow[0]) : null;
   f.querySelectorAll(".phone,.side").forEach((n) => n.remove());
+  const strip = flow ? `<div class="flowstrip">${flow.map((x, k) => `<button data-s="${esc(x)}" class="${x === screen ? "on" : ""}">${k + 1}. ${esc(x === "main" ? "plans" : x)}</button>`).join("")}</div>` : "";
   const notes = Object.entries(it.notes ?? {}).map(([k, v]) => `<div><b>${esc(k)}</b>${esc(v)}</div>`).join("");
-  f.insertAdjacentHTML("beforeend", phone(it, true) + `<div class="side"><div class="top"><span class="num">${label(it, cur)}</span></div>
-    <div class="name">${esc(it.name)}</div><p class="idea">${esc(it.idea ?? "")}</p>${chips(it)}<div class="notes">${notes}</div>
-    ${srcOf(it).file ? `<a href="${esc(srcOf(it).file)}?theme=${theme}" target="_blank" style="font-size:12px;color:var(--ink2)">Open alone ↗</a>` : ""}</div>`);
+  const src = srcOf(it, screen ?? undefined);
+  f.insertAdjacentHTML("beforeend", phone(it, true, screen ?? undefined) + `<div class="side"><div class="top"><span class="num">${label(it, cur)}</span></div>
+    <div class="name">${esc(it.name)}</div><p class="idea">${esc(it.idea ?? "")}</p>${chips(it)}${strip}<div class="notes">${notes}</div>
+    ${src.file ? `<a href="${esc(src.file)}?theme=${theme}" target="_blank" style="font-size:12px;color:var(--ink2)">Open alone ↗</a>` : ""}</div>`);
+  f.querySelectorAll(".flowstrip button").forEach((b) => (b.onclick = (e) => { e.stopPropagation(); open(cur, b.dataset.s); }));
   f.querySelector(".phone").style.setProperty("--wn", String(Math.floor(Math.min(420, ((innerHeight - 64) * 393) / 852))));
   f.classList.add("open");
   history.replaceState(null, "", "#" + it.id);
@@ -201,16 +244,23 @@ function close() { $("#focus").classList.remove("open"); cur = -1; history.repla
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") return close();
-  if (e.key === "ArrowRight" && cur >= 0) return open(cur + 1);
-  if (e.key === "ArrowLeft" && cur >= 0) return open(cur - 1);
-  if (e.key === "s" || e.key === "S") { const ss = M.states ?? ["main"]; return setState(ss[(ss.indexOf(state) + 1) % ss.length]); }
+  if ((e.key === "ArrowRight" || e.key === "ArrowLeft") && cur >= 0) return step(e.key === "ArrowRight" ? 1 : -1);
+  if (e.key === "s" || e.key === "S") { const ss = views(); return setState(ss[(ss.indexOf(state) + 1) % ss.length]); }
   if (/^[0-9]$/.test(e.key)) {
     const n = e.key === "0" ? 10 : +e.key;
     const i = items.findIndex((x) => x.n === n);
     if (i >= 0) open(i);
   }
 });
-$("#close").onclick = close; $("#prev").onclick = () => open(cur - 1); $("#next").onclick = () => open(cur + 1);
+// In the flow view the arrows walk the screens of one flow before moving to the next variation.
+function step(d) {
+  if (state !== "flow") return open(cur + d);
+  const ss = screensOf(items[cur]), k = ss.indexOf(screen) + d;
+  if (k >= 0 && k < ss.length) return open(cur, ss[k]);
+  const j = (cur + d + items.length) % items.length, nx = screensOf(items[j]);
+  open(j, d > 0 ? nx[0] : nx[nx.length - 1]);
+}
+$("#close").onclick = close; $("#prev").onclick = () => step(-1); $("#next").onclick = () => step(1);
 $("#focus").addEventListener("click", (e) => { if (e.target.id === "focus") close(); });
 document.querySelectorAll("#theme button").forEach((b) => (b.onclick = () => applyTheme(b.dataset.v)));
 document.querySelectorAll("#size button").forEach((b) => (b.onclick = () => {
@@ -220,7 +270,7 @@ document.querySelectorAll("#size button").forEach((b) => (b.onclick = () => {
 
 fetch("manifest.json", { cache: "no-store" }).then((r) => r.json()).then((m) => {
   M = m;
-  const ss = m.states ?? ["main"];
+  const ss = views();
   const q = new URLSearchParams(location.search).get("state");
   state = ss.includes(q) ? q : ss[0];
   items = (m.variations ?? []).map((v, i) => ({ n: i + 1, ...v }));

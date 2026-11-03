@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
 """Validate a design-studio paywall round before the link goes out.
 
-  paywall_check.py <round-dir>
+  paywall_check.py <round-dir>                      static checks
+  paywall_check.py <round-dir> --measured <file>    static checks + layout measures
+  paywall_check.py measure-page <round-dir>         write _pwmeasure.html (studio.sh
+                                                     dumps it through headless Chrome)
 
 Prints WARN/FAIL lines, then "OK|FAIL <n> paywall variation(s) (<stage>, <k> state(s))".
 Exits 1 on any FAIL. Checks: known stage and states; every variation has a
-file for every state; every non-step frame carries the required data-pw
-markers with exactly one cta (plus trial-terms when manifest.trial is true);
-every proof element's data-src is in the topic's context.md "## Proof" list
-and its text matches; ab rounds have one control and a variable per variant;
-no lorem ipsum; unique names.
+file for every state and every screen of its flow (manifest.flow or the
+variation's own flow, ending in main); every screen carries a data-pw="visual"
+hero; every non-step frame carries the required data-pw markers with exactly
+one cta (plus trial-terms when manifest.trial is true); every proof element's
+data-src is in the topic's context.md "## Proof" list and its text matches;
+ab rounds have one control and a variable per variant; no lorem ipsum; unique
+names. With --measured: the visual share of each screen's first viewport and
+its word count stay inside the budgets below (paywall-craft.md, "Visual first").
 """
 import json, os, re, sys
 from html.parser import HTMLParser
@@ -19,6 +25,15 @@ STATE = re.compile(r"^(main|alt-plan|exit|friend|promo|winback|step-[0-9]+)$")
 REQUIRED = ("billed-price", "renewal", "restore", "terms", "privacy", "cta")
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}
 PROOF_LINE = re.compile(r"^\s*[-*]\s*(P\d+)\s*:\s*(.+)$")
+
+# Visual-first budgets, per screen, measured in the first 393x852 viewport.
+# visual = share of the viewport covered by data-pw="visual" elements.
+# words  = visible words outside the purchase machinery (plan cards, price,
+#          trial terms, CTA, legal) and outside a data-pw="note" letter.
+VISUAL_MIN = {"step": 0.40, "purchase": 0.25}
+WORDS_MAX = {"step": 30, "purchase": 40}
+NOTE_WORDS_MAX = 60
+EXEMPT = ("renewal", "terms", "privacy", "restore", "trial-terms", "legal", "plan", "cta", "billed-price")
 
 
 class Frame(HTMLParser):
@@ -78,7 +93,93 @@ def norm(s):
     return re.sub(r"[^0-9a-z]+", "", s.lower())
 
 
-def main(d):
+def screens(d, m):
+    """[(variation, rel path)] for every screen of every flow and state."""
+    out = []
+    for v in m.get("variations", []):
+        if not v.get("dir"):
+            continue
+        flow = v.get("flow") or m.get("flow") or []
+        for s in dict.fromkeys(flow + (m.get("states") or ["main"])):
+            out.append(f"{v['dir']}/{s}.html")
+    return out
+
+
+MEASURE_JS = r"""
+const W = 393, H = 852, EX = %s.map((k) => `[data-pw~="${k}"]`).join(",");
+const out = {};
+function measure(doc) {
+  const vis = [...doc.querySelectorAll('[data-pw~="visual"]')].map((e) => e.getBoundingClientRect());
+  let hit = 0, tot = 0;
+  for (let y = 0; y < H; y += 6) for (let x = 0; x < W; x += 6) {
+    tot++; if (vis.some((r) => x >= r.left && x < r.right && y >= r.top && y < r.bottom)) hit++;
+  }
+  let words = 0, note = 0;
+  const w = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+  for (let n = w.nextNode(); n; n = w.nextNode()) {
+    const el = n.parentElement;
+    if (!el || el.closest("script,style,.status-bar,[aria-hidden=true]") || el.closest(EX)) continue;
+    const cs = doc.defaultView.getComputedStyle(el);
+    if (cs.visibility === "hidden" || cs.display === "none" || +cs.opacity === 0) continue;
+    const r = el.getBoundingClientRect();
+    if (!r.width || !r.height || r.top >= H || r.bottom <= 0) continue;
+    const k = (n.textContent.match(/[\p{L}\p{N}][\p{L}\p{N}'’.,%%$-]*/gu) || []).length;
+    if (el.closest('[data-pw~="note"]')) note += k; else words += k;
+  }
+  return { visual: Math.round((hit / tot) * 100) / 100, words, note };
+}
+const files = %s;
+let left = files.length;
+for (const f of files) {
+  const fr = document.createElement("iframe");
+  fr.style.cssText = `width:${W}px;height:${H}px;border:0`;
+  fr.onload = () => { setTimeout(() => { try { out[f] = measure(fr.contentDocument); } catch (e) { out[f] = { error: String(e) }; }
+    if (--left === 0) document.getElementById("out").textContent = JSON.stringify(out); }, 400); };
+  fr.src = f + "?theme=light";
+  document.body.appendChild(fr);
+}
+"""
+
+
+def measure_page(d):
+    m = json.load(open(os.path.join(d, "manifest.json")))
+    files = screens(d, m)
+    js = MEASURE_JS % (json.dumps(list(EXEMPT)), json.dumps(files))
+    with open(os.path.join(d, "_pwmeasure.html"), "w", encoding="utf-8") as f:
+        f.write(f'<!doctype html><meta charset="utf-8"><pre id="out"></pre><script>{js}</script>')
+    print("_pwmeasure.html")
+    return 0
+
+
+def load_measured(path, errs):
+    """The JSON the measure page wrote into <pre id="out">, from Chrome's --dump-dom output."""
+    try:
+        raw = open(path, encoding="utf-8").read()
+        mt = re.search(r'<pre id="out">(.*?)</pre>', raw, re.S)
+        import html as _h
+        return json.loads(_h.unescape(mt.group(1))) if mt and mt.group(1).strip() else {}
+    except Exception as e:
+        errs.append(f"could not read layout measures: {e}")
+        return {}
+
+
+def check_measures(where, s, r, errs):
+    if not r:
+        errs.append(f"{where}: not measured (frame failed to load in Chrome)")
+        return
+    if r.get("error"):
+        errs.append(f"{where}: measure error {r['error']}")
+        return
+    kind = "step" if s.startswith("step-") else "purchase"
+    if r["visual"] < VISUAL_MIN[kind]:
+        errs.append(f"{where}: visual covers {r['visual']:.0%} of the first viewport (needs {VISUAL_MIN[kind]:.0%})")
+    if r["words"] > WORDS_MAX[kind]:
+        errs.append(f"{where}: {r['words']} words outside the price, plans and legal (budget {WORDS_MAX[kind]})")
+    if r["note"] > NOTE_WORDS_MAX:
+        errs.append(f"{where}: the note runs {r['note']} words (budget {NOTE_WORDS_MAX})")
+
+
+def main(d, measured_path=None):
     errs, warns = [], []
     try:
         m = json.load(open(os.path.join(d, "manifest.json")))
@@ -107,13 +208,21 @@ def main(d):
                 errs.append(f"{v.get('id', '?')}: ab variant has no variable")
 
     proofs = proof_list(os.path.dirname(os.path.abspath(d)))
+    measured = load_measured(measured_path, errs) if measured_path else None
     names = set()
     for v in vs:
         vid, vdir = v.get("id", "?"), v.get("dir")
         if not vdir:
             errs.append(f"{vid}: no dir")
             continue
-        for s in states:
+        flow = v.get("flow") or m.get("flow") or []
+        if flow:
+            if flow[-1] != "main":
+                errs.append(f"{vid}: flow must end with main (the purchase screen), ends with {flow[-1]}")
+            for s in flow:
+                if not STATE.match(s):
+                    errs.append(f"{vid}: unknown flow screen {s}")
+        for s in list(dict.fromkeys(flow + states)):
             rel = f"{vdir}/{s}.html"
             path = os.path.join(d, rel)
             if not os.path.isfile(path):
@@ -129,6 +238,10 @@ def main(d):
                 warns.append(f"{where}: does not link tokens.css")
             if not any(c.endswith("paywall.css") for c in fr.css):
                 warns.append(f"{where}: does not link paywall.css")
+            if "visual" not in fr.pw:
+                errs.append(f"{where}: no data-pw visual (every screen needs a hero visual)")
+            if measured is not None:
+                check_measures(where, s, measured.get(rel), errs)
             if not s.startswith("step-"):
                 for k in required:
                     if k not in fr.pw:
@@ -161,6 +274,8 @@ def main(d):
                 warns.append(f"manifest has no {k}")
     if not os.path.exists(os.path.join(d, "..", "tokens.css")):
         warns.append("no ../tokens.css for this topic")
+    if measured is None:
+        warns.append("layout not measured (visual share, word budget): run through studio.sh check")
     for w in warns:
         print("WARN", w)
     for e in errs:
@@ -172,7 +287,12 @@ def main(d):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    a = sys.argv[1:]
+    if len(a) == 2 and a[0] == "measure-page":
+        sys.exit(measure_page(a[1].rstrip("/")))
+    if len(a) == 3 and a[1] == "--measured":
+        sys.exit(main(a[0].rstrip("/"), a[2]))
+    if len(a) != 1:
         print(__doc__)
         sys.exit(2)
-    sys.exit(main(sys.argv[1].rstrip("/")))
+    sys.exit(main(a[0].rstrip("/")))

@@ -131,21 +131,26 @@ mockup-craft.md and the phone-only parts of principles.md. In short:
 On when the adapter says `surface: paywall` or the brief names a paywall,
 subscription screen, upgrade screen, offer screen or exit offer. Read
 `references/paywall.md` before step 1, and `references/paywall-craft.md`,
-`references/paywall-playbook.md` and `references/paywall-archetypes.md` as
-it directs. In short:
+`references/paywall-techniques.md`, `references/paywall-playbook.md` and
+`references/paywall-archetypes.md` as it directs. In short:
 
 - `studio.sh new <project> <topic> --paywall`: the round gets the paywall
-  gallery (a state switch across every card) and `paywall.css`.
-- A variation is a folder `vNN/` with one file per state in
-  `manifest.states` (`main`, `alt-plan`, `exit`, `friend`…).
+  gallery (a Flow view plus a state switch) and `paywall.css`.
+- A variation is a **flow**: a folder `vNN/` with `step-N.html` screens in
+  `manifest.flow` order, ending on the purchase screen, plus one file per
+  state in `manifest.states` (`main`, `alt-plan`, `exit`, `friend`…).
+- **Visual first:** every screen leads with a real visual and stays inside a
+  word budget; `check` measures both in headless Chrome and fails a wall of text.
+- When a paywall is measurably winning, concepts build on its mechanism
+  instead of starting from a blank catalog.
 - Stages: `concepts` (ten archetypes), `concept` (one archetype ten ways),
   `converge`, and `ab` (a control plus one-variable variants for an
   experiment). A bare pick still means build; `Explore #N` and
   `A/B set from #N` are explicit options.
 - The playbook's rubric decides `agentPick`; the adapter's `paywall-data`
   puts live numbers in `performance.md` so the pick can cite them.
-- `check` enforces the legal markers, states and real proof; `sheets` writes
-  one set per state.
+- `check` enforces the legal markers, flows, states, real proof, visual
+  share and word budgets; `sheets` writes flow sheets and one set per state.
 
 ## Glow-up mode (a vibe-coded app into a designed one)
 
@@ -229,6 +234,8 @@ the same command with the sandbox disabled; it only serves mockups.
 | Ten web directions on one type system | Each direction owns its `vNN/tokens.css`; type + grid are axes, not skins |
 | System-stage pages drifting from the pick | Pages build on the direction's `tokens.css`/`site.css`/`chrome.js` and never edit them |
 | Ten paywalls that are one archetype re-skinned | A `concepts` round takes ten archetypes from the catalog |
+| Paywalls that are walls of text | Visual first: a real visual on every screen, 3–7 word headlines, icon rows not sentences; `check` measures it |
+| One screen carrying the timeline, reviews and features at once | Split it into a flow: one job per step screen, plans last |
 | An A/B variant that changes two things | One variable per variant, named in `variable`; everything else stays the control's |
 | Testimonials or ratings written for the mockup | Proof comes only from context.md's list; `check` fails any marked proof not in it, so mark every rating, count and quote |
 | Judging a paywall with only the default plan selected | Every state in `manifest.states`; flip the gallery's state switch |
