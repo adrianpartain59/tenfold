@@ -10,7 +10,7 @@
       "name": "tenfold",
       "source": "./",
       "description": "Design rounds for Claude Code: sweeps your app or site for context, renders 10 distinct variations (phone mockups, full scrollable web pages, paywalls in every offer state, or whole-app themes for vibe-coded apps) on localhost, predicts your pick, and iterates on it until you say build.",
-      "version": "1.3.0"
+      "version": "1.4.0"
     }
   ]
 }
