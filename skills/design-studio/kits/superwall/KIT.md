@@ -123,3 +123,12 @@ blur, line-clamp, `flex-grow` (the editor's stacks ignore it: size with px,
   a seal is an image placed with absolute position and rotate.
 - **Review carousel:** `carousel` (auto) or `slides` (swipe) of review stacks.
 - **Sticky CTA:** a stack with position sticky/fixed at the bottom.
+
+## Building it (editor MCP)
+
+- Delete existing nodes with `delete_nodes`, never with `write_html` mode
+  "replace": replaced children disappear from the editor but Save merges them
+  back from the server copy, so they ship. Verify each save by fetching the
+  paywall's `paywall_url` and searching it for the removed copy.
+- Rotation, absolute position and z-index from `write_html` import as native
+  properties; Liquid text imports with liquid rendering.
