@@ -143,6 +143,9 @@ subscription screen, upgrade screen, offer screen or exit offer. Read
   word budget; `check` measures both in headless Chrome and fails a wall of text.
 - When a paywall is measurably winning, concepts build on its mechanism
   instead of starting from a blank catalog.
+- **Buildable only:** with a kit (`"kit": "superwall"`, `kits/superwall/KIT.md`)
+  every element is a node the paywall tool has, prices and dates are Liquid,
+  and purchase controls carry their tap action; `check` fails anything else.
 - Stages: `concepts` (ten archetypes), `concept` (one archetype ten ways),
   `converge`, and `ab` (a control plus one-variable variants for an
   experiment). A bare pick still means build; `Explore #N` and
@@ -236,6 +239,7 @@ the same command with the sandbox disabled; it only serves mockups.
 | Ten paywalls that are one archetype re-skinned | A `concepts` round takes ten archetypes from the catalog |
 | Paywalls that are walls of text | Visual first: a real visual on every screen, 3–7 word headlines, icon rows not sentences; `check` measures it |
 | One screen carrying the timeline, reviews and features at once | Split it into a flow: one job per step screen, plans last |
+| A paywall that renders in HTML but can't be built in the tool | Draw from the kit only: `data-sw` node types, Liquid prices, tap actions, illustrations as one asset each |
 | An A/B variant that changes two things | One variable per variant, named in `variable`; everything else stays the control's |
 | Testimonials or ratings written for the mockup | Proof comes only from context.md's list; `check` fails any marked proof not in it, so mark every rating, count and quote |
 | Judging a paywall with only the default plan selected | Every state in `manifest.states`; flip the gallery's state switch |

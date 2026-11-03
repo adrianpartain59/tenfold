@@ -1,0 +1,31 @@
+{
+  "name": "superwall",
+  "about": "Superwall paywall editor (web-view renderer, authored through property panels, per-element Custom CSS and write_html). See KIT.md.",
+  "nodes": ["stack", "text", "image", "video", "icon", "svg", "lottie", "drawer", "navigation", "page", "carousel", "slides", "autoscroll", "multiple-choice", "indicator", "input", "picker", "slider"],
+  "leaves": ["text", "image", "video", "icon", "svg", "lottie", "input", "picker"],
+  "inline_in_text": ["br"],
+  "chrome": [".status-bar", ".home-indicator", ".island"],
+  "css": [
+    {"prop": "display", "bad": "^(inline-)?grid$", "why": "no grid layout; stacks are flexbox"},
+    {"prop": "animation-name", "bad": "^(?!none$).+", "why": "no @keyframes; motion is Lottie, GIF or video"},
+    {"prop": "clip-path", "bad": "^(?!none$).+", "why": "clip-path is undocumented; use radius + overflow or an image"},
+    {"prop": "mask-image", "bad": "^(?!none$).+", "why": "masks are undocumented; use radius + overflow or an image"},
+    {"prop": "-webkit-mask-image", "bad": "^(?!none$).+", "why": "masks are undocumented; use radius + overflow or an image"},
+    {"prop": "background-image", "bad": "url\\(", "why": "pictures are image nodes (in a layered stack), not CSS backgrounds"},
+    {"prop": "-webkit-background-clip", "bad": "^text$", "why": "gradient text is undocumented"},
+    {"prop": "mix-blend-mode", "bad": "^(?!normal$).+", "why": "blend modes are undocumented"},
+    {"prop": "filter", "bad": "^(?!none$)(?!blur\\()", "why": "Effects has blur only"},
+    {"prop": "-webkit-line-clamp", "bad": "^(?!none$).+", "why": "line clamping is undocumented; size the copy to fit"},
+    {"prop": "flex-grow", "bad": "^[1-9]", "why": "the editor's stacks ignore flex-grow; use fixed or % sizes and stack distribution"}
+  ],
+  "literal": [
+    {"pattern": "[$€£]\\s?\\d", "why": "a price typed as text; bind it to a product variable", "attr": "data-liquid"},
+    {"pattern": "\\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\\.? \\d{1,2}\\b", "why": "a date typed as text; compute it with Liquid (trialPeriodEndDate, date_add)", "attr": "data-liquid"}
+  ],
+  "actions": {
+    "cta": "purchase",
+    "plan": "select-product",
+    "step-continue": "navigate-page",
+    "restore": "restore"
+  }
+}

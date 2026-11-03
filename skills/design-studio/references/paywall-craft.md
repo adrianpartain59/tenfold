@@ -133,7 +133,7 @@ Every variation uses the same fixture prices and proof.
 | `.pw-check` | Feature checklist |
 | `.pw-plans`, `.pw-plan`, `.pw-plan.is-on`, `.pw-badge` | Plan cards and selection |
 | `.pw-price`, `.pw-per` | Billed price and its breakdown |
-| `.pw-trial`, `.pw-timeline` | Trial line and trial timeline |
+| `.pw-trial`, `.pw-timeline` | Trial line and trial timeline (`li` holds a `.dot` and a `.line` node; no pseudo-elements) |
 | `.pw-cta`, `.pw-secondary` | Primary and secondary actions |
 | `.pw-fine`, `.pw-legal` | Renewal text and Restore · Terms · Privacy |
 | `.pw-table` | Free vs Pro comparison |
@@ -143,6 +143,28 @@ paywall.css never paints the page ground; set it in the variation or the
 project's paywall CSS. When the project has its own paywall stylesheet, link
 it after paywall.css so its classes win where names overlap (`.pw`,
 `.pw-plan`, `.pw-badge`).
+
+## Build target (kits)
+
+Designs that render in a browser but can't be rebuilt in the paywall tool
+are wasted rounds. When the adapter's `buildable` names a kit (or the
+manifest has `"kit": "<name>"`), every frame is drawn only from that kit,
+`kits/<name>/KIT.md` is required reading before rendering, and `check`
+enforces `kits/<name>/kit.json` in its Chrome pass:
+
+- every drawn element carries `data-sw="<node type>"` from the kit (frame
+  chrome such as the status bar is exempt), and nothing sits inside a leaf;
+- no computed style the kit can't author (grid, keyframe animation,
+  pseudo-element content, CSS background images, masks, …);
+- prices and dates are bound, not typed: a text node showing one carries
+  `data-liquid="{{ … }}"` with the expression the build will use;
+- every purchase control carries the kit's `data-action` (purchase,
+  select-product, navigate-page, restore).
+
+Illustrations (an envelope, laurels, a seal, a device frame) are one image
+or svg node each, listed in `notes.build` as assets to export; never CSS
+shapes and pseudo-elements. Tenfold ships `kits/superwall/`. A project on
+another tool adds its own kit with the same two files.
 
 ## Buildability
 

@@ -37,7 +37,7 @@ The project's `.design-studio/adapter.md` names these for paywall mode:
 - `paywall-data`: a command run with `--out <TOPIC_DIR>` that writes `performance.md`.
 - `proof`: where real ratings, counts and quotes come from.
 - `offer`: products, prices, trial, and which states exist.
-- `buildable`: the components the build target supports.
+- `buildable`: the components the build target supports, ideally as a kit name (`kit superwall`), which turns on the build-target checks in `paywall-craft.md`.
 - `build`: where an approved design is built, and who publishes it.
 
 **performance.md contract.** Per live paywall: date range, impressions
@@ -128,7 +128,7 @@ provides every state.
 
 The subagent brief from `variations.md`, with "Read first" changed to
 `paywall-craft.md` (all of it, especially "Visual first" and "Flows"),
-`paywall-techniques.md`, playbook sections 9 and 11, the archetype's catalog
+`paywall-techniques.md`, the kit's `KIT.md` when the round has a kit, playbook sections 9 and 11, the archetype's catalog
 entry, and `context.md`. Each subagent writes `vNN/step-N.html` for every
 step of the variation's flow and `vNN/<state>.html` for every state in
 `manifest.states`, for its two variations, then runs `studio.sh check` on the
@@ -145,6 +145,7 @@ by screen (job + technique), not only a thesis.
   "archetype": "trial-timeline",
   "states": ["main", "alt-plan", "exit"],
   "flow": ["step-1", "step-2", "main"],
+  "kit": "superwall",
   "trial": true,
   "brief": "The job and the constraint that matters most.",
   "agentPick": "v04", "predictedPick": "v07",

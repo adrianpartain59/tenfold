@@ -42,6 +42,7 @@ class Frame(HTMLParser):
     def __init__(self):
         super().__init__()
         self.pw, self.css, self.proofs = [], [], []  # proofs: [data-src, text]
+        self.acts = []  # [(data-pw tokens, data-action)] for every element carrying either
         self._open = []  # [depth, index into proofs] for proof elements still open
 
     def handle_starttag(self, tag, attrs):
@@ -50,6 +51,8 @@ class Frame(HTMLParser):
             self.css.append(a["href"])
         toks = (a.get("data-pw") or "").split()
         self.pw += toks
+        if toks or a.get("data-action"):
+            self.acts.append((toks, a.get("data-action") or ""))
         if tag in VOID:
             if "proof" in toks:
                 text = a.get("alt") or a.get("aria-label") or ""
@@ -106,7 +109,46 @@ def screens(d, m):
 
 
 MEASURE_JS = r"""
-const W = 393, H = 852, EX = %s.map((k) => `[data-pw~="${k}"]`).join(",");
+const W = 393, H = 852, EX = %s.map((k) => `[data-pw~="${k}"]`).join(","), KIT = %s;
+// Build-target audit (manifest.kit): every drawn element is a node type the
+// target can build, and no computed style uses something it can't render.
+function audit(doc) {
+  const out = [], leaf = KIT.leaves.map((t) => `[data-sw="${t}"]`).join(",");
+  const chrome = (KIT.chrome || []).join(",");
+  const say = (el, msg) => {
+    const id = el.tagName.toLowerCase() + (el.className && typeof el.className === "string" ? "." + el.className.trim().split(/\s+/)[0] : "");
+    out.push(`${id}: ${msg}`);
+  };
+  for (const el of doc.body.querySelectorAll("*")) {
+    if (el.closest("script,style") || (chrome && el.closest(chrome))) continue;
+    const up = el.parentElement && el.parentElement.closest(leaf);
+    if (up && up.getAttribute("data-sw") !== "text") continue;  // insides of an image/svg/lottie leaf
+    const r = el.getBoundingClientRect();
+    if (!r.width && !r.height) continue;
+    const sw = el.getAttribute("data-sw"), cs = doc.defaultView.getComputedStyle(el);
+    if (up) {
+      if (!(KIT.inline_in_text || []).includes(el.tagName.toLowerCase())) say(el, "only inline spans may sit inside a text node");
+    } else if (!sw) say(el, "no data-sw node type (wrap it in a buildable node)");
+    else if (!KIT.nodes.includes(sw)) say(el, `"${sw}" is not a node type this target has`);
+    for (const rule of KIT.css || []) {
+      const v = cs.getPropertyValue(rule.prop);
+      if (v && new RegExp(rule.bad).test(v) && !(rule.ok && new RegExp(rule.ok).test(v))) say(el, `${rule.prop}: ${v.slice(0, 40)} (${rule.why})`);
+    }
+    for (const ps of ["::before", "::after"]) {
+      const c = doc.defaultView.getComputedStyle(el, ps).content;
+      if (c && c !== "none" && c !== "normal") say(el, `${ps} draws content (pseudo-elements don't exist in the editor; make it a node)`);
+    }
+    if (sw === "text") for (const lit of KIT.literal || []) {
+      if (new RegExp(lit.pattern).test(el.textContent) && !el.hasAttribute(lit.attr)) say(el, `"${el.textContent.trim().slice(0, 30)}": ${lit.why} (${lit.attr})`);
+    }
+    if (KIT.fonts && (sw === "text" || up) && el.textContent.trim()) {
+      const fam = cs.fontFamily.split(",")[0].replace(/["']/g, "").trim();
+      if (!KIT.fonts.some((f) => f.toLowerCase() === fam.toLowerCase())) say(el, `font "${fam}" is not available on the target`);
+    }
+  }
+  // Unmarked nodes are the commonest and least specific failure: list the rest first.
+  return [...new Set(out)].sort((a, b) => a.includes("no data-sw") - b.includes("no data-sw"));
+}
 const out = {};
 function measure(doc) {
   const vis = [...doc.querySelectorAll('[data-pw~="visual"]')].map((e) => e.getBoundingClientRect());
@@ -126,7 +168,7 @@ function measure(doc) {
     const k = (n.textContent.match(/[\p{L}\p{N}][\p{L}\p{N}'’.,%%$-]*/gu) || []).length;
     if (el.closest('[data-pw~="note"]')) note += k; else words += k;
   }
-  return { visual: Math.round((hit / tot) * 100) / 100, words, note };
+  return { visual: Math.round((hit / tot) * 100) / 100, words, note, kit: KIT ? audit(doc) : null };
 }
 const files = %s;
 let left = files.length;
@@ -141,10 +183,20 @@ for (const f of files) {
 """
 
 
+def load_kit(m):
+    """The build-target kit named by manifest.kit (kits/<name>/kit.json in the skill), or None."""
+    name = m.get("kit")
+    if not name:
+        return None
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "kits", name, "kit.json")
+    return json.load(open(p)) if os.path.isfile(p) else {"missing": name}
+
+
 def measure_page(d, name="_pwmeasure.html"):
     m = json.load(open(os.path.join(d, "manifest.json")))
     files = screens(d, m)
-    js = MEASURE_JS % (json.dumps(list(EXEMPT)), json.dumps(files))
+    kit = load_kit(m)
+    js = MEASURE_JS % (json.dumps(list(EXEMPT)), json.dumps(kit if kit and "missing" not in kit else None), json.dumps(files))
     with open(os.path.join(d, name), "w", encoding="utf-8") as f:
         f.write(f'<!doctype html><meta charset="utf-8"><pre id="out"></pre><script>{js}</script>')
     print(name)
@@ -163,6 +215,20 @@ def load_measured(path, errs):
         return {}
 
 
+def check_actions(where, s, fr, acts, errs):
+    """Every purchase control carries the tap action the build target wires it with (data-action)."""
+    for marker, act in (("cta", acts.get("cta")), ("plan", acts.get("plan")), ("restore", acts.get("restore"))):
+        if not act:
+            continue
+        for toks, a in fr.acts:
+            if marker in toks and a != act:
+                errs.append(f"{where}: data-pw {marker} needs data-action=\"{act}\" (has \"{a or 'none'}\")")
+                break
+    step = acts.get("step-continue")
+    if step and s.startswith("step-") and not any(a == step for _, a in fr.acts):
+        errs.append(f"{where}: no control with data-action=\"{step}\" (the step's Continue)")
+
+
 def check_measures(where, s, r, errs):
     if not r:
         errs.append(f"{where}: not measured (frame failed to load in Chrome)")
@@ -177,6 +243,11 @@ def check_measures(where, s, r, errs):
         errs.append(f"{where}: {r['words']} words outside the price, plans and legal (budget {WORDS_MAX[kind]})")
     if r["note"] > NOTE_WORDS_MAX:
         errs.append(f"{where}: the note runs {r['note']} words (budget {NOTE_WORDS_MAX})")
+    kv = r.get("kit") or []
+    for v in kv[:8]:
+        errs.append(f"{where}: not buildable: {v}")
+    if len(kv) > 8:
+        errs.append(f"{where}: not buildable: {len(kv) - 8} more")
 
 
 def main(d, measured_path=None):
@@ -209,6 +280,7 @@ def main(d, measured_path=None):
 
     proofs = proof_list(os.path.dirname(os.path.abspath(d)))
     measured = load_measured(measured_path, errs) if measured_path else None
+    kit = load_kit(m)
     names = set()
     for v in vs:
         vid, vdir = v.get("id", "?"), v.get("dir")
@@ -238,6 +310,8 @@ def main(d, measured_path=None):
                 warns.append(f"{where}: does not link tokens.css")
             if not any(c.endswith("paywall.css") for c in fr.css):
                 warns.append(f"{where}: does not link paywall.css")
+            if kit and "missing" not in kit:
+                check_actions(where, s, fr, kit.get("actions") or {}, errs)
             if "visual" not in fr.pw:
                 errs.append(f"{where}: no data-pw visual (every screen needs a hero visual)")
             if measured is not None:
@@ -276,6 +350,10 @@ def main(d, measured_path=None):
         warns.append("no ../tokens.css for this topic")
     if measured is None:
         warns.append("layout not measured (visual share, word budget): run through studio.sh check")
+    if kit is None:
+        warns.append("manifest has no kit: buildability is not checked (paywall.md, 'Build target')")
+    elif "missing" in kit:
+        errs.append(f"kit {kit['missing']} not found in the skill's kits/")
     for w in warns:
         print("WARN", w)
     for e in errs:
