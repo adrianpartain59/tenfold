@@ -108,6 +108,12 @@ written by five subagents still share one visual system.
   renders nothing. Never emoji as icons.
 - **Real images.** The topic's `img/` links to the app's image assets (mascot
   poses, food renders, illustrations). Use them instead of drawing placeholders.
+- **New assets when the design needs them.** If a variation wants a picture or
+  shape the app doesn't have (object pictures on action tiles, a custom gauge
+  silhouette), make it: generate pictures with an image model, draw shapes as
+  SVG paths. Permitted, never required; note in the variation that the asset is
+  new and how it was made, so the build can reuse it. `subtraction.md` §4 has
+  the recipe.
 - **The shared fixture.** Every variation shows the same data from context.md.
   Include the long-string case somewhere visible.
 - **Real copy** in the app's voice; the actual labels from the locale file when

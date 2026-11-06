@@ -11,6 +11,7 @@ Differences in colour, corner radius, or font alone don't count.
 
 | Axis | Positions (examples) |
 |---|---|
+| Subtraction (what leaves the screen) | the triage as written · cut one more group · relocate the secondary list · turn residue into a toast · merge two elements into one |
 | Hero (what answers the job) | one big number · a ring/gauge · a chart · the mascot's line · a next-action card · a timeline "now" marker |
 | Structure | single scroll of sections · bento/grid · one dominant card + list · timeline · segmented tabs · horizontal pager · checklist |
 | Density | glanceable (3–4 facts) · balanced · dense/pro (everything visible) |
@@ -19,6 +20,12 @@ Differences in colour, corner radius, or font alone don't count.
 | Grouping | by time (morning→night) · by type (dose / food / body) · by priority (needs action first) · by goal |
 | Tone | utilitarian · editorial (big type, whitespace) · mascot-led/playful · coach (instructional) |
 | Disclosure | all on one screen · summary + "see all" doors · progressive (expand in place) |
+
+Every variation starts from the triage in context.md (`subtraction.md`):
+it holds the Core, and only the Core, unless its thesis is to restore one
+item. Spread the ten on how they present and act on the Core, not on how
+they decorate it: at most one variation may be about ornament (a more
+realistic object, glare, texture), and it's labelled a wildcard.
 
 Write the plan as ten one-line theses first, e.g.
 "3 · Checklist: the day as tasks, each row completes in place; numbers secondary."
@@ -188,9 +195,12 @@ default split. Each subagent gets a self-contained brief:
 
 ```text
 Render two variations for the design round in <ROUND_DIR>.
-Read first: <TOPIC_DIR>/context.md (job, content contract, neighbours, rules,
-fixture), <SKILL_DIR>/references/mockup-craft.md (file template and rules),
-<SKILL_DIR>/references/principles.md (run the pre-send checklist on your two).
+Read first: <TOPIC_DIR>/context.md (job, triage, content contract,
+neighbours, rules, fixture), <SKILL_DIR>/references/subtraction.md (hold the
+Core only; one starting point, one path), <SKILL_DIR>/references/mockup-craft.md
+(file template and rules), <SKILL_DIR>/references/principles.md (run the
+pre-send checklist on your two, §11 first). In your notes, write the reading
+path as 1 → 2 → 3 and list any asset you generated or drew.
 Tokens: ../tokens.css. Base: screen.css. Icons: ../icons.svg (ids in ../icons.txt).
 Images: ../img/.
 

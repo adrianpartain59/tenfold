@@ -37,8 +37,10 @@ of the chosen one with the user's feedback. Repeat until they say build.
    - **Images:** link the app's image assets as `TOPIC_DIR/img`
      (`ln -sfn "$PWD/<assets dir>" <TOPIC_DIR>/img`) when it has any.
 
-2. **Context sweep (never skip).** Follow `references/context-sweep.md`: the
-   target's content contract, then the flow around it, sibling screens, every
+2. **Context sweep and triage (never skip).** Follow
+   `references/context-sweep.md`: the target's inventory, triaged with
+   `references/subtraction.md` into Core, Relocate, Transient, Merge and Cut,
+   then the flow around it, sibling screens, every
    tab root, shared components, past rounds, and the rules in force. Decide the
    mode (congruent / explore / mixed) from the user's words. Write
    `TOPIC_DIR/context.md` with the shared data fixture. In round 2+ reuse it and
@@ -224,6 +226,9 @@ the same command with the sandbox disabled; it only serves mockups.
 
 | Mistake | Fix |
 |---|---|
+| Ten frames that keep every element and decorate the hero | Triage first (`subtraction.md`); vary how the Core is shown, not the ornament |
+| A hero that's a sentence or a small icon | One visual, about a third of the first viewport; the reading path written 1 → 2 → 3 |
+| Falling back to an emoji or plain text where a picture is wanted | Generate the picture or draw the SVG (`subtraction.md` §4) |
 | Designing from the target file alone | The sweep's neighbour table is required input for step 3 |
 | 4–6 "variations" that are one idea re-skinned | Plan theses on axes first; replace near-twins before rendering |
 | Ending with a prose question or a list of letters | AskUserQuestion with both picks, every round |

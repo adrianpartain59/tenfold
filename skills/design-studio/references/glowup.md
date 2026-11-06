@@ -99,7 +99,10 @@ weakest empty or onboarding state. They are `s1` to `s4` for the whole
 topic.
 
 Write `TOPIC_DIR/context.md` with the key screens and their templates, the
-content contract for each (every datum, action and state it must hold, in
+inventory of each, triaged per `subtraction.md` (Core, Relocate with the
+destination route, Transient, Merge, Cut; vibe-coded screens usually carry
+every feature on the main screen, so expect real Relocates), the content
+contract for each (the Core: every datum, action and state it must hold, in
 no particular order), a "Category sections to consider" list taken from
 `category.md` table stakes (proof slot, FAQ, pricing link, an adult door,
 footer: each direction keeps or drops each one on purpose), the fixture
@@ -124,7 +127,7 @@ Each direction is a folder `vNN/` with `theme.json`, `tokens.css` and
 `s1.html` to `s4.html`. Render them with five subagents × two directions,
 using the brief in `variations.md` with this "Read first":
 `glowup-craft.md`, `mockup-craft.md` (app) or `web-craft.md` (web),
-`principles.md`, `context.md` and `category.md`. Give the subagents the content contract as a list of what each screen must
+`principles.md`, `subtraction.md`, `context.md` and `category.md`. Give the subagents the content contract as a list of what each screen must
 hold, not an order to stack it in, plus the category's standard sections to
 consider. Each subagent:
 

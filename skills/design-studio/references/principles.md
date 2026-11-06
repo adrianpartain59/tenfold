@@ -133,6 +133,39 @@ break the app's *conventions* in explore mode; it may not break these.
 - Fake precision or filler stats nobody asked for.
 - Tiny grey text carrying important information.
 - A variation that differs from another only by colour or corner radius.
+- Every element of the old screen kept and rearranged: nothing triaged.
+- Headings over single groups, cards around single rows, captions under
+  self-explanatory visuals.
+- The hero decorated (glare, realism, texture) while the clutter around it stays.
+- A history list or stats block on a screen whose job is to act.
+
+## 11. Focus and flow (the clutter rubric)
+
+Most rejected rounds fail here, not on craft. Judge every variation on these
+before anything else. `subtraction.md` is how to get there.
+
+- **Triage first.** Every element is Core, or it was relocated, made
+  transient, merged or cut (`subtraction.md`). A variation that keeps every
+  element of the current screen and only rearranges it has not been designed.
+- **One starting point.** The eye lands on one thing first: the hero, the
+  biggest element, a visual rather than a sentence. On a single-job screen it
+  takes about a third of the first viewport or more.
+- **One path.** Write the reading order as 1 → 2 → 3 (usually status, then the
+  hero visual, then the actions in the thumb zone). Every element sits on that
+  path; anything off it is a candidate for cutting.
+- **Few groups.** A daily-tool screen has about three visible groups (status,
+  hero, actions) and fits without scrolling on the smallest supported phone.
+  More groups means triage again, not smaller type.
+- **Visual over text.** No label that the visual already says. No heading over a
+  single group. No container around a single item. Count the words outside the
+  data: on a single-job screen, fewer than about 15.
+- **Consistent parts.** Same job, same component, across the screen and the
+  app. Two looks for one job is a defect, even if both are nice.
+- **Feedback, not residue.** What only matters right after an action (a log
+  entry, a confirmation) appears briefly (a toast with Undo, an animation) and
+  leaves, instead of a permanent list or line of text.
+- **Decoration has to carry information.** Glare, gradients, extra outlines and
+  ornaments are cut unless they show something.
 
 ## Pre-send checklist (run on every variation before the link goes out)
 
@@ -151,6 +184,12 @@ break the app's *conventions* in explore mode; it may not break these.
    platform's (ground, navigation, tap targets, system type sizes, legibility).
 10. Nothing from the failure list above.
 11. It is visibly different from every other variation in the round on ≥ 2 axes.
+12. Triage written: every element of the current screen is Core, Relocated
+    (with its destination), Transient, Merged or Cut.
+13. The reading path is written as 1 → 2 → 3, and nothing on screen is off it.
+14. Single-job screens: about three groups, no scroll, fewer than about 15 words
+    outside the data, hero about a third of the first viewport.
+15. No label, heading or container restates what the content already shows.
 
 ## Web pre-send checklist (web mode)
 

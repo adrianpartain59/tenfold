@@ -252,8 +252,9 @@ Each `vNN/s1.html` to `s4.html`:
 - uses icons only from the sprite for `theme.icons.set`: `../../icons.svg` for
   Feather, `../../icons-<set>.svg` for any other set
 - shows the shared fixture from context.md, including the long string
-- keeps the content contract: it may regroup or reorder, never drop a datum
-  or an action
+- keeps the content contract (the Core from the triage): it may regroup or
+  reorder, never drop a Core datum or action. Items the triage relocated
+  appear on their destination route, not on the original screen
 - writes copy in the direction's voice, with typographic quotes and `…`
 
 The mockup rules in `mockup-craft.md` (app) or `web-craft.md` (web) hold

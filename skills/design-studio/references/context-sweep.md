@@ -8,9 +8,12 @@ Budget: ~15–25 tool calls; fan out to an Explore subagent when the app is big.
 
 - Find the component/screen file(s) and the navigator that mounts them.
 - Inventory what's on it today: every piece of data shown, every action, every
-  state (empty, loading, error, long content). This list is the **content
-  contract**: a redesign keeps all of it, or explicitly names what it drops or
-  moves and where to.
+  state (empty, loading, error, long content), plus every label, heading,
+  container and decoration. This list is the **inventory**.
+- Triage the inventory (`subtraction.md`): each item is Core, Relocate (name
+  the destination screen), Transient, Merge or Cut. The Core is the **content
+  contract**: what every variation must hold. Relocated items need a home that
+  exists today; check that screen before you send things there.
 - Note the behaviour the design must not break (gestures, pull-to-refresh,
   scroll-linked headers, entrance animations, test IDs).
 
@@ -79,8 +82,13 @@ brief; subagents rendering variations read all of it.
 **Mode:** congruent | explore | mixed — <the words that decided it>
 **Flow:** arrives from <A, B>; leaves to <C, D>
 
-## Content contract
-- <every datum and action that must survive, or "dropped: X → moves to Y">
+## Triage
+| Item | Verdict | Where it goes / why |
+|---|---|---|
+| <every inventory item> | Core · Relocate · Transient · Merge · Cut | <destination screen, or the one-line reason> |
+
+## Content contract (the Core)
+- <every datum and action every variation must hold>
 
 ## Neighbours' language
 | Screen | Surface | Header | Type (hero/row/caption) | Colour roles | Notes |
