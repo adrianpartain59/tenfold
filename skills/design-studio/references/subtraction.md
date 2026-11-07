@@ -8,6 +8,13 @@ too much text, every part fighting for attention.
 Good screens are made mostly by taking things away. Do that on purpose, before
 round 1, and show the user what was taken away and where it went.
 
+**Classify the screen first (`screen-types.md`).** What counts as Core, and
+what may leave, depends on the type. On a task screen almost everything but
+the job leaves. On a tab-root dashboard every area the tab owns stays, as one
+card each, and subtraction happens inside the cards and in their organization.
+Stripping a dashboard down to a task screen is the opposite failure to
+clutter, and just as bad (the Progress example in §6).
+
 ## 1. Triage: every element earns its place or leaves
 
 List every element on the screen today (data, actions, labels, headings,
@@ -15,7 +22,7 @@ containers, decorations, states). Give each one a verdict:
 
 | Verdict | Test | Where it goes |
 |---|---|---|
-| **Core** | The user acts on it, or needs it to act, *at the moment they open this screen* | Stays, and gets the space |
+| **Core** | Task screen: the user acts on it, or needs it to act, *at the moment they open this screen*. Dashboard: it is one of the areas this tab owns (one summary card each). Detail: it is about this screen's one metric | Stays, and gets the space |
 | **Relocate** | It's real, but it's for reviewing, comparing or managing, not for the moment of use | The screen where people already review that kind of thing (history into the existing history/log screen, weekly summaries onto Home's summary area, unit settings into the screen's settings) |
 | **Transient** | It only matters right after an action | Feedback that appears and leaves: a toast with Undo, a brief confirmation, an animation |
 | **Merge** | It says what another element already says | Fold it into that element (a "Goal reached" line is the filled gauge; a "Quick add" heading is the tiles themselves) |
@@ -36,7 +43,12 @@ Rules:
 - The user can always restore an item. Assuming it must stay is the failure
   this step prevents.
 
-## 2. The target: one screen, one focus, one path
+## 2. The target for a task screen: one screen, one focus, one path
+
+This section is for task screens and sheets. Dashboards follow the rules in
+`screen-types.md` instead: a scrolling stack of consistent cards with a hero
+on top, where the focus and path rules below apply to the page's scan order
+and to each card.
 
 After triage, the screen holds only the Core items. Design toward:
 
@@ -123,3 +135,31 @@ enlargement; nothing was added except motion and the two custom assets.
 
 A round that had started from this triage would have spent its ten frames on
 how to present the Core, not on how to decorate a glass above a log list.
+
+## 6. Counter-example: the same rules on a tab root
+
+The Progress tab (weight chart, goal journey, BMI, weight change, weekly steps,
+weekly workouts) was triaged as if it were Hydration: BMI and photos went to
+Weight History, Activity and Workouts went to Home, the target was "one screen,
+no scroll, three groups". All ten frames came back as a number, one visual and
+a button. The founder: "These screens would never pass in an actual health and
+fitness app. There's too little content… it looks more like an inner screen…
+when it's supposed to be a main page that shows info to the user in multiple
+places on multiple cards."
+
+The right triage for that tab:
+
+| Item | Verdict |
+|---|---|
+| Weight (current, weekly change, mini trend, Log weight) | Core: the hero card |
+| Goal journey (82% to 180, pace, date) | Core: its own card, or merged into the hero |
+| BMI, weight change | Core: 2-up stat tiles |
+| Steps this week, workouts this week | Core: week cards (the tab owns them) |
+| Range pills, scrubbing tooltip, chart axes | Relocate → Weight History (detail-level) |
+| "28.2 lbs down" shown in two cards | Merge (one place) |
+| Card titles, icon chips, extra captions that repeat the value | Merge or Cut, per card |
+| Weekly story door | Transient banner at the top while a story is new |
+
+Subtraction still did its job there, but inside the cards and across them:
+one card type per job, one focus per card, nothing duplicated, no exploration
+controls on the tab.

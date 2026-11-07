@@ -37,8 +37,10 @@ of the chosen one with the user's feedback. Repeat until they say build.
    - **Images:** link the app's image assets as `TOPIC_DIR/img`
      (`ln -sfn "$PWD/<assets dir>" <TOPIC_DIR>/img`) when it has any.
 
-2. **Context sweep and triage (never skip).** Follow
-   `references/context-sweep.md`: the target's inventory, triaged with
+2. **Context sweep, screen type and triage (never skip).** Follow
+   `references/context-sweep.md`: classify the screen with
+   `references/screen-types.md` (tab-root dashboard, list, detail, task/sheet,
+   flow step), then the target's inventory, triaged with
    `references/subtraction.md` into Core, Relocate, Transient, Merge and Cut,
    then the flow around it, sibling screens, every
    tab root, shared components, past rounds, and the rules in force. Decide the
@@ -226,6 +228,7 @@ the same command with the sandbox disabled; it only serves mockups.
 
 | Mistake | Fix |
 |---|---|
+| A main tab designed like an inner screen (one number, one visual, a button) | Classify first (`screen-types.md`): a tab root is a dashboard, a scrolling stack of consistent cards; only task screens get the no-scroll target |
 | Ten frames that keep every element and decorate the hero | Triage first (`subtraction.md`); vary how the Core is shown, not the ornament |
 | A hero that's a sentence or a small icon | One visual, about a third of the first viewport; the reading path written 1 → 2 → 3 |
 | Falling back to an emoji or plain text where a picture is wanted | Generate the picture or draw the SVG (`subtraction.md` §4) |

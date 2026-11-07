@@ -21,6 +21,11 @@ Differences in colour, corner radius, or font alone don't count.
 | Tone | utilitarian · editorial (big type, whitespace) · mascot-led/playful · coach (instructional) |
 | Disclosure | all on one screen · summary + "see all" doors · progressive (expand in place) |
 
+On a tab-root dashboard the Subtraction axis is about organization, not
+removal: card order, which card is the hero, how many card types, what merges,
+what moves to detail screens. Every frame keeps a card for each area the tab
+owns.
+
 Every variation starts from the triage in context.md (`subtraction.md`):
 it holds the Core, and only the Core, unless its thesis is to restore one
 item. Spread the ten on how they present and act on the Core, not on how
@@ -195,9 +200,10 @@ default split. Each subagent gets a self-contained brief:
 
 ```text
 Render two variations for the design round in <ROUND_DIR>.
-Read first: <TOPIC_DIR>/context.md (job, triage, content contract,
-neighbours, rules, fixture), <SKILL_DIR>/references/subtraction.md (hold the
-Core only; one starting point, one path), <SKILL_DIR>/references/mockup-craft.md
+Read first: <TOPIC_DIR>/context.md (type, job, triage, content contract,
+neighbours, rules, fixture), <SKILL_DIR>/references/screen-types.md (the
+target for this screen's type), <SKILL_DIR>/references/subtraction.md (hold
+the Core only; one starting point, one path), <SKILL_DIR>/references/mockup-craft.md
 (file template and rules), <SKILL_DIR>/references/principles.md (run the
 pre-send checklist on your two, §11 first). In your notes, write the reading
 path as 1 → 2 → 3 and list any asset you generated or drew.

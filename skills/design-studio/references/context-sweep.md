@@ -4,9 +4,12 @@ A screen is never designed alone. Before a single variation exists, build a
 picture of the app around the target and write it to `<topic>/context.md`.
 Budget: ~15–25 tool calls; fan out to an Explore subagent when the app is big.
 
-## 1. Locate the target
+## 1. Locate and classify the target
 
 - Find the component/screen file(s) and the navigator that mounts them.
+- Classify it (`screen-types.md`): how users arrive, how often they see it,
+  how many areas it covers. The type decides the target and what triage may
+  remove.
 - Inventory what's on it today: every piece of data shown, every action, every
   state (empty, loading, error, long content), plus every label, heading,
   container and decoration. This list is the **inventory**.
@@ -78,6 +81,7 @@ brief; subagents rendering variations read all of it.
 ```markdown
 # <Screen> — context
 
+**Type:** <tab-root dashboard | list | detail | task/sheet | flow step | settings> · arrives from <…> · seen <…>
 **Job:** <the one question the screen answers, and how often users come here>
 **Mode:** congruent | explore | mixed — <the words that decided it>
 **Flow:** arrives from <A, B>; leaves to <C, D>

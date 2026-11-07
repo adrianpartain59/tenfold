@@ -138,11 +138,16 @@ break the app's *conventions* in explore mode; it may not break these.
   self-explanatory visuals.
 - The hero decorated (glare, realism, texture) while the clutter around it stays.
 - A history list or stats block on a screen whose job is to act.
+- A tab root stripped to a task screen: one number, one visual, a button,
+  with the tab's other areas sent elsewhere.
 
 ## 11. Focus and flow (the clutter rubric)
 
 Most rejected rounds fail here, not on craft. Judge every variation on these
-before anything else. `subtraction.md` is how to get there.
+before anything else. `subtraction.md` is how to get there. Read each rule
+through the screen's type (`screen-types.md`): the budgets marked "task
+screens" don't apply to a tab-root dashboard, which scrolls and holds a card
+per area; there the rules apply to the page's scan order and to each card.
 
 - **Triage first.** Every element is Core, or it was relocated, made
   transient, merged or cut (`subtraction.md`). A variation that keeps every
@@ -153,9 +158,11 @@ before anything else. `subtraction.md` is how to get there.
 - **One path.** Write the reading order as 1 → 2 → 3 (usually status, then the
   hero visual, then the actions in the thumb zone). Every element sits on that
   path; anything off it is a candidate for cutting.
-- **Few groups.** A daily-tool screen has about three visible groups (status,
-  hero, actions) and fits without scrolling on the smallest supported phone.
-  More groups means triage again, not smaller type.
+- **Few groups (task screens).** A task screen has about three visible groups
+  (status, hero, actions) and fits without scrolling on the smallest
+  supported phone. More groups means triage again, not smaller type. A
+  dashboard instead has 2–3 card types, a hero card first, and at least two
+  more cards in the first viewport.
 - **Visual over text.** No label that the visual already says. No heading over a
   single group. No container around a single item. Count the words outside the
   data: on a single-job screen, fewer than about 15.
@@ -187,8 +194,11 @@ before anything else. `subtraction.md` is how to get there.
 12. Triage written: every element of the current screen is Core, Relocated
     (with its destination), Transient, Merged or Cut.
 13. The reading path is written as 1 → 2 → 3, and nothing on screen is off it.
-14. Single-job screens: about three groups, no scroll, fewer than about 15 words
-    outside the data, hero about a third of the first viewport.
+14. The screen type is written in context.md and the frame meets that type's
+    target. Task screens: about three groups, no scroll, fewer than about 15
+    words outside the data, hero about a third of the first viewport.
+    Dashboards: scrolls, a card for every area the tab owns, 2–3 card types,
+    hero card plus two more cards in the first viewport.
 15. No label, heading or container restates what the content already shows.
 
 ## Web pre-send checklist (web mode)
